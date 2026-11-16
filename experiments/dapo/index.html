@@ -1,0 +1,2058 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/dapo/">
+      
+      
+        <link rel="prev" href="../medical-opd/">
+      
+      
+        <link rel="next" href="../gspo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>DAPO - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-6-dapo" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DAPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结论放在前面
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dapo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAPO 是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四个改动分别解决什么问题？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四个改动分别解决什么问题？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-dynamic-sampling-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Dynamic Sampling：只训练有相对信号的 group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-clip-higher-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Clip-Higher：给正向 token 多一点更新空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-token-mean-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Token Mean：长回答按 token 数获得更大权重
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-soft-overlong-punishment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Soft Overlong Punishment：不要等截断后才突然判错
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="我们是怎么复现的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先把代码跑起来
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        代码结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reward 与 advantage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dapo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        最初的 DAPO 配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        真正的问题：最后一个有效 group 把训练重新拖回等待
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Sampling 是否值得，要同时看质量和预算
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        另一个真实问题：长序列、动态 batch 的成本峰值很难控制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        自己运行时应该重点看什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        感受
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现与实验
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结论放在前面
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dapo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAPO 是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四个改动分别解决什么问题？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四个改动分别解决什么问题？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-dynamic-sampling-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Dynamic Sampling：只训练有相对信号的 group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-clip-higher-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Clip-Higher：给正向 token 多一点更新空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-token-mean-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Token Mean：长回答按 token 数获得更大权重
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-soft-overlong-punishment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Soft Overlong Punishment：不要等截断后才突然判错
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="我们是怎么复现的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先把代码跑起来
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        代码结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reward 与 advantage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dapo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        最初的 DAPO 配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        真正的问题：最后一个有效 group 把训练重新拖回等待
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Sampling 是否值得，要同时看质量和预算
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        另一个真实问题：长序列、动态 batch 的成本峰值很难控制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        自己运行时应该重点看什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        感受
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现与实验
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-6-dapo">接下来我将复现 10 篇强化学习算法：第 6 篇，我被 DAPO 害惨了</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 训练 → 评测。</p>
+</blockquote>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/head.png" /></p>
+<div align="center">
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://komarev.com/ghpvc/?username=KMnO4-zx-agentic-rl-lab-dapo&amp;label=visitors&amp;color=1283c3&amp;style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本文完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/dapo">datawhalechina/agentic-rl-lab/experiments/dapo</a></li>
+<li>统一训练入口：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/train.py">experiments/dapo/train.py</a></li>
+<li>DAPO 论文：<a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a></li>
+<li>官方项目页：<a href="https://dapo-sia.github.io/">dapo-sia.github.io</a></li>
+<li>官方实现：<a href="https://github.com/BytedTsinghua-SIA/DAPO">BytedTsinghua-SIA/DAPO</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">https://docs.pytrio.com/docs</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第六篇。</p>
+<p>前面几篇分别讲了：</p>
+<ul>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/loss-functions/readme.md">第 0 篇：强化学习基础——损失函数</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/grpo/readme.md">第 1 篇：GRPO</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/medical-opd/readme.md">第 2 篇：OPD</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/search-r1/readme.md">第 3 篇：一杯喜茶，搞定 Search-R1</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/readme.md">第 4 篇：一顿疯狂星期四，搞定 OPSD</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/readme.md">第 5 篇：两杯瑞幸，搞定 ReTool</a></li>
+</ul>
+<p>这篇一开始也准备按熟悉的路线写：介绍算法、跑完训练，再整理结果。</p>
+<p>但真正跑起来以后，我先撞上的是一堆问题。所以这次我想把下面几个问题讲清楚：</p>
+<ol>
+<li>DAPO 到底在 GRPO 上改了什么；</li>
+<li>仓库里的 DAPO 和 GRPO 代码应该怎么读、怎么跑；</li>
+<li>Dynamic Sampling 在真实训练里为什么会慢，以及它为什么会削弱异步 RL 本来想获得的时间效率。</li>
+</ol>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/dapo-paper.png" /></p>
+<h2 id="_1">结论放在前面</h2>
+<p>仓库里同时提供了 DAPO 和 GRPO 两个算法入口，大家可以对照代码理解两个算法开关，再来运行。本文不展示训练曲线，也不据此比较两个算法的优劣。</p>
+<p>我实际跑 DAPO 时，训练到第 35 step 已经用了约 4.17 小时。继续跑完的时间成本明显超出预期，所以我手动关闭了这次训练，并把默认配置缩小。</p>
+<p>这次真正值得记录的是一个在代码里就能看见的问题：Dynamic Sampling 会丢弃全对或全错的 group，再继续补采。被丢弃的 completion 虽然不进入 PPO loss，却已经消耗了生成 token 和等待时间；当 batch 只差最后一个有效 group 时，这种补采还会形成连续的等待屏障。</p>
+<h2 id="dapo">DAPO 是什么？</h2>
+<p>DAPO 的全名是 <strong>Decoupled Clip and Dynamic sAmpling Policy Optimization</strong>。它不是把 GRPO 整套推翻重做，而是一套面向 long CoT 强化学习的改进 recipe。</p>
+<p>官方总结了四个关键改动：</p>
+<ol>
+<li><strong>Clip-Higher</strong>：把正 advantage 一侧的 PPO clip 上界放宽，让低概率但有价值的 token 有更大的提升空间；</li>
+<li><strong>Dynamic Sampling</strong>：过滤组内全对或全错、无法提供有效相对信号的 prompt，并持续补采；</li>
+<li><strong>Token-level Policy Gradient Loss</strong>：所有 completion token 等权，而不是先对每条回答求均值；</li>
+<li><strong>Soft Overlong Punishment</strong>：在长度上限前逐步增加惩罚，减少被硬截断带来的 reward noise。</li>
+</ol>
+<p>这四个改动和 GRPO 的差别可以先看这张总览：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/01 · DAPO vs GRPO Overview.png" /></p>
+<p>这次实现没有写一份“看起来像 DAPO”的独立训练脚本，而是在同一个 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/train.py"><code>train.py</code></a> 中保留两个 preset：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>GRPO</th>
+<th>DAPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PPO clip</td>
+<td><code>[0.8, 1.2]</code></td>
+<td><code>[0.8, 1.28]</code></td>
+</tr>
+<tr>
+<td>Loss reduction</td>
+<td>sample mean</td>
+<td>token mean</td>
+</tr>
+<tr>
+<td>Dynamic Sampling</td>
+<td>关闭</td>
+<td>开启</td>
+</tr>
+<tr>
+<td>Soft Overlong Punishment</td>
+<td>关闭</td>
+<td>开启</td>
+</tr>
+</tbody>
+</table>
+<p>两个 preset 共用模型、数据、rollout 和训练骨架，方便大家直接阅读算法差异。</p>
+<h2 id="_2">四个改动分别解决什么问题？</h2>
+<h3 id="1-dynamic-sampling-group">1. Dynamic Sampling：只训练有相对信号的 group</h3>
+<p>GRPO 会对同一道题采样一组回答，再在组内做相对 advantage：</p>
+<div class="highlight"><pre><span></span><code>8 条全答对  → reward 方差为 0 → correctness 信号退化
+8 条全答错  → reward 方差为 0 → correctness 信号退化
+有对有错    → 可以比较哪些轨迹应该提高概率、哪些应该降低
+</code></pre></div>
+<p>DAPO 的做法是：如果一组回答全对或全错，就把它从训练 batch 里剔除，再换一道题补采。<a href="https://arxiv.org/pdf/2503.14476#page=5">原论文 3.2 节</a>要求在训练前持续采样，直到整个 batch 都由 <code>accuracy ∈ (0, 1)</code> 的有效 group 填满。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/02 · Bounded Dynamic Sampling.png" /></p>
+<p>论文里的出发点很合理。固定 batch 中如果大量题目已经太简单或太难，实际能产生梯度的样本就会越来越少。Dynamic Sampling 相当于在线做了一次难度筛选，让当前策略更多地训练“正好处在能力边界上”的题。</p>
+<p>这份实现额外加了一层工程保护：</p>
+<div class="highlight"><pre><span></span><code>目标有效 group 数：B
+最大候选 group 数：B × max_candidate_multiplier
+当前默认 multiplier：2
+</code></pre></div>
+<p>候选预算耗尽后，不会无限补采，而是用已经收集到的有效 group 训练；如果一个有效 group 都没有，就跳过这一步更新。这个 <code>2×</code> 上限和 partial batch 行为是本文实现的改动，不属于原始 DAPO 的严格 full-batch 语义。</p>
+<p>这里还要说清一个实现细节：Dynamic Sampling 的筛选依据是<strong>原始正确性</strong>，即组内必须同时出现正确和错误回答；真正计算 advantage 时使用的是加入长度惩罚后的 shaped reward。因此文中说的“无 advantage group”，更准确地说是“原始正确性信号退化的 group”。</p>
+<h3 id="2-clip-higher-token">2. Clip-Higher：给正向 token 多一点更新空间</h3>
+<p>PPO 会限制新旧策略的概率比，避免一步更新过大。GRPO 常用对称区间：</p>
+<div class="highlight"><pre><span></span><code>clip_low  = 0.8
+clip_high = 1.2
+</code></pre></div>
+<p>DAPO 把上界放宽到 <code>1.28</code>，下界仍然是 <code>0.8</code>。直觉上说：错误 token 仍然谨慎地下调，但对于正 advantage、原本概率又很低的 token，允许更积极地提高概率。</p>
+<p>这项改动主要针对训练中的 entropy collapse。它不是把所有好回答都无条件放大，PPO 的 clipped surrogate 和 advantage 符号仍然共同决定每个 token 的梯度。</p>
+<h3 id="3-token-mean-token">3. Token Mean：长回答按 token 数获得更大权重</h3>
+<p>GRPO 的 sample mean 是：</p>
+<div class="highlight"><pre><span></span><code>每条回答先对 token loss 求均值 → 再对所有回答求均值
+</code></pre></div>
+<p>因此一条 100 token 的回答和一条 4,000 token 的回答，在 batch 最外层权重相同。</p>
+<p>DAPO 的 token mean 是：</p>
+<div class="highlight"><pre><span></span><code>把所有 completion token 合并 → 对全部 token 直接求均值
+</code></pre></div>
+<p>这样每个 token 等权，长 reasoning 会自然贡献更多梯度。对 long CoT 来说，这可以避免长轨迹被 sequence-level averaging 稀释；代价是长回答也会占据更大的优化权重，所以它需要和长度 shaping 一起看。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/03 · Clip-Higher and Token Mean.png" /></p>
+<h3 id="4-soft-overlong-punishment">4. Soft Overlong Punishment：不要等截断后才突然判错</h3>
+<p>如果 completion 在最大 token 上限处被硬截断，它通常来不及输出最终 <code>\boxed{}</code>，最终 reward 会突然从可能正确变成错误。DAPO 在长度接近上限时加入线性惩罚：</p>
+<div class="highlight"><pre><span></span><code>penalty_start = max_tokens - overlong_cache
+
+length &lt;= penalty_start:  penalty = 0
+penalty_start &lt; length &lt;= max_tokens:
+                         penalty = -(length - penalty_start) / overlong_cache
+length &gt; max_tokens:      penalty = -1
+
+shaped_reward = correctness_reward + length_penalty
+</code></pre></div>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/dapo/images/04 · Soft Overlong Punishment.png" /></p>
+<p>图中使用的是最初训练配置：<code>max_tokens=8192</code>、<code>overlong_cache=2048</code>，因此惩罚从 6,144 token 开始，在 8,192 token 达到 −1。</p>
+<p>现在仓库里的默认配置已经缩小为 <code>max_tokens=4096</code>、<code>overlong_cache=1024</code>，对应的惩罚区间是：</p>
+<div class="highlight"><pre><span></span><code>0 ～ 3,072 tokens：不惩罚
+3,584 tokens：     -0.5
+4,096 tokens：     -1.0
+</code></pre></div>
+<p>长度惩罚不是一个独立 reward。当前实现仍然先判答案正确性，对 +1、错 −1，再叠加这项 penalty。</p>
+<h2 id="_3">我们是怎么复现的？</h2>
+<h3 id="_4">先把代码跑起来</h3>
+<p>本篇的全部代码都在仓库的 <code>experiments/dapo/</code> 目录下。</p>
+<p>项目要求 Python <code>&gt;=3.13</code>。模型采样和 LoRA 训练通过 PyTRIO 执行，因此安装依赖后还需要登录 PyTRIO。</p>
+<p>先把项目拉到本地并进入 DAPO 目录：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+swanlab<span class="w"> </span>login
+<span class="nb">cd</span><span class="w"> </span>experiments/dapo
+</code></pre></div>
+<p>下载并整理训练数据：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>prepare_data.py
+</code></pre></div>
+<p>训练文件会写入当前目录下的 <code>datasets/train.jsonl</code> 和 <code>datasets/dev.jsonl</code>。</p>
+<p>然后就可以启动当前缩小后的 DAPO 配置：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--algorithm<span class="w"> </span>dapo<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-steps<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--groups-per-step<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-candidate-multiplier<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-prompt-tokens<span class="w"> </span><span class="m">512</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">4096</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--overlong-cache<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>disabled
+</code></pre></div>
+<p>仓库也提供了 GRPO 入口。想结合代码理解两者的开关差异，可以把算法改成 <code>grpo</code>：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--algorithm<span class="w"> </span>grpo<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-steps<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--groups-per-step<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-prompt-tokens<span class="w"> </span><span class="m">512</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">4096</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--overlong-cache<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>disabled
+</code></pre></div>
+<p>代码跑起来以后，再来看这套复现具体是怎么拆的。</p>
+<h3 id="_5">代码结构</h3>
+<p>整套复现主要拆成四个文件：</p>
+<ul>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/prepare_data.py"><code>prepare_data.py</code></a>：下载、清洗和固定版本的数据；</li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/rollout.py"><code>rollout.py</code></a>：group rollout、组内 advantage 和 Dynamic Sampling；</li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/reward.py"><code>reward.py</code></a>：数学答案判定和 Soft Overlong Punishment；</li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/dapo/train.py"><code>train.py</code></a>：统一的 GRPO/DAPO PPO 更新。</li>
+</ul>
+<h3 id="_6">数据</h3>
+<p>训练集使用官方的 <a href="https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k"><code>BytedTsinghua-SIA/DAPO-Math-17k</code></a>。</p>
+<p>官方 parquet 中存在大量重复行，所以准备脚本没有直接把原始数据全部喂给训练，而是：</p>
+<ol>
+<li>剥掉原数据自带的 <code>Answer:</code> 外层模板，避免和本文要求的 <code>\boxed{}</code> 冲突；</li>
+<li>规范化 question 后去重；</li>
+<li>同题 ground truth 冲突时删除整组；</li>
+<li>用固定 seed 切出 50 条 dev，其余作为 train。</li>
+</ol>
+<p>当前整理结果是：</p>
+<div class="highlight"><pre><span></span><code>train.jsonl：17,126 道题
+dev.jsonl：      50 道题
+</code></pre></div>
+<p>数据集 revision 已写死在脚本中，避免上游数据更新后，同一个命令悄悄得到另一份训练集。</p>
+<h3 id="reward-advantage">Reward 与 advantage</h3>
+<p>每条 completion 最后 300 个字符中提取最后一个 <code>\boxed{}</code>，再用 <code>math_verify</code> 判断数学等价：</p>
+<div class="highlight"><pre><span></span><code>正确：+1
+错误或格式非法：-1
+DAPO：再叠加 Soft Overlong Punishment
+</code></pre></div>
+<p>同一道题的 8 条 completion 使用 shaped reward 做组内标准化：</p>
+<div class="highlight"><pre><span></span><code>A_i = (r_i - mean(r)) / (std(r) + epsilon)
+</code></pre></div>
+<p>prompt token 全部 mask 掉，只有模型自己生成的 completion token 进入 PPO loss。</p>
+<h3 id="dapo_1">最初的 DAPO 配置</h3>
+<p>最初我运行 DAPO 时使用的是下面这组配置：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Model</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>训练方式</td>
+<td>LoRA rank 32</td>
+</tr>
+<tr>
+<td>每步目标题组</td>
+<td>4</td>
+</tr>
+<tr>
+<td>每题 completion</td>
+<td>8</td>
+</tr>
+<tr>
+<td>每步目标 completion</td>
+<td>32</td>
+</tr>
+<tr>
+<td>prompt 上限</td>
+<td>1,024 tokens</td>
+</tr>
+<tr>
+<td>completion 上限</td>
+<td>8,192 tokens</td>
+</tr>
+<tr>
+<td>Soft Overlong 区间</td>
+<td>最后 2,048 tokens</td>
+</tr>
+<tr>
+<td>DAPO 最大候选</td>
+<td>目标 batch 的 2×</td>
+</tr>
+<tr>
+<td>rollout concurrency</td>
+<td>16</td>
+</tr>
+<tr>
+<td>optimizer</td>
+<td>Adam，lr <code>4e-5</code>，β <code>(0.9, 0.95)</code></td>
+</tr>
+<tr>
+<td>seed</td>
+<td>42</td>
+</tr>
+</tbody>
+</table>
+<p>这组配置把算法链路跑了起来，也暴露了时间和单步 token 波动问题。为了让后续读者能更轻量地学习和试跑代码，当前默认值已经改为：</p>
+<div class="highlight"><pre><span></span><code>max_prompt_tokens：1,024 → 512
+max_tokens：       8,192 → 4,096
+overlong_cache：   2,048 → 1,024
+groups_per_step：  4（保持不变）
+group_size：       8（保持不变）
+candidate cap：    2×（保持不变）
+</code></pre></div>
+<p>这套配置规模小于论文实验，主要用于观察算法机制和复现过程中暴露的问题。</p>
+<h2 id="group">真正的问题：最后一个有效 group 把训练重新拖回等待</h2>
+<p>Dynamic Sampling 最容易被一句“过滤无效样本，补到 batch 满”为止带过。但真正跑起来以后，最慢的恰恰是“补到 batch 满”这半句话。</p>
+<p>假设每步需要 <code>B=4</code> 个有效 group：</p>
+<div class="highlight"><pre><span></span><code>第一轮并发采 4 组
+├── 第 1 组：有效
+├── 第 2 组：有效
+├── 第 3 组：有效
+└── 第 4 组：全对或全错，被丢弃
+</code></pre></div>
+<p>这时 batch 只差最后 1 组。当前实现不会再并发采完整的 4 组，而是补采 1 组：</p>
+<div class="highlight"><pre><span></span><code>补采第 5 组 → 无效 → 再等
+补采第 6 组 → 无效 → 再等
+补采第 7 组 → 无效 → 再等
+补采第 8 组 → 仍可能无效，候选预算耗尽
+</code></pre></div>
+<p>虽然<strong>每一轮内部</strong>使用了 <code>asyncio.gather</code> 和并发 semaphore，但下一轮要采多少，必须等上一轮的 completion 全部返回、完成 reward 判定后才能知道。因此，接近填满时，Dynamic Sampling 会形成一串串行的 refill barrier。</p>
+<p>对于目标 batch <code>B</code>、候选倍率 <code>M</code>：</p>
+<div class="highlight"><pre><span></span><code>最多采样的 group 数 = M × B
+候选 token 计算量上限约为正常 batch 的 M 倍
+
+如果第一轮只差 1 个有效 group：
+最多经历的 rollout wave 数 = 1 + (M - 1) × B
+</code></pre></div>
+<p>以当前 <code>B=4、M=2</code> 为例，最坏不是简单的两轮，而是：</p>
+<div class="highlight"><pre><span></span><code>1 轮初始 batch + 4 轮单 group 补采 = 5 个等待 wave
+</code></pre></div>
+<p>如果倍率改成 <code>3×</code>，最坏可以变成 <code>1 + 2×4 = 9</code> 个 wave。每个 wave 又可能碰到一条接近 8,192 token 的长尾 completion，所以 wall-clock 的放大甚至不一定严格受 <code>2×/3×</code> 限制。</p>
+<p>这就是我认为 Dynamic Sampling 与异步 RL 存在结构性冲突的地方：</p>
+<ul>
+<li>异步 RL 想让 rollout 持续流动，让先完成的数据先进入下一阶段；</li>
+<li>严格 Dynamic Sampling 要求当前 step 先凑齐 <code>B</code> 个有效 group；</li>
+<li>learner 能不能更新，被最晚补到的那一组卡住；</li>
+<li>越接近 batch 填满，并发宽度反而越小，最后一个有效 group 很容易成为拖慢整批更新的尾部任务。</li>
+</ul>
+<blockquote>
+<p><a href="https://arxiv.org/pdf/2503.14476#page=5">DAPO 原论文 3.2 节</a>：“Before training, we keep sampling until the batch is fully filled with samples whose accuracy is neither 0 nor 1.”</p>
+</blockquote>
+<p>原始 DAPO 必须先凑齐一整批有效样本，才能进行这一步参数更新。即使只差最后一组，整个训练流程也必须停下来等待。论文同时指出，在同步且生成阶段没有流水化的系统里，生成时间通常由长尾样本主导，因此 Dynamic Sampling 不一定会降低训练效率。</p>
+<p>但事实并没有论文描述得那么理想。至少在本文实现的同步训练循环中，只有等一组 completion 全部结束并计算完 reward，才能知道是否需要补采。后续补采无法与上一轮的长尾生成重叠；每增加一轮补采，当前训练 step 就会多一次完整等待。当 batch 只差最后一个有效 group 时，这个问题尤其明显。Dynamic Sampling 的额外开销没有被长尾等待掩盖，反而成为训练时间明显增加的主要原因。</p>
+<h2 id="dynamic-sampling">Dynamic Sampling 是否值得，要同时看质量和预算</h2>
+<p>但一条被筛掉的 completion 不是“没用，所以没成本”。它已经经历了：</p>
+<div class="highlight"><pre><span></span><code>prefill → autoregressive sampling → reward parsing → correctness verification
+</code></pre></div>
+<p>只是最后没有进入 PPO loss。</p>
+<p>因此大家自己运行时，至少要同时看四类指标：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>代码记录的指标</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据质量</td>
+<td><code>rollout/effective_fill_ratio</code></td>
+<td>目标 batch 实际填满了多少</td>
+</tr>
+<tr>
+<td>筛选代价</td>
+<td><code>rollout/oversample_ratio</code></td>
+<td>为这些有效组多采了多少题</td>
+</tr>
+<tr>
+<td>token 利用率</td>
+<td><code>train_completion_tokens / completion_tokens</code></td>
+<td>生成的 token 有多少真正进入训练</td>
+</tr>
+<tr>
+<td>时间效率</td>
+<td><code>time/step_seconds</code></td>
+<td>一个参数更新实际等了多久</td>
+</tr>
+</tbody>
+</table>
+<p>所以光看 batch 满不满不够，还得看多采了多少候选题、浪费了多少 rollout token、一次更新到底等了多久。</p>
+<h2 id="batch">另一个真实问题：长序列、动态 batch 的成本峰值很难控制</h2>
+<p>从训练形态看，时间预算很难提前估准：</p>
+<ul>
+<li>completion 上限是 8,192，且每一步都出现到达上限的长回答；</li>
+<li>DAPO 的候选 group 数、有效 group 数和 train token 数都会随补采结果变化；</li>
+<li>只差最后一个有效 group 时，补采轮次会被长尾回答继续拉长。</li>
+</ul>
+<p>所以把当前默认 completion 上限缩到 4,096，不只是让一次实验更快，也是为了降低单步 token 和 wall-clock 的波动。后续如果重新跑长上下文版本，应该同时限制<strong>单步时间预算</strong>、<strong>候选 token 总预算</strong>和<strong>训练 token 总预算</strong>，而不只限制 group 数量。</p>
+<p>仓库同时提供了 DAPO 和 GRPO 代码，大家可以结合上面的机制说明继续学习和试跑。本文讨论的是 Dynamic Sampling 的代码行为与工程问题，不把这次未完成的 DAPO run 当作效果对比。</p>
+<h2 id="_7">自己运行时应该重点看什么？</h2>
+<p>这次最重要的不是只盯着 <code>reward</code>，而是把训练收益和采样成本放在一起看：</p>
+<div class="highlight"><pre><span></span><code>time/step_seconds
+
+rollout/candidate_groups
+rollout/effective_groups
+rollout/effective_group_ratio
+rollout/effective_fill_ratio
+rollout/oversample_ratio
+
+rollout/completion_tokens
+rollout/train_completion_tokens
+rollout/max_completion_tokens
+
+train/update_skipped
+
+reward/accuracy
+reward/length_penalty_mean
+reward/shaped_mean
+
+ppo/clip_fraction
+ppo/lower_clip_fraction
+ppo/upper_clip_fraction
+ppo/gradient_active_tokens
+</code></pre></div>
+<p>特别是下面三组关系：</p>
+<div class="highlight"><pre><span></span><code>effective_groups / candidate_groups  → 数据筛选效率
+train tokens / rollout tokens        → token 利用率
+effective_groups / step_seconds      → 真正的 wall-clock 产出
+</code></pre></div>
+<p>只看 <code>effective_fill_ratio</code>，无法判断 Dynamic Sampling 是否值得；还要结合最后一项，确认这些有效 group 实际花了多少时间。</p>
+<h2 id="_8">小结</h2>
+<p>DAPO 的四个改动都是冲着 long CoT RL 的具体毛病去的：entropy collapse、无效 group、长轨迹权重和截断 reward noise。</p>
+<p>四个改动里我最期待的是 Dynamic Sampling，结果它的工程代价也最明显：每次更新确实能看到更多有效 group，但为了等最后一个有效 group，rollout 要反复补采、反复等待，筛选省下的成本最后全付在了训练时间上。</p>
+<h2 id="_9">感受</h2>
+<p>在全手搓实现 DAPO 的时候，我有很大的感触。之前在用 transformers 或者是 verl 训练模型的时候，假如说这次训练得很慢，我只会怀疑是不是我的卡不够好，或者说是我的 verl 哪里配置得不对，我绝对不会怀疑是算法的原因，因为 transformers 的 trainer 和 verl 的配置对我来说它是一个黑盒。但是这一次 dapo 的全部代码是我一行一行 review 过的，所以我很清楚 dapo 发生了什么事情，我也很清楚 dapo 为什么会这么慢。所以，这就是用 PyTrio 的魅力吧，因为我可以从0~1地完成核心算法代码，不必去关注框架、配置、什么训推一体呀，我不需要考虑这些事情，我只需要考虑核心算法到底有没有正确的实现。</p>
+<h2 id="_10">参考资料</h2>
+<h3 id="_11">论文与官方实现</h3>
+<ol>
+<li>Qiying Yu et al. <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>, 2025.</li>
+<li><a href="https://dapo-sia.github.io/">DAPO 官方项目页</a></li>
+<li><a href="https://github.com/BytedTsinghua-SIA/DAPO">BytedTsinghua-SIA/DAPO 官方实现</a></li>
+</ol>
+<h3 id="_12">数据与模型</h3>
+<ol>
+<li><a href="https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k">BytedTsinghua-SIA/DAPO-Math-17k</a></li>
+<li><a href="https://huggingface.co/Qwen/Qwen3.5-4B">Qwen/Qwen3.5-4B</a></li>
+</ol>
+<h3 id="_13">本文实现与实验</h3>
+<ol>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/dapo">DAPO PyTRIO 完整代码</a></li>
+<li><a href="https://docs.pytrio.com/docs">PyTRIO 文档</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

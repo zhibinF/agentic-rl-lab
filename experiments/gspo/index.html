@@ -1,0 +1,1768 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/gspo/">
+      
+      
+        <link rel="prev" href="../dapo/">
+      
+      
+        <link rel="next" href="../opsd/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>GSPO - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-7-gspoaime25-6" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GSPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gspo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GSPO 是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复现结果
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="复现结果">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aime25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AIME25 评测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何启动训练
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="我们是怎么复现的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 准备并固定数学数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-group-rollout01-reward-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Group rollout、0/1 reward 与 advantage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-datum-gspo-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 构造 Datum，并在本地计算 GSPO loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rollout-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 一个 rollout batch 对应一次更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测并生成结果图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gspo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GSPO 是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复现结果
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="复现结果">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aime25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AIME25 评测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何启动训练
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="我们是怎么复现的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 准备并固定数学数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-group-rollout01-reward-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Group rollout、0/1 reward 与 advantage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-datum-gspo-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 构造 Datum，并在本地计算 GSPO loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rollout-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 一个 rollout batch 对应一次更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测并生成结果图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-7-gspoaime25-6">接下来我将复现 10 篇强化学习算法：第 7 篇，从零跑通GSPO，Aime25 提高6个点</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 训练 → 评测。</p>
+</blockquote>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/封面.png" /></p>
+<div align="center">
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://komarev.com/ghpvc/?username=KMnO4-zx-agentic-rl-lab-gspo&amp;label=visitors&amp;color=1283c3&amp;style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本文完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/gspo">datawhalechina/agentic-rl-lab/experiments/gspo</a>  </li>
+<li>GSPO 论文：<a href="https://arxiv.org/abs/2507.18071">Group Sequence Policy Optimization</a></li>
+<li>SwanLab：<a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-gspo/runs/o83z2ghp/chart">100-step 完整训练记录</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">https://docs.pytrio.com/docs</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第七篇。</p>
+<p>前面复现 DAPO 时，我们在 GRPO 的骨架上加入了 Dynamic Sampling、Clip-Higher、Token Mean 和 Soft Overlong Punishment。GSPO 的改动更集中：<strong>沿用 group rollout、reward 和 group-relative advantage，只把 policy loss 里的重要性比率与裁剪从 token 级提升到 sequence 级。</strong></p>
+<p>这次我用 <a href="https://pytrio.com/">PyTRIO</a> 在 <code>Qwen/Qwen3.5-4B</code> 上完成了 100 steps LoRA 训练，并评测 Base Model 与 Step 20、40、60、80、100 五个 checkpoint。先来看算法，再看结果。</p>
+<h2 id="gspo">GSPO 是什么？</h2>
+<p>GSPO 的全称是 <strong>Group Sequence Policy Optimization</strong>，由 Qwen 团队在 2025 年提出。它对同一道题采样一组回答，用组内 reward 的相对高低计算 advantage，从而省掉单独的 value model。GSPO 保留了这套 group-relative advantage，核心变化落在 loss：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/GSPO vs GRPO · Sequence Ratio.png" /></p>
+<blockquote>
+<p><strong>GRPO：一条回答有 T 个 ratio、T 次 clipping；GSPO：一条回答只有 1 个 ratio、1 次 clipping。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>GRPO</th>
+<th>GSPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Group rollout</td>
+<td>同一个 prompt 采样 <span class="arithmatex">\(G\)</span> 条回答</td>
+<td>相同</td>
+</tr>
+<tr>
+<td>Reward</td>
+<td>每条完整回答得到一个 reward</td>
+<td>相同</td>
+</tr>
+<tr>
+<td>Advantage</td>
+<td>组内标准化，每条回答一个 <span class="arithmatex">\(\hat A_i\)</span></td>
+<td>相同</td>
+</tr>
+<tr>
+<td>重要性比率</td>
+<td>每个 token 一个 <span class="arithmatex">\(w_{i,t}\)</span></td>
+<td>每条回答一个 <span class="arithmatex">\(s_i\)</span></td>
+</tr>
+<tr>
+<td>Clipping</td>
+<td>逐 token 判断 keep / clip</td>
+<td>整条回答只判断一次</td>
+</tr>
+<tr>
+<td>Loss</td>
+<td>先聚合 token objective</td>
+<td>直接聚合 sequence objective</td>
+</tr>
+</tbody>
+</table>
+<p>GRPO 对回答中的每个 token 分别计算新旧策略概率比：</p>
+<div class="arithmatex">\[
+w_{i,t}(\theta)=
+\frac{
+  \pi_\theta\left(y_{i,t}\mid x,y_{i,\lt t}\right)
+}{
+  \pi_{\theta_{\mathrm{old}}}\left(y_{i,t}\mid x,y_{i,\lt t}\right)
+}
+\]</div>
+<p>一条包含 <span class="arithmatex">\(T\)</span> 个 token 的回答会产生 <span class="arithmatex">\(T\)</span> 个 ratio，也会做 <span class="arithmatex">\(T\)</span> 次 clipping 判断。</p>
+<p>GSPO 先把整条回答的 token log-ratio 求均值，再取指数：</p>
+<div class="arithmatex">\[
+s_i(\theta)=
+\exp\left(
+\frac{1}{|y_i|}
+\sum_{t=1}^{|y_i|}
+\log
+\frac{
+  \pi_\theta\left(y_{i,t}\mid x,y_{i,\lt t}\right)
+}{
+  \pi_{\theta_{\mathrm{old}}}\left(y_{i,t}\mid x,y_{i,\lt t}\right)
+}
+\right)
+\]</div>
+<p>这里的 <span class="arithmatex">\(1/|y_i|\)</span> 是长度归一化。它让不同长度回答的 ratio 落在相近的数值范围内。随后，整条回答共享同一个 ratio 和 clipping 结果：</p>
+<div class="arithmatex">\[
+\mathcal{J}_{\mathrm{GSPO}}(\theta)
+=
+\frac{1}{G}\sum_{i=1}^{G}
+\min\left(
+s_i\hat{A}_i,\,
+\mathrm{clip}\left(
+  s_i,\,
+  1-\varepsilon_{\mathrm{low}},\,
+  1+\varepsilon_{\mathrm{high}}
+\right)\hat{A}_i
+\right)
+\]</div>
+<p>论文给出的 GSPO 裁剪范围是：</p>
+<div class="highlight"><pre><span></span><code>epsilon_low  = 3e-4
+epsilon_high = 4e-4
+</code></pre></div>
+<p>这个范围看起来比常见的 GRPO clip 小很多，因为两者约束的量不同。GRPO 约束单个 token 的概率比，GSPO 约束经过长度归一化的整条 sequence ratio。</p>
+<p>论文认为，reward 本来就是按完整回答给出的，sequence-level ratio 可以让 reward、重要性采样和优化目标处在同一个粒度上，并减少长序列里逐 token ratio 带来的高方差噪声。</p>
+<p>本项目的数学 reward 使用 <code>math_verify</code> 判定最终答案，正确为 <code>1</code>、错误为 <code>0</code>。同组 reward 会进一步标准化为：</p>
+<div class="arithmatex">\[
+\hat{A}_i =
+\frac{
+  r_i-\mathrm{mean}(r)
+}{
+  \mathrm{std}(r)+10^{-8}
+}
+\]</div>
+<p>组内全对或全错时，所有 advantage 都是 0。本文按 GSPO 的基础目标实现，没有再叠加 Dynamic Sampling，也不会补采新题；训练侧跳过这些没有梯度的序列，同时把它们的零目标保留在原始 loss 分母中。</p>
+<h2 id="_1">复现结果</h2>
+<p>正式训练使用下面这组配置：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Model</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>LoRA rank</td>
+<td>32</td>
+</tr>
+<tr>
+<td>训练数据</td>
+<td>DAPO-Math，清洗后 17,126 道训练题</td>
+</tr>
+<tr>
+<td>训练步数</td>
+<td>100 steps</td>
+</tr>
+<tr>
+<td>每个 step</td>
+<td>8 个 prompt groups</td>
+</tr>
+<tr>
+<td>每个 group</td>
+<td>8 条 completions</td>
+</tr>
+<tr>
+<td>单步 rollout</td>
+<td>64 条 completions</td>
+</tr>
+<tr>
+<td>最大 prompt / completion</td>
+<td>2,048 / 4,096 tokens</td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td>temperature 1.0 / top-p 1.0 / top-k -1</td>
+</tr>
+<tr>
+<td>Optimizer</td>
+<td>Adam，lr <code>4e-5</code>，β <code>(0.9, 0.95)</code></td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>每 20 steps 保存一次</td>
+</tr>
+</tbody>
+</table>
+<p>这次正式训练在 SwanLab 上记录了完整 100 steps，平均每步约 85 秒，总时长约 2 小时 22 分钟。下面两张图分别是 rollout/reward 和 GSPO loss 指标：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/swanlab-reward.png" /></p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/swanlab-gspo.png" /></p>
+<p>训练过程中，<code>normalization_sequences</code> 固定为每步原始的 64 条回答，<code>train_sequences</code> 会随退化组数量变化。100 steps 的平均 sequence clip fraction 为 13.11%，最后一步为 6.25%。完整配置和每一步曲线可以直接在 <a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-gspo/runs/o83z2ghp/chart">SwanLab 训练记录</a> 中查看。</p>
+<p>这次 100-step 训练对应的 PyTRIO session 记录为 <code>¥155.80</code>：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/pytrio-consume.png" /></p>
+<h3 id="aime25">AIME25 评测</h3>
+<p>Base Model 和所有 checkpoint 都使用相同的评测配置：</p>
+<div class="highlight"><pre><span></span><code>30 道 AIME25
+每题采样 12 次，共 360 条 generations
+temperature = 1.0
+top_p = 1.0
+top_k = -1
+max_tokens = 8192
+</code></pre></div>
+<p>其中：</p>
+<ul>
+<li><strong>Average@12</strong>：360 条 generation 中答对的比例；</li>
+<li><strong>Pass@12</strong>：30 道题中，至少有一次采样答对的题目比例；</li>
+<li><strong>Format</strong>：回答中成功提取到 <code>\boxed{}</code> 的比例。</li>
+</ul>
+<p>完整结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">Average@12</th>
+<th style="text-align: right;">Pass@12</th>
+<th style="text-align: right;">Format</th>
+<th style="text-align: right;">正确回答</th>
+<th style="text-align: right;">通过题目</th>
+<th style="text-align: right;">平均 completion tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base (Run 1)</td>
+<td style="text-align: right;">41.11%</td>
+<td style="text-align: right;">56.67%</td>
+<td style="text-align: right;">46.67%</td>
+<td style="text-align: right;">148/360</td>
+<td style="text-align: right;">17/30</td>
+<td style="text-align: right;">6489.8</td>
+</tr>
+<tr>
+<td>Base (Run 2)</td>
+<td style="text-align: right;">40.56%</td>
+<td style="text-align: right;">66.67%</td>
+<td style="text-align: right;">47.50%</td>
+<td style="text-align: right;">146/360</td>
+<td style="text-align: right;">20/30</td>
+<td style="text-align: right;">6442.5</td>
+</tr>
+<tr>
+<td>Step 20</td>
+<td style="text-align: right;">41.11%</td>
+<td style="text-align: right;">73.33%</td>
+<td style="text-align: right;">62.22%</td>
+<td style="text-align: right;">148/360</td>
+<td style="text-align: right;">22/30</td>
+<td style="text-align: right;">5775.4</td>
+</tr>
+<tr>
+<td>Step 40</td>
+<td style="text-align: right;">37.78%</td>
+<td style="text-align: right;">60.00%</td>
+<td style="text-align: right;">87.22%</td>
+<td style="text-align: right;">136/360</td>
+<td style="text-align: right;">18/30</td>
+<td style="text-align: right;">4785.8</td>
+</tr>
+<tr>
+<td>Step 60</td>
+<td style="text-align: right;">35.00%</td>
+<td style="text-align: right;">63.33%</td>
+<td style="text-align: right;">92.50%</td>
+<td style="text-align: right;">126/360</td>
+<td style="text-align: right;">19/30</td>
+<td style="text-align: right;">4438.7</td>
+</tr>
+<tr>
+<td>Step 80</td>
+<td style="text-align: right;">34.72%</td>
+<td style="text-align: right;">73.33%</td>
+<td style="text-align: right;">97.78%</td>
+<td style="text-align: right;">125/360</td>
+<td style="text-align: right;">22/30</td>
+<td style="text-align: right;">3886.9</td>
+</tr>
+<tr>
+<td>Step 100</td>
+<td style="text-align: right;">33.89%</td>
+<td style="text-align: right;">66.67%</td>
+<td style="text-align: right;">99.44%</td>
+<td style="text-align: right;">122/360</td>
+<td style="text-align: right;">20/30</td>
+<td style="text-align: right;">3358.1</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/aime25-gspo-progress.png" /></p>
+<p>封面里的“AIME25 提高 6 个点”，具体指 <strong>Step 20 的 Pass@12 相比 Base Run 2 从 66.67% 提升到 73.33%，增加 6.66 个百分点</strong>。</p>
+<p>这组结果还能看到三个更重要的现象：</p>
+<ol>
+<li>Step 20 的 Average@12 为 41.11%，落在两次 Base 评测的波动范围内；正确回答数也和 Base Run 1 相同，都是 148/360。</li>
+<li>两次独立 Base 的 Pass@12 相差 10 个百分点。AIME25 只有 30 道题，单次 Pass@12 很容易受采样波动影响，因此 +6.66 个百分点还需要更多重复评测和随机种子确认。</li>
+<li>Format 从 47.50% 持续上升到 99.44%，平均 completion tokens 从 6442.5 持续下降到 3358.1，缩短约 48%。Step 20 以后 Average@12 则逐步下降。</li>
+</ol>
+<p>所以，这次实验最扎实的结论是：<strong>GSPO 训练明显改变了模型的输出行为，格式遵循率大幅提高，回答长度持续缩短；当前数据还不能证明数学准确率获得了稳定提升。</strong> 不同指标对应的最佳 checkpoint 也不同：Step 20 的 Average@12 最好，Step 20 和 Step 80 的 Pass@12 最高，Step 100 的格式率最高。</p>
+<p>这里还缺少一组同模型、同数据、同训练预算的 GRPO 对照实验，因此本文也不拿这组结果证明 GSPO 优于 GRPO。</p>
+<blockquote>
+<p><strong>复现边界</strong></p>
+<p>GSPO 原论文使用从 <code>Qwen3-30B-A3B-Base</code> 微调得到的冷启动模型，并把一个 rollout batch 切成 4 个 optimizer mini-batch；论文报告的是 AIME 2024、LiveCodeBench 和 CodeForces。本文使用 Qwen3.5-4B LoRA、每个 rollout batch 一次更新和 AIME25，复现的是 GSPO 的核心 loss 与训练链路，不等同于论文规模实验，也没有验证论文中的 MoE 稳定性结论。仅复现论文核心算法思路和训练链路，评测结果仅供参考。</p>
+</blockquote>
+<h2 id="_2">如何启动训练</h2>
+<p>项目要求 Python <code>&gt;=3.13</code>。先安装依赖并登录 PyTRIO、SwanLab：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+swanlab<span class="w"> </span>login
+</code></pre></div>
+<p>准备 DAPO-Math 训练集和 AIME25：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/gspo/prepare_data.py
+</code></pre></div>
+<p>启动与本文正式实验相同的 100-step 训练：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>experiments/gspo
+
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-steps<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--groups-per-step<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-prompt-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">4096</span>
+</code></pre></div>
+<p>模型采样、LoRA 前向与反向、优化器更新和 checkpoint 存储都由 PyTRIO 服务执行，本地机器负责数据、reward、GSPO loss 和训练流程控制。</p>
+<h2 id="_3">我们是怎么复现的？</h2>
+<p>整条训练链路可以先看这张图。图里用当前默认的 4 个 prompt groups 做示意；上面的正式实验通过命令行把它改成了 8。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/gspo/images/GSPO × PyTRIO · Training Loop.png" /></p>
+<h3 id="1">1. 准备并固定数学数据</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/prepare_data.py"><code>prepare_data.py</code></a> 下载固定 revision 的 DAPO-Math-17K，清洗 prompt、去重并切分 train/dev，同时单独下载并校验 30 道 AIME25。</p>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/data.py"><code>data.py</code></a> 负责读取训练 JSONL、按 seed 打乱，以及用可回绕的 <code>ExampleCursor</code> 按 step 取题。当前实现没有 Dynamic Sampling，所以每个 step 固定取一批 prompt，一次采齐。</p>
+<h3 id="2-group-rollout01-reward-advantage">2. Group rollout、0/1 reward 与 advantage</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/rollout.py"><code>rollout.py</code></a> 先用 Qwen chat template 构造 prompt，再通过当前 LoRA 权重对应的 PyTRIO sampler 为每道题并发采样 8 条回答。每条回答都会保存：</p>
+<div class="highlight"><pre><span></span><code>completion tokens
+sampling logprobs
+decoded text
+reward
+advantage
+</code></pre></div>
+<p>token 与 sampling logprob 的长度会被严格校验，因为它们稍后需要逐 token 对齐计算 sequence ratio。</p>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/reward.py"><code>reward.py</code></a> 从回答中提取最后一个完整的 <code>\boxed{}</code>，再用 <code>math_verify</code> 判断它与参考答案是否等价。答对得 1，答错或格式缺失得 0。它没有长度惩罚，也没有额外的 format reward。</p>
+<p>rollout 完成后，同一道题的 8 个 reward 会计算组内均值和样本标准差，得到每条回答共享的 sequence advantage。全对或全错的组 advantage 为 0，不会发到远端做无效计算。</p>
+<h3 id="3-datum-gspo-loss">3. 构造 Datum，并在本地计算 GSPO loss</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/loss.py"><code>loss.py</code></a> 是这次复现的核心。</p>
+<p><code>build_datum()</code> 把 prompt 和 completion 做自回归右移：</p>
+<div class="highlight"><pre><span></span><code>model_input   = prompt_tokens + completion_tokens[:-1]
+target_tokens = [0] * (len(prompt_tokens) - 1) + completion_tokens
+</code></pre></div>
+<p>PyTRIO 的 <code>Datum.loss_fn_inputs</code> 保存 <code>target_tokens</code>，本地 <code>GSPOMeta</code> 保存 rollout 时的 <code>sampling_logprobs</code>、sequence advantage 和 completion 长度。</p>
+<p>随后，<code>forward_backward_custom()</code> 返回当前策略在这些 target token 上的可求导 logprob。<code>make_gspo_loss_fn()</code> 取出 completion 区间，完成三步计算：</p>
+<div class="highlight"><pre><span></span><code>current logprobs - sampling logprobs
+        ↓
+mean token log-ratio → exp → one sequence ratio
+        ↓
+one sequence-level clipping decision
+</code></pre></div>
+<p>每条 sequence 等权求和，再除以原始 rollout 的 sequence 数。退化组虽然没有发到远端计算，它们原本为 0 的 objective 仍然留在分母里，因此过滤只节省计算，不会放大剩余样本的 loss。</p>
+<h3 id="4-rollout-batch">4. 一个 rollout batch 对应一次更新</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/train.py"><code>train.py</code></a> 把上面的模块串起来：</p>
+<div class="highlight"><pre><span></span><code>加载并打乱数据
+→ 创建 LoRA TrainingClient，并在训练开始时获取一次 tokenizer
+→ 每 step 用最新 LoRA 权重创建 sampler
+→ 并发 group rollout
+→ 过滤 advantage 为 0 的退化组
+→ forward_backward_custom
+→ optim_step
+→ 记录 SwanLab，并按周期保存 checkpoint
+</code></pre></div>
+<p>应用侧没有再拆 mini-batch。一个 rollout batch 只调用一次 backward 和一次 <code>optim_step</code>，PyTRIO 服务负责后端模型计算、物理分片与梯度累积。</p>
+<h3 id="5">5. 评测并生成结果图</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/eval.py"><code>eval.py</code></a> 可以评测 Base Model，也可以读取 <code>trio://</code> sampler weights 评测任意 checkpoint。它会保存每道题的 12 条完整回答，并聚合 Average@12、Pass@12、Format 和平均 completion tokens。</p>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/analyse.py"><code>analyse.py</code></a> 自动读取 <code>eval-results/</code> 中的 summary，按 checkpoint 排序，生成本文使用的 1×2 AIME25 结果图。</p>
+<p>八个代码文件的职责可以汇总为：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>模块职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/prepare_data.py"><code>prepare_data.py</code></a></td>
+<td>下载、清洗、去重并固定 DAPO-Math 与 AIME25</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/data.py"><code>data.py</code></a></td>
+<td>读取训练题、固定 seed 打乱、循环取样</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/reward.py"><code>reward.py</code></a></td>
+<td>提取 <code>\boxed{}</code>、数学等价判断、0/1 reward</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/rollout.py"><code>rollout.py</code></a></td>
+<td>Prompt、并发 group rollout、token/logprob 对齐、advantage</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/loss.py"><code>loss.py</code></a></td>
+<td>Datum、GSPO 元数据、sequence ratio 与 clipping loss</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/train.py"><code>train.py</code></a></td>
+<td>训练主循环、PyTRIO 调用、SwanLab 与 checkpoint</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/eval.py"><code>eval.py</code></a></td>
+<td>Base/LoRA AIME25 评测与 JSONL 结果</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/gspo/analyse.py"><code>analyse.py</code></a></td>
+<td>汇总 checkpoint 指标并绘制结果图</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">总结</h2>
+<p>GSPO 的思路很直接：保留 GRPO 的 group rollout、reward 和 relative advantage，把重要性比率与 clipping 的单位从 token 改成完整 sequence。我们用 PyTRIO 跑通了这条 custom loss 训练链路，也完成了 Base + 5 个 checkpoint 的 AIME25 评测。Step 20 的单次 Pass@12 提高了 6.66 个百分点，格式遵循率和回答长度的变化更加稳定；数学准确率是否能持续提升，还需要 matched GRPO、更多随机种子和重复评测来回答。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

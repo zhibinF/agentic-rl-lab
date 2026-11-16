@@ -1,0 +1,1937 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/vision-grpo/">
+      
+      
+        <link rel="prev" href="../grpo/">
+      
+      
+        <link rel="next" href="../pytrio-jev/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>VISION-GRPO - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#vision-grpo-qwen35-4b" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              VISION-GRPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 这次到底训练了什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 一张图片怎样进入 PyTRIO？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-vision-grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Vision GRPO 的训练闭环
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Vision GRPO 的训练闭环">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 同一道题采样一组回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 只在同题内部比较
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 图文 prompt 只提供上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 如何启动训练？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 如何启动训练？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 安装与登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-geoqa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 下载 GeoQA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-1-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 先跑 1 step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-100-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 复现 100-step 配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 训练时应该看哪些指标？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-base-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 如何评测 Base 与 checkpoint？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 如何评测 Base 与 checkpoint？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结果里最有意思的一点
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 关键实现边界
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 文件结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 这次到底训练了什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 一张图片怎样进入 PyTRIO？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-vision-grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Vision GRPO 的训练闭环
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Vision GRPO 的训练闭环">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 同一道题采样一组回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 只在同题内部比较
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 图文 prompt 只提供上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 如何启动训练？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 如何启动训练？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 安装与登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-geoqa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 下载 GeoQA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-1-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 先跑 1 step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-100-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 复现 100-step 配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 训练时应该看哪些指标？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-base-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 如何评测 Base 与 checkpoint？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 如何评测 Base 与 checkpoint？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结果里最有意思的一点
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 关键实现边界
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 文件结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="vision-grpo-qwen35-4b">Vision GRPO：让 Qwen3.5-4B 学会看图做几何题</h1>
+<div align="center">
+  <img src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/vision-grpo/images/vision-grpo.png" alt="Vision GRPO：5 块钱，让大模型学会做几何数学题" width="100%">
+</div>
+
+<div align="center">
+  <a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/vision-grpo"><img alt="Code" src="https://img.shields.io/badge/Code-09--vision--grpo-2563eb?style=flat"></a>
+  <a href="https://huggingface.co/datasets/hz2475/geoQA"><img alt="Dataset" src="https://img.shields.io/badge/Dataset-GeoQA-f59e0b?style=flat"></a>
+  <a href="https://docs.pytrio.com/docs"><img alt="PyTRIO" src="https://img.shields.io/badge/PyTRIO-0.2.9-d94a45?style=flat"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49?style=flat"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://visitor-badge.laobi.icu/badge?page_id=KMnO4-zx.agentic-rl-lab.vision-grpo"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/vision-grpo"><code>experiments/vision-grpo</code></a></li>
+<li>快速启动：<a href="start/"><code>start.md</code></a></li>
+<li>数据集：<a href="https://huggingface.co/datasets/hz2475/geoQA"><code>hz2475/geoQA</code></a></li>
+<li>GRPO 来源：<a href="https://arxiv.org/abs/2402.03300">DeepSeekMath</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">docs.pytrio.com</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第九篇。</p>
+<p>前八篇里的 prompt 都以文本为主。这次我想把整条 RL 链路推进到多模态：模型先看一张几何图，再读取题目和四个选项，同一道题并发生成一组回答，最后靠可验证的选项奖励完成在线更新。</p>
+<p>这套实验最初在单独的实验目录里完成，现在整理成了 <code>agentic-rl-lab</code> 的独立章节。数据下载、训练、单模型评测和结果绘图都拆成了单独脚本，读代码时可以沿着一条很清楚的链路往下走。</p>
+<p>先看最终结果。在固定的 100 条 GeoQA test 样本上，Qwen3.5-4B 经过 100 steps 的 Vision GRPO 后：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align: right;">Accuracy</th>
+<th style="text-align: right;">Format rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td style="text-align: right;">71.0%</td>
+<td style="text-align: right;">75.0%</td>
+</tr>
+<tr>
+<td>GRPO step 100</td>
+<td style="text-align: right;">87.0%</td>
+<td style="text-align: right;">91.0%</td>
+</tr>
+<tr>
+<td>提升</td>
+<td style="text-align: right;"><strong>+16.0 pp</strong></td>
+<td style="text-align: right;"><strong>+16.0 pp</strong></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="GeoQA Base 与 GRPO step 100 评测对比" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/vision-grpo/images/eval-comparison.png" /></p>
+<p>这里的结果边界很明确：测试集是脚本从原始 GeoQA test 中固定抽取的 100 条，不能直接当作完整 759 条 test 的 benchmark 结果。仓库保留了评测方法和汇总图，没有提交逐样本 JSON 与远端 checkpoint。</p>
+<h2 id="0">0. 这次到底训练了什么？</h2>
+<p>GeoQA 是一个中文几何问答数据集。每条样本都包含几何图片、题目、四个候选项、正确选项标签，以及数据集自带的解析等字段。</p>
+<p><img alt="GeoQA 数据集字段与图文样本" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/vision-grpo/images/GeoQA.png" /></p>
+<p>源数据共有 5,010 条：</p>
+<table>
+<thead>
+<tr>
+<th>原始 split</th>
+<th style="text-align: right;">数量</th>
+<th>本章用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train</td>
+<td style="text-align: right;">3,503</td>
+<td>全部用于训练</td>
+</tr>
+<tr>
+<td>test</td>
+<td style="text-align: right;">759</td>
+<td>固定抽取 100 条用于评测</td>
+</tr>
+<tr>
+<td>dev</td>
+<td style="text-align: right;">748</td>
+<td>本次实验不使用</td>
+</tr>
+</tbody>
+</table>
+<p><code>download-dataset.py</code> 会保留完整 train，并对原始 test 使用 <code>seed=42</code> 打乱，取最后 100 条写入 <code>datasets/test.parquet</code>。训练和评测读取两个独立文件：</p>
+<div class="highlight"><pre><span></span><code>experiments/vision-grpo/datasets/
+├── train.parquet
+└── test.parquet
+</code></pre></div>
+<p>模型看到的输入只有图片、题目和选项。训练 reward 使用 <code>label</code> 生成正确选项，<code>answer</code> 中的原始解析不会作为监督文本送给模型。</p>
+<p>本章使用的核心配置如下：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base 模型</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>训练方式</td>
+<td>LoRA，rank 32</td>
+</tr>
+<tr>
+<td>优化方法</td>
+<td>group-relative advantage + <code>importance_sampling</code></td>
+</tr>
+<tr>
+<td>正式训练</td>
+<td>100 steps</td>
+</tr>
+<tr>
+<td>每 step 题目数</td>
+<td>8</td>
+</tr>
+<tr>
+<td>每题 rollout 数</td>
+<td>8</td>
+</tr>
+<tr>
+<td>最大生成长度</td>
+<td>1,024 tokens</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td><code>4e-5</code></td>
+</tr>
+<tr>
+<td>图文模板</td>
+<td><code>enable_thinking=False</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-pytrio">1. 一张图片怎样进入 PyTRIO？</h2>
+<p>这部分是 Vision GRPO 和纯文本 GRPO 差异最大的地方。</p>
+<p>训练脚本先使用模型自己的 chat template 格式化消息。消息里同时放入文本与图片占位符：</p>
+<div class="highlight"><pre><span></span><code><span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+        <span class="s2">"content"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="n">format_question</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">choices</span><span class="p">)},</span>
+            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"image"</span><span class="p">,</span> <span class="s2">"image"</span><span class="p">:</span> <span class="s2">"geoqa"</span><span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>模板渲染时显式传入 <code>enable_thinking=False</code>。这会关闭模型模板自带的 thinking 模式，prompt 仍然要求模型先做简短推理，再把最终选项写成 <code>\boxed{A}</code> 到 <code>\boxed{D}</code>。</p>
+<p>渲染后的 prompt 会沿 <code>&lt;|image_pad|&gt;</code> 拆成三个 chunk：</p>
+<div class="highlight"><pre><span></span><code>EncodedTextChunk
+        +
+ImageChunk
+        +
+EncodedTextChunk
+</code></pre></div>
+<p>GeoQA 图片在送入服务前还会经过两步处理：</p>
+<ol>
+<li>把 RGBA 图片合成到白色背景并转成 RGB，避免透明区域变黑；</li>
+<li>使用模型的 image processor 计算视觉 patch 数，再写入 <code>ImageChunk.expected_tokens</code>。</li>
+</ol>
+<p>最终得到的 <code>ModelInput</code> 同时包含真实图片字节与本地可计算的序列长度。采样完成后，代码会检查：</p>
+<div class="highlight"><pre><span></span><code><span class="n">response</span><span class="o">.</span><span class="n">input_tokens</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+</code></pre></div>
+<p>一旦本地视觉 token 估计与远端结果不一致，训练会立即报错。这个检查很重要，因为后面的 <code>target_tokens</code>、old logprobs 和 advantages 都依赖同一个位置坐标系。</p>
+<h2 id="2-vision-grpo">2. Vision GRPO 的训练闭环</h2>
+<p>整条数据流可以压缩成下面这条线：</p>
+<div class="highlight"><pre><span></span><code>GeoQA 图文题目
+    ↓
+当前 LoRA 权重生成 sampler
+    ↓
+同题并发采样 8 条 completion
+    ↓
+解析最后一个 \boxed{A-D}
+    ↓
+规则 reward：正确为 1，其余为 0
+    ↓
+组内计算 relative advantage
+    ↓
+构造多模态 Datum 并更新 LoRA
+</code></pre></div>
+<h3 id="21">2.1 同一道题采样一组回答</h3>
+<p>设一组共有 <code>G</code> 条 completion。第 <code>i</code> 条回答的 reward 为：</p>
+<div class="arithmatex">\[
+r_i =
+\begin{cases}
+1, &amp; \text{最后一个 boxed 选项与标签一致} \\
+0, &amp; \text{其他情况}
+\end{cases}
+\]</div>
+<p>这里会解析回答中的最后一个 <code>\boxed{}</code>。这样可以容忍推理正文里出现临时候选项，同时要求模型在结尾给出明确答案。没有可解析 boxed 选项的回答也会得到 0 分。</p>
+<h3 id="22">2.2 只在同题内部比较</h3>
+<p>每条回答的 advantage 为：</p>
+<div class="arithmatex">\[
+A_i = r_i - \frac{1}{G}\sum_{j=1}^{G}r_j
+\]</div>
+<p>假设同一道题的 8 条回答里有 6 条正确、2 条错误：</p>
+<ul>
+<li>正确回答的 advantage 为 <code>1 - 0.75 = 0.25</code>；</li>
+<li>错误回答的 advantage 为 <code>0 - 0.75 = -0.75</code>。</li>
+</ul>
+<p>模型会提高正确轨迹的相对概率，并压低错误轨迹的相对概率。</p>
+<p>如果一组回答全部正确或全部错误，所有 advantage 都等于 0。代码会把这种题记为 degenerate group，并跳过该组，避免把没有相对训练信号的 completion 送入 backward。</p>
+<h3 id="23-prompt">2.3 图文 prompt 只提供上下文</h3>
+<p><code>importance_sampling</code> 所需字段必须与 <code>model_input</code> 严格对齐：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>prompt / image 区间</th>
+<th>completion 区间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model_input</code></td>
+<td>完整图文 chunks</td>
+<td><code>completion[:-1]</code></td>
+</tr>
+<tr>
+<td><code>target_tokens</code></td>
+<td><code>0</code> 占位</td>
+<td>完整 completion tokens</td>
+</tr>
+<tr>
+<td><code>logprobs</code></td>
+<td><code>0.0</code> 占位</td>
+<td>rollout 时返回的 old logprobs</td>
+</tr>
+<tr>
+<td><code>advantages</code></td>
+<td><code>0.0</code> 占位</td>
+<td>当前 completion 的组相对 advantage</td>
+</tr>
+</tbody>
+</table>
+<p>prompt 文本和图片负责提供上下文，策略梯度只作用于模型生成的 completion token。old logprobs 必须来自当前 step 采样时的 sampler，模型更新后重新计算的 logprob 不能替代它。</p>
+<p>对应的核心代码很短：</p>
+<div class="highlight"><pre><span></span><code><span class="n">model_input</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="p">(</span>
+    <span class="n">chunks</span><span class="o">=</span><span class="p">[</span>
+        <span class="o">*</span><span class="n">group</span><span class="o">.</span><span class="n">prompt_chunks</span><span class="p">,</span>
+        <span class="n">trio</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">EncodedTextChunk</span><span class="p">(</span><span class="n">tokens</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">tokens</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">datum</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">Datum</span><span class="p">(</span>
+    <span class="n">model_input</span><span class="o">=</span><span class="n">model_input</span><span class="p">,</span>
+    <span class="n">loss_fn_inputs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"target_tokens"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">observation_length</span> <span class="o">+</span> <span class="n">sample</span><span class="o">.</span><span class="n">tokens</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">"logprobs"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">observation_length</span> <span class="o">+</span> <span class="n">sample</span><span class="o">.</span><span class="n">logprobs</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">"advantages"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">observation_length</span>
+            <span class="o">+</span> <span class="p">[</span><span class="n">sample</span><span class="o">.</span><span class="n">advantage</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">tokens</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="3">3. 如何启动训练？</h2>
+<p>所有命令都从仓库根目录运行。项目要求 Python 3.13 及以上，并锁定 <code>pytrio==0.2.9</code>。</p>
+<h3 id="31">3.1 安装与登录</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+swanlab<span class="w"> </span>login
+</code></pre></div>
+<h3 id="32-geoqa">3.2 下载 GeoQA</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/download-dataset.py
+</code></pre></div>
+<p>默认输出 <code>3,503</code> 条训练数据和固定 <code>100</code> 条测试数据。严格复现实验时，可以通过 <code>--revision</code> 指定同一个 Hugging Face 数据集 revision，避免未来 <code>main</code> 更新带来漂移。</p>
+<h3 id="33-1-step">3.3 先跑 1 step</h3>
+<p>这个命令会调用远端采样与训练服务并产生费用。建议先用一个很小的 batch 检查图像、token 对齐、reward 和异步 API：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--steps<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">256</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-every<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--no-save-weights<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--show-samples<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>disabled
+</code></pre></div>
+<p>单题的 4 条回答可能刚好全部同分，此时脚本会正常完成 rollout，但该 step 没有 backward。需要验证完整更新链路时，可以适当增加 <code>batch-size</code> 或 <code>group-size</code>。</p>
+<h3 id="34-100-step">3.4 复现 100-step 配置</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--lora-rank<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--steps<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--temperature<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--top-p<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--learning-rate<span class="w"> </span>4e-5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-every<span class="w"> </span><span class="m">25</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>每次保存会打印两种路径：</p>
+<div class="highlight"><pre><span></span><code>Sampler 权重：trio://.../sampler_weights/...-sampler
+State 权重：trio://.../training_state/...-state
+</code></pre></div>
+<p><code>sampler_weights</code> 用于推理和评测，<code>training_state</code> 用于恢复训练。</p>
+<p>更紧凑的命令清单见 <a href="start/">快速启动文档</a>。</p>
+<h2 id="4">4. 训练时应该看哪些指标？</h2>
+<p>下面是一次 20-step 小规模试跑的 SwanLab 曲线。</p>
+<p><img alt="20-step Vision GRPO 的 reward 与 format rate" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/vision-grpo/images/swanlab-reward.png" /></p>
+<p>脚本默认记录：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reward</code></td>
+<td>当前 batch 内每道题的平均规则奖励</td>
+</tr>
+<tr>
+<td><code>format_rate</code></td>
+<td>能解析出 <code>\boxed{A-D}</code> 的 completion 比例</td>
+</tr>
+<tr>
+<td><code>degenerate_fraction</code></td>
+<td>同题所有 reward 相同、没有相对信号的题目比例</td>
+</tr>
+<tr>
+<td><code>train_datums</code></td>
+<td>实际进入训练的 completion 数</td>
+</tr>
+<tr>
+<td><code>rollout/completion_tokens_mean</code></td>
+<td>当前 batch 的平均生成长度</td>
+</tr>
+<tr>
+<td><code>trainer/*</code></td>
+<td>PyTRIO 服务端返回的训练指标</td>
+</tr>
+</tbody>
+</table>
+<p>同一次 20-step 会话记录了 33.79K prefill tokens、0.40M train tokens 和 0.62M sample tokens，当时页面显示花销为 ¥5.06。</p>
+<p><img alt="20-step 小规模会话的 PyTRIO token 消耗" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/vision-grpo/images/pytrio-consume.png" /></p>
+<p>这张截图只对应当次会话。100-step 正式实验的成本不能用 ¥5.06 直接倍乘得到；模型输出长度、退化组比例、batch 配置和服务价格都会影响最终消耗。</p>
+<p>在线 batch 的 reward 曲线也会受到题目难度影响。最终结论仍然要来自固定测试集。</p>
+<h2 id="5-base-checkpoint">5. 如何评测 Base 与 checkpoint？</h2>
+<p><code>eval.py</code> 一次只创建一个 sampler。不传 <code>--model-path</code> 时评测 Base，传入 sampler weights 路径时评测该 checkpoint。</p>
+<p>评测 Base：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>experiments/vision-grpo/eval-results-base.json
+</code></pre></div>
+<p>评测训练后的 checkpoint：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-path<span class="w"> </span><span class="s1">'trio://RUN_ID/sampler_weights/WEIGHTS_NAME'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>experiments/vision-grpo/eval-results-step-100.json
+</code></pre></div>
+<p>两次评测都使用同一份 <code>datasets/test.parquet</code>，默认配置为：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>测试数量</td>
+<td>100</td>
+</tr>
+<tr>
+<td>seed</td>
+<td>42</td>
+</tr>
+<tr>
+<td>temperature</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>max tokens</td>
+<td>1,024</td>
+</tr>
+<tr>
+<td>并发方式</td>
+<td>同一个 sampler 上并发 <code>sample_async()</code></td>
+</tr>
+</tbody>
+</table>
+<p>评测结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align: right;">Accuracy</th>
+<th style="text-align: right;">Format rate</th>
+<th style="text-align: right;">采样速度</th>
+<th style="text-align: right;">总耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td style="text-align: right;">71.0%</td>
+<td style="text-align: right;">75.0%</td>
+<td style="text-align: right;">2.20 sample/s</td>
+<td style="text-align: right;">48.65s</td>
+</tr>
+<tr>
+<td>GRPO step 100</td>
+<td style="text-align: right;">87.0%</td>
+<td style="text-align: right;">91.0%</td>
+<td style="text-align: right;">2.35 sample/s</td>
+<td style="text-align: right;">49.45s</td>
+</tr>
+</tbody>
+</table>
+<p>表中的速度与耗时依赖当时的服务环境，只用于记录这次实验。Accuracy 和 Format rate 的变化更值得关注。</p>
+<h3 id="_1">结果里最有意思的一点</h3>
+<p>Base 的 75 条格式正确回答里有 71 条答对，条件准确率为 <code>71 / 75 = 94.7%</code>。step 100 的 91 条格式正确回答里有 87 条答对，条件准确率为 <code>87 / 91 = 95.6%</code>。</p>
+<p>这次 +16 个百分点的总体准确率提升，主要来自模型更稳定地完成最终 boxed 答案。已经成功输出 boxed 选项的样本，正确率只提高了 0.9 个百分点。</p>
+<p>训练后仍有 9 条回答无法解析。这 9 条都生成到了 1,024-token 上限，并在推理过程中被截断。其余 91 条格式正确回答的平均输出长度为 278.8 tokens。继续训练时需要同时观察 reward、format rate 和 completion length，避免模型把越来越长的推理当成完成任务的捷径。</p>
+<p>重新生成本文的对比图：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/vision-grpo/analysis.py
+</code></pre></div>
+<p><code>analysis.py</code> 使用本文记录的 Base 与 step-100 汇总值绘图，不会读取新生成的评测 JSON。完成新实验后，请先更新脚本中的 <code>BASE_RESULTS</code> 与 <code>GRPO_RESULTS</code>。</p>
+<h2 id="6">6. 关键实现边界</h2>
+<ul>
+<li><code>enable_thinking=False</code> 关闭 chat template 自带的 thinking 模式，prompt 仍然要求简短逻辑推理。</li>
+<li>reward 只检查最终选项是否与 <code>label</code> 一致，不评价中间推理是否正确。</li>
+<li>无法解析 boxed 选项的回答得到 0 分，因此结果同时包含答题能力和格式遵循能力。</li>
+<li>图片的 <code>expected_tokens</code> 必须与远端视觉 token 计数一致。</li>
+<li>prompt 和图片位置的 target、old logprob 与 advantage 都填 0。</li>
+<li>同组 reward 全相同时，本组没有相对优势信号，代码会跳过更新。</li>
+<li><code>sample_async()</code> 一次 <code>await</code> 直接返回采样结果；<code>forward_backward_async()</code> 和 <code>optim_step_async()</code> 返回的远端 future 还要继续 <code>await</code>。</li>
+<li>本章报告的是一个固定 100 题子集上的单次 Base-versus-checkpoint 对比，尚未覆盖完整 test、多个 seed 或其他视觉模型。</li>
+<li>数据文件、SwanLab 本地日志、评测 JSON 和 Python 缓存都属于运行产物，不进入 Git。</li>
+</ul>
+<h2 id="7">7. 文件结构</h2>
+<div class="highlight"><pre><span></span><code>experiments/vision-grpo/
+├── download-dataset.py   # 下载 GeoQA，生成 train/test parquet
+├── train.py              # 多模态 group rollout 与 GRPO 更新
+├── eval.py               # 异步评测一个 Base 或 checkpoint
+├── analysis.py           # 生成本文的固定结果对比图
+├── start.md              # 从零开始的命令清单
+├── readme.md             # 原理、实验结果与边界
+└── images/               # 数据、训练、消费与评测图片
+</code></pre></div>
+<p>如果你只想快速跑通一次，直接从 <a href="start/"><code>start.md</code></a> 开始；如果要改数据集或视觉模型，建议先看 <code>train.py</code> 里的 <code>encode_image()</code>、<code>build_prompt_chunks()</code> 和 <code>build_grpo_datum()</code>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

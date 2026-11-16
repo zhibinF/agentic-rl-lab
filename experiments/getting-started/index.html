@@ -1,0 +1,1394 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/getting-started/">
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../loss-functions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>环境配置与基础概念 - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              环境配置与基础概念
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 先搞清楚谁在干什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 装 uv，同步依赖
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. PyTRIO：注册、登录、验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. SwanLab：注册、登录、选模式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 基础概念：读懂代码的最小词汇表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附：命令速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 先搞清楚谁在干什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 装 uv，同步依赖
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. PyTRIO：注册、登录、验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. SwanLab：注册、登录、选模式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 基础概念：读懂代码的最小词汇表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附：命令速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">环境配置与基础概念</h1>
+<p>这一页是进入仓库的第一站：装好环境、注册两个账号、跑通第一次训练，顺带把读后续章节需要的几个概念讲清楚。对应 Datawhale 组队学习的 Task01。</p>
+<p>全程不需要 GPU。训练和采样跑在 PyTRIO 的云端 GPU 上，你的电脑只负责数据、reward 和训练循环，一台能够联网的笔记本电脑就足够了。</p>
+<h2 id="0">0. 先搞清楚谁在干什么</h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>跑在哪</th>
+<th>负责什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyTRIO（<code>pytrio==0.2.9</code>）</td>
+<td>云端</td>
+<td>前向、反向、优化器更新、采样、权重保存</td>
+</tr>
+<tr>
+<td>SwanLab（<code>swanlab==0.10.4</code>）</td>
+<td>云端 + 本地日志</td>
+<td>指标曲线、超参数、终端输出</td>
+</tr>
+<tr>
+<td>本仓库的代码</td>
+<td>本地</td>
+<td>数据集、tokenizer、reward、训练循环，把上面两家串起来</td>
+</tr>
+</tbody>
+</table>
+<p>本地依赖里的 torch 是 CPU 版（<code>pyproject.toml</code> 指定了 <code>pytorch-cpu</code> 源），不要装 CUDA 版。而且它只在写自定义损失函数时才用得上：<code>cross_entropy</code>、<code>importance_sampling</code>、<code>ppo</code> 这些内置 loss 全程在云端算，不碰本地 torch；走 <code>forward_backward_custom</code>（grpo 里的 cispo、DAPO、GSPO 等）时 loss 在本地跑 autograd，才需要它。仓库把 torch 放进基础依赖，是因为好几个章节用自定义 loss，且这些脚本在文件头就 import torch；自己写脚本只用内置 loss 的话，可以不装。</p>
+<p>所以你要准备的东西只有三样：一个 Python &gt;= 3.13 的环境（使用 uv 管理）、一个 PyTRIO 账号、一个 SwanLab 账号。</p>
+<h2 id="1-uv">1. 装 uv，同步依赖</h2>
+<ol>
+<li>安装 uv（装过就跳过）：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1"># macOS / Linux</span>
+curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+<span class="c1"># Windows（PowerShell）</span>
+powershell<span class="w"> </span>-ExecutionPolicy<span class="w"> </span>ByPass<span class="w"> </span>-c<span class="w"> </span><span class="s2">"irm https://astral.sh/uv/install.ps1 | iex"</span>
+</code></pre></div>
+<p><code>brew install uv</code> 或 <code>pip install uv</code> 也可以。</p>
+<ol>
+<li>clone 仓库并同步依赖：</li>
+</ol>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+uv<span class="w"> </span>sync
+</code></pre></div>
+<p><code>uv sync</code> 按 <code>uv.lock</code> 创建 <code>.venv</code> 并装好全部依赖，版本和仓库完全一致。本地 Python 低于 3.13 时 uv 会自动下载一个合适的版本，不用手动装。</p>
+<ol>
+<li>
+<p>记住一件事：仓库里的命令都加 <code>uv run</code> 前缀，或者先 <code>source .venv/bin/activate</code>（Windows 是 <code>.venv\Scripts\activate</code>）。<code>trio</code>、<code>swanlab</code> 这两个可执行文件在 <code>.venv</code> 里，在系统终端直接敲会报 command not found。</p>
+</li>
+<li>
+<p>验证版本：</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from importlib.metadata import version; print(version('pytrio'), version('swanlab'))"</span>
+</code></pre></div>
+<p>输出应该是 <code>0.2.9 0.10.4</code>，大于这个版本的都可以～</p>
+<ol>
+<li>额外依赖按需装：跑 ALFWorld、TEMPO、AgentOPSD 三章需要 <code>uv sync --extra alfworld</code>，其余章节不用。</li>
+</ol>
+<p>网络不顺畅时（顺畅就跳过）：</p>
+<ul>
+<li><code>uv sync</code> 慢：<code>UV_DEFAULT_INDEX=https://mirrors.cernet.edu.cn/pypi/web/simple uv sync</code>。</li>
+<li>GSM8K 下载超时：<code>export HF_ENDPOINT=https://hf-mirror.com</code> 后重跑。部分章节的数据走 ModelScope，不需要翻墙，以各章 <code>start.md</code> 为准。</li>
+</ul>
+<h2 id="2-pytrio">2. PyTRIO：注册、登录、验证</h2>
+<p>PyTRIO 是远程后训练服务：本地脚本把数据和 loss 发过去，云端算梯度、更新权重、返回采样结果，思路接近 Tinker 的 Train API。仓库里所有 RL 算法都跑在它上面。</p>
+<p>注册和拿 key：</p>
+<ol>
+<li>打开官网 <a href="https://pytrio.com">pytrio.com</a> 用邮箱注册，免费。<code>pytrio.cn</code> 会跳转到这里，是同一个服务。</li>
+<li>登录后进控制台 <a href="https://pytrio.com/dashboard">pytrio.com/dashboard</a>，复制你的 API Key。</li>
+</ol>
+<p>登录：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>trio<span class="w"> </span>login
+</code></pre></div>
+<p>终端会打印 key 的获取地址和粘贴提示。粘贴 key 时屏幕上什么都不显示，这是正常的，不是卡了，粘完直接回车。成功时长这样：</p>
+<div class="highlight"><pre><span></span><code>trio: Login successfully. Hi, &lt;your username&gt;!
+</code></pre></div>
+<p>凭据保存在本地，这台机器之后不用再登录。注意命令是 <code>trio</code>，不是 <code>pytrio</code>。</p>
+<p>CI 或脚本等不方便交互的场景，两种替代：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>trio<span class="w"> </span>login<span class="w"> </span>-k<span class="w"> </span>&lt;your<span class="w"> </span>API<span class="w"> </span>Key&gt;
+<span class="c1"># 或者</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTRIO_API_KEY</span><span class="o">=</span>&lt;your<span class="w"> </span>API<span class="w"> </span>Key&gt;
+</code></pre></div>
+<p>部分章节的评测脚本（如 medical-opd）从自己目录下的 <code>.env</code> 读 <code>PYTRIO_API_KEY</code>；Search-R1 的 DeepSeek 搜索后端还需要 <code>DEEPSEEK_API_KEY</code>，Tournament-GRPO 需要 judge 模型的 key。这些都在各章 <code>start.md</code> 里写明，<code>.env</code> 已被 gitignore，别把 key 提交进仓库。</p>
+<p>验证连接（几乎不消耗额度）：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;'PY'</span>
+<span class="s">import pytrio as trio</span>
+<span class="s">client = trio.ServiceClient()</span>
+<span class="s">for name in client.get_supported_models():</span>
+<span class="s">    print(name)</span>
+<span class="s">PY</span>
+</code></pre></div>
+<p>能打印出 <code>Qwen/Qwen3.5-4B</code> 一类的模型清单就说明通了，清单以服务端实际提供为准。</p>
+<p>关于额度：训练和采样消耗 PyTRIO 账户额度，余额和用量在控制台看。本仓库的 demo 都是小参数（几道题、几个采样、十几步），目的是做算法级复现。</p>
+<p>卡住了先看官方文档 <a href="https://docs.pytrio.com">docs.pytrio.com</a>，从快速开始读起。</p>
+<h2 id="3-swanlab">3. SwanLab：注册、登录、选模式</h2>
+<p>SwanLab 负责实验记录：reward 和 loss 曲线、超参数、终端输出都进它。章节之间对比 loss、组队学习交训练记录，靠的都是它。国内服务，不用翻墙。</p>
+<ol>
+<li>在 <a href="https://swanlab.cn">swanlab.cn</a> 注册账号。</li>
+<li>登录后到个人设置页复制 API Key：<a href="https://swanlab.cn/space/~/settings#development">https://swanlab.cn/space/~/settings#development</a>（登录命令也会打印这个地址）。</li>
+<li>登录并检查：</li>
+</ol>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>login
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>verify
+</code></pre></div>
+<p>粘贴 key 时同样不回显。上传失败或模式意外回退时，先 <code>uv run swanlab ping</code> 查网络。</p>
+<p><code>swanlab.init(mode=...)</code> 有四种模式：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>数据去向</th>
+<th>什么时候用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>online</code></td>
+<td>本地 + 云端</td>
+<td>默认，需要登录</td>
+</tr>
+<tr>
+<td><code>local</code></td>
+<td>仅本地，用 <code>swanlab watch</code> 看</td>
+<td>不想注册账号</td>
+</tr>
+<tr>
+<td><code>offline</code></td>
+<td>仅本地，之后可 <code>swanlab sync</code> 补传</td>
+<td>机器暂时没网</td>
+</tr>
+<tr>
+<td><code>disabled</code></td>
+<td>不记录</td>
+<td>纯跑训练，不看曲线</td>
+</tr>
+</tbody>
+</table>
+<p>各训练脚本的 <code>--swanlab-mode</code> 可选值略有差别：多数章节四种都有，grpo 的三个脚本只有 <code>online</code> 和 <code>disabled</code>，以 <code>--help</code> 为准。默认都是 <code>online</code>。</p>
+<p>组队学习建议直接用 <code>online</code>：作业评审要训练记录链接，离线日志没法直接交。</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>watch<span class="w"> </span>experiments/grpo/swanlog
+</code></pre></div>
+<p>浏览器打开 <code>http://127.0.0.1:5092</code>。</p>
+<h2 id="4">4. 基础概念：读懂代码的最小词汇表</h2>
+<p>这里只讲到能读代码的程度，推导和对比在各章正文里。</p>
+<p><strong>SFT 与 RL。</strong> SFT 给标准答案，模型按 cross_entropy 学；RL 让模型自己作答，用 reward 打分，把好的回答强化、差的压下去。GRPO 往后的章节都是 RL 或蒸馏，SFT 只在 Spec-o3、Medical OPD 等章节作为热启动出现。</p>
+<p><strong>policy、rollout、on-policy。</strong> policy 就是当前正在训练的权重；从 prompt 出发生成一次回答叫一条 rollout。on-policy 指训练数据由当前权重采样而来，所以 demo 每个 step 先存权重拿 sampler、采完再更新。用旧权重采的数据是 off-policy，两者之间的偏差靠下面的重要性比率补偿。</p>
+<p><strong>reward。</strong> 给一条回答打的分。GSM8K 是 0/1（boxed 答案是否匹配）；Search-R1 会加上格式和搜索行为；ALFWorld 看任务是否完成。reward 设计往往比算法本身更影响结果，各章 readme 都会单独解释自己的 reward。</p>
+<p><strong>advantage 与组。</strong> GRPO 对同一道题采 <code>group_size</code> 个回答，advantage = reward - 组内平均 reward：比平均好的被鼓励，比平均差的被压低。不需要额外训一个 critic 模型，这是 GRPO 相对 PPO 最大的简化。整组 reward 全相同（全对或全错）时 advantage 全 0，这一组就白采了，也就是日志里的 degenerate group。</p>
+<p><strong>old logprobs 与重要性比率。</strong> logprob 是每个 token 的对数概率。同一 token 在新旧 policy 下的概率之比就是重要性采样比率，RL loss 基本都在对这个比率乘 advantage 做文章：<code>ppo</code> 给比率加 clip，<code>cispo</code> 换了 clip 的位置。直觉解释在 <a href="../loss-functions/">Loss Functions</a> 一章，建议读 GRPO 之前先读它。</p>
+<p><strong>LoRA 与权重。</strong> 不动 base model，只训一个低秩适配器（demo 里 rank 32）。训练结束保存的就是这份适配器：<code>save_weights_for_sampler</code> 存给采样和评测用，<code>save_state</code> 存完整 checkpoint 用于续训。权重地址是 <code>trio://</code> 形式。</p>
+<p><strong>OPD（On-Policy Distillation）。</strong> 同样用 student 自己采样的回答，但信号不是 reward：teacher 模型对 student 的回答逐 token 算 logprobs，用 student 与 teacher 的差（reverse KL）当 advantage，相当于老师逐 token 批改。OPSD 再进一步，teacher 就是 step 0 的自己，只是 prompt 里多给了参考解答。见 <a href="../general-opd/">General OPD</a>、<a href="../opsd/">OPSD</a> 两章。</p>
+<p><strong>多轮与 observation mask。</strong> Agentic RL 让模型在回答中途调工具：搜索、代码解释器、TextWorld 环境。工具返回的内容（observation）拼进上下文给模型看，但不参与 loss——环境说的话不是模型的动作，不该被强化。代码里体现为这些 token 的 logprobs 和 advantages 填 0。见 <a href="../search-r1/">Search-R1</a>、<a href="../retool/">ReTool</a>、<a href="../alfworld/">ALFWorld</a> 三章。</p>
+<h2 id="_2">附：命令速查</h2>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w">                                          </span><span class="c1"># 装 / 恢复依赖</span>
+uv<span class="w"> </span>run<span class="w"> </span>trio<span class="w"> </span>login<span class="w">                                </span><span class="c1"># PyTRIO 登录</span>
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>login<span class="w">                             </span><span class="c1"># SwanLab 登录</span>
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>verify<span class="w">                            </span><span class="c1"># 检查 SwanLab 凭据</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/grpo/01-demo-sync.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--steps<span class="w"> </span><span class="m">10</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">512</span><span class="w"> </span>--swanlab-mode<span class="w"> </span>online<span class="w">        </span><span class="c1"># 第一次训练</span>
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>watch<span class="w"> </span>experiments/grpo/swanlog<span class="w">     </span><span class="c1"># 看本地日志</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

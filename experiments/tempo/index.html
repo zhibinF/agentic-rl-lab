@@ -1,0 +1,1683 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/tempo/">
+      
+      
+        <link rel="prev" href="../alfworld/">
+      
+      
+        <link rel="next" href="../spec-o3/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>TEMPO - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-92-tempo-critic" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TEMPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 长程任务的两个问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tempo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. TEMPO 的方法设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. TEMPO 的方法设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-macro-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 macro-step：把优化单位从"整局"降到"一段"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-critic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 生成式 critic：估值本身是个推理问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-actor-critic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 actor 与 critic 共享参数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 训练信号：四个公式和一次热身
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 我们的复现策略：算法级
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 最硬的工程问题：给环境做"存档读档"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 训练怎么跑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 运行观察
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 代码是怎么组织的
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 边界与下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 长程任务的两个问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tempo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. TEMPO 的方法设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. TEMPO 的方法设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-macro-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 macro-step：把优化单位从"整局"降到"一段"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-critic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 生成式 critic：估值本身是个推理问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-actor-critic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 actor 与 critic 共享参数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 训练信号：四个公式和一次热身
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 我们的复现策略：算法级
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 最硬的工程问题：给环境做"存档读档"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 训练怎么跑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 运行观察
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 代码是怎么组织的
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 边界与下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-92-tempo-critic">接下来我将复现 10 篇强化学习算法：第 9.2 篇，TEMPO 把长轨迹切成小段，训一个会推理的 Critic</h1>
+<div align="center">
+  <img src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/封面.png" alt="TEMPO 算法级复现" width="100%">
+</div>
+
+<div align="center">
+  <a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/tempo"><img alt="Code" src="https://img.shields.io/badge/Code-09--tempo-2563eb?style=flat"></a>
+  <a href="https://arxiv.org/abs/2010.03768"><img alt="Dataset" src="https://img.shields.io/badge/Env-ALFWorld-f59e0b?style=flat"></a>
+  <a href="https://studio.dots.ai/dots/tempo-blog.html"><img alt="TEMPO" src="https://img.shields.io/badge/TEMPO-Dots%20Blog-d94a45?style=flat"></a>
+  <a href="https://docs.pytrio.com/docs"><img alt="PyTRIO" src="https://img.shields.io/badge/PyTRIO-0.2.9-7c3aed?style=flat"></a>
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6?style=flat"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49?style=flat"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://visitor-badge.laobi.icu/badge?page_id=KMnO4-zx.agentic-rl-lab.tempo"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/tempo">datawhalechina/agentic-rl-lab/experiments/tempo</a></li>
+<li>算法来源：<a href="https://studio.dots.ai/dots/tempo-blog.html">TEMPO: Test-Time-Scaled Value Estimation with Macro-Step Policy Optimization</a>（小红书 Dots 团队博客）</li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">docs.pytrio.com</a></li>
+</ul>
+</blockquote>
+<p>这是"接下来我将复现 10 篇强化学习算法"系列的第 9.2 篇。</p>
+<p>先交代一下编号。原本的第 10 篇计划留给我们自己的 Harness-RL，在它就绪之前，第 9 篇会以 9.x 子系列的形式过渡：9.1 是 <a href="../vision-grpo/">Vision GRPO</a>，本篇 9.2 复现 TEMPO。</p>
+<p>这一篇和前面九篇的打开方式都不太一样：<strong>TEMPO 的论文还没发布</strong>，目前只有 Dots 团队的一篇技术博客。博客把方法机制讲得很清楚，但超参数、训练曲线、消融实验全都欠奉。所以我给自己定的目标是<strong>算法级复现</strong>——把 TEMPO 区别于普通 GRPO 的每一个机制都在代码里跑通、在真实环境里验证，暂时不去追任何榜单数字。环境上我用 ALFWorld 替代原文的 ARC-AGI-3（后者是付费 API，而且服务端状态恢复并不开放），基建直接复用了第 8 篇的整套交互封装。</p>
+<p>先看 TEMPO 到底在解决什么问题。</p>
+<h2 id="0">0. 长程任务的两个问题</h2>
+<p>前面几篇的 Agentic RL 有一个共同的隐含前提：轨迹够短。Search-R1 检索几轮就出答案，ReTool 写几段代码就到终局，ALFWorld 五十步内见分晓。轨迹延长到几百轮以后，GRPO 会遇到两个实际问题。</p>
+<p><strong>反馈周期过长。</strong> 结果导向的奖励要等轨迹彻底结束才能观测。一次 rollout 跑八个小时，训练信号的产生周期下限就是八小时，大部分算力都花在等待结果上。</p>
+<p><strong>信用分配变难。</strong> 开局第三个动作和最终成败之间可能隔着几百步。只按终局奖励计算组内相对信号，无法判断中间哪些决定起了关键作用。</p>
+<p>PPO 的解法是训练一个 value head，在中间状态预测未来回报，让未完成的轨迹也能产生训练信号。但 scalar value head 一次前向的计算量固定，而长程任务的状态估值可能需要检查 actor 的假设、搜索方向和未解决的障碍，本身就需要推理。</p>
+<p>TEMPO 的全名是 Test-Time-Scaled Value Estimation with Macro-Step Policy Optimization，方法主要由以下三部分组成。</p>
+<h2 id="1-tempo">1. TEMPO 的方法设计</h2>
+<h3 id="11-macro-step">1.1 macro-step：把优化单位从"整局"降到"一段"</h3>
+<p>TEMPO 把连续 H 轮模型-环境交互定义为<strong>一个 macro-step</strong>，用它替代完整轨迹，作为 rollout 和优化的基本单位。每次更新时，actor 从此前保存的某个中间状态继续执行，环境恢复到对应状态，向前走 H 轮就停。</p>
+<p><img alt="GRPO、PPO 与 TEMPO 的 rollout 方式对比" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/tempo-1.png" /></p>
+<p><em>GRPO 每条 rollout 都要执行完整 T 轮交互才能拿到终局回报；PPO 同样 rollout 到 T，沿途用 scalar value head 估计 V(s)；TEMPO 每次只执行长度为 H 的 macro-step，段末调用生成式 critic，部分段末状态被保存为后续 rollout 的起点。图片来源：<a href="https://studio.dots.ai/dots/tempo-blog.html">TEMPO 博客</a>。</em></p>
+<p>这里有个容易被忽略的数学保证：博客附录里推导过，在校正历史前缀的分布差异后，<strong>只优化当前 macro-step 的期望梯度，等价于完整长程轨迹的策略梯度</strong>。直观理解：固定切分规则下，完整轨迹的策略梯度可以拆成 M 个 macro-step 的梯度之和；均匀抽一段、只算这段、乘上 M，期望不变。前提是段的前缀和段本身都来自当前策略——前缀过期时用重要性采样修正（这也是我们初版唯一省略的部分，后面细说）。</p>
+<h3 id="12-critic">1.2 生成式 critic：估值本身是个推理问题</h3>
+<p>TEMPO 抛弃了 scalar value head，把价值估计建模成生成任务：critic 读取当前状态和此前的完整交互记录，分析 actor 已经掌握的环境规律、正在尝试的方案、尚未解决的障碍，推理之后再给出一个数值估计。面对更难的状态，critic 可以延长推理，在估值时使用更多计算量。</p>
+<p>博客里有个很直观的例子，"放置骑士"：</p>
+<p><img alt="“放置骑士”任务的规则" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/tempo-2.png" /></p>
+<p><em>actor 不知道规则，需要通过交互推断隐藏约束：在两枚预置棋子的基础上继续放六枚，任意两枚之间都不能形成马步攻击。图片来源：<a href="https://studio.dots.ai/dots/tempo-blog.html">TEMPO 博客</a>。</em></p>
+<p>从同一个起点采两条 64 轮的轨迹，环境奖励完全相同（都是 0），但状态价值已经不同：</p>
+<p><img alt="环境奖励相同、价值已经分化的两条轨迹" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/tempo-4.png" /></p>
+<p><em>分支 A 把"存在攻击关系"当成了任务目标（方向弄反了），此后枚举的所有候选布局都要求存在攻击关系——正确答案已经被整体排除在搜索空间外，critic 对照游戏源码判定 V̂=2.6；分支 B 回读历史推翻了错误假设，还发现了"同色格上的棋子互不攻击"的规律，给出了一个可行解，critic 判定 V̂=4.6。价值差 2.0，环境奖励差 0。图片来源：<a href="https://studio.dots.ai/dots/tempo-blog.html">TEMPO 博客</a>。</em></p>
+<p>这个例子同时解释了另一个设计：critic 可以访问<strong>特权信息</strong>——环境内部状态、隐藏规则、游戏源码。这些信息对 actor 保密，只作为评价侧的核验证据。critic 对照游戏源码，给分支 A 打出了较低的估值。</p>
+<p>至于为什么只在 macro-step 边界估值：生成式 critic 单次调用要生成一整段推理，成本远高于 value head 的一次前向，没法在每个 token 后密集运行。H 轮一次，是反馈粒度和计算成本的平衡点。</p>
+<h3 id="13-actor-critic">1.3 actor 与 critic 共享参数</h3>
+<p>价值估计变成生成任务之后，TEMPO <strong>只维护一份参数</strong>：交互时模型是 actor，走到 macro-step 边界就切到 critic prompt 估值。两种角色靠 prompt、上下文和奖励区分，共用同一个采样器和同一次权重更新。</p>
+<p>这样，actor 和 critic 可以统一进同一套 GRPO 训练框架。两者的 loss 形态完全一样，区别只在 reward 从哪来：actor 使用环境奖励，critic 使用估值误差。在 PyTRIO 里，两者可以合并成一个 <code>forward_backward</code> batch，甚至共享同一个 LoRA。</p>
+<h2 id="2">2. 训练信号：四个公式和一次热身</h2>
+<p>整套算法的数学核心就四个信号。设同一起点状态采 N 条分支，每条走 H 轮：</p>
+<div class="highlight"><pre><span></span><code>① 分支 return       Rₙ = rₙ(段内环境奖励) + V̂(终点状态)      # 截断的尾部由 critic 补齐
+② TD target         G   = mean(R₁ .. Rₙ)                    # "这个起点值多少"
+③ actor advantage   Aₙ  = Rₙ − mean(R)                       # 标准 GRPO 组内减均值
+④ critic reward     rₖ  = −|V̂ₖ − G| / R_max                 # 同一状态 K 次独立估值，谁准谁得分
+</code></pre></div>
+<p>③ 更新 actor 这 H 轮的行为；④ 在组内中心化后更新 critic 的推理过程。② 就是 TD（时序差分）目标：一段真实奖励，加一步 bootstrap。误差按当前状态的剩余回报跨度 R_max 归一，让不同状态的训练信号在同一个尺度上可比。</p>
+<p><img alt="critic 的两类 value target 及其训练方式" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/tempo-3.png" /></p>
+<p><em>上半部分：TD target 来自多条 macro-step 分支的段内奖励和终点估值；下半部分：warm-up target 来自完整离线轨迹的 Monte Carlo return。得到 G 之后，两种方式都按估值误差构造奖励、用 GRPO 更新 critic。图片来源：<a href="https://studio.dots.ai/dots/tempo-blog.html">TEMPO 博客</a>。</em></p>
+<p>直接进 TD 阶段有个隐患：训练初期 critic 自己都在瞎估，拿它的输出当 bootstrap 目标，误差会沿着 macro-step 一路向更早的状态传播。所以 TEMPO 先做 <strong>value warm-up</strong>：离线跑一批完整轨迹，用真实结局（Monte Carlo return）当 G，先把 critic 拉到"至少会看局面"的水平，再进 TD。落到我们的训练循环里就是两个阶段：warm-up 只训 critic，TD 阶段 actor 和 critic 合并更新、终点入库循环消费。</p>
+<h2 id="3">3. 我们的复现策略：算法级</h2>
+<p>论文没发布，博客里 H、N、K 和实验数字全部脱敏，"复现实验结果"无从谈起，也没必要。我把目标定成：<strong>TEMPO 区别于普通 GRPO 的每一个机制，都要在代码里存在、在真实环境里跑通</strong>。具体取舍如下：</p>
+<table>
+<thead>
+<tr>
+<th>TEMPO 原设定</th>
+<th>我们的落地</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>环境：ARC-AGI-3，25 个游戏</td>
+<td>ALFWorld train split（3553 局）</td>
+<td>ARC-AGI-3 是付费 API，服务端状态无法恢复；ALFWorld 本地、免费、第 8 篇基建现成</td>
+</tr>
+<tr>
+<td>超长程（小时/天级）</td>
+<td>T=50 轮，H=10，每局 M=5 段</td>
+<td>验证机制够用；上下文长度也友好</td>
+</tr>
+<tr>
+<td>生成式 critic + 特权信息</td>
+<td>同一模型换 critic prompt，特权信息用 game.tw-pddl 自带的 walkthrough</td>
+<td>对应原文"critic 可见游戏源码"</td>
+</tr>
+<tr>
+<td>critic 特权信息对 actor 保密</td>
+<td>actor prompt 只含任务与交互历史</td>
+<td></td>
+</tr>
+<tr>
+<td>TD target + 误差奖励 + GRPO</td>
+<td>完整实现（N=4 分支，K=4 估值，R_max=1）</td>
+<td>纯 0/1 成败奖励，剩余回报跨度恒为 1</td>
+</tr>
+<tr>
+<td>value warm-up</td>
+<td>完整轨迹 MC return 先训 critic</td>
+<td></td>
+</tr>
+<tr>
+<td>前缀分布偏移的重要性采样修正</td>
+<td>初版省略</td>
+<td>附录证明前缀 on-policy 时等价；终点状态下一轮立即消费时偏差有限，留作下一步</td>
+</tr>
+<tr>
+<td>奖励</td>
+<td>纯 0/1（won 信号）</td>
+<td>没沿用第 8 篇的非法动作惩罚，为了保住 R_max=1 的严格性</td>
+</tr>
+</tbody>
+</table>
+<p>一个对复现非常关键的事实：ALFWorld 的 <code>game.tw-pddl</code> 文件里自带 <code>walkthrough</code> 字段——每个游戏的专家动作序列。它天然就是"actor 看不到、critic 能看"的特权信息，一行代码就能读出来，简直是给 TEMPO 定制的。</p>
+<h2 id="4">4. 最硬的工程问题：给环境做"存档读档"</h2>
+<p>macro-step 训练有个绕不开的前提：<strong>把一个中间状态完整地存下来，过几个训练轮次之后再恢复</strong>。这在我们 repo 里是从零新建的层（第 8 篇的 <code>EnvironmentState</code> 只是 reset 后的初始快照）。</p>
+<p>一个状态要同时存两份快照：</p>
+<div class="highlight"><pre><span></span><code>环境侧：action_history   —— 按顺序重放即可恢复游戏内部状态
+token 侧：token_prefix   —— 续跑用的真实 token 前缀，保证下一轮 prompt
+                            仍然是历史真实 token 序列的严格前缀扩展
+外加：messages（chat 历史）、round_index、environment_seed、当前 observation
+</code></pre></div>
+<p>恢复的可行性靠 TextWorld 的确定性：同一 game file、同一动作序列，必然落在同一状态。所以"读档" = 新开一组环境 + reset + 逐条重放动作历史，然后用<strong>保存时的 observation 做逐字校验</strong>——对得上才算恢复成功，对不上直接抛异常拒绝训练。</p>
+<p>这套机制我们在真实环境里单独压测过：3 个游戏各走 5~6 步 walkthrough，用全新环境重放，observation 逐字一致；恢复后再往前走一步，两个独立恢复的环境行为也完全一致。这是整条链路里我最担心的一环，实测通过之后心里才踏实。</p>
+<p>至于"存哪些状态"：每个 macro-step 结束后，所有停在边界上的分支终点连同它的历史一起入库存档（<code>StateStore</code>，容量 256、先进先出），下一轮训练再从仓库里均匀抽样消费。同一局游戏就这样跨多个训练轮次逐步向后推进，每次只付 10 轮交互的成本。</p>
+<h2 id="5">5. 训练怎么跑</h2>
+<p>数据独立下载在本目录（和第 8 篇一样，互相不引用）：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>--extra<span class="w"> </span>alfworld<span class="w"> </span>alfworld-download<span class="w"> </span>--data-dir<span class="w"> </span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/datasets/alfworld"</span>
+</code></pre></div>
+<p>冒烟测试（几块钱以内，验证链路）：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>--extra<span class="w"> </span>alfworld<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--warmup-updates<span class="w"> </span><span class="m">4</span><span class="w"> </span>--td-updates<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--warmup-games-per-batch<span class="w"> </span><span class="m">4</span><span class="w"> </span>--states-per-batch<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--branches<span class="w"> </span><span class="m">4</span><span class="w"> </span>--critic-samples<span class="w"> </span><span class="m">4</span><span class="w"> </span>--endpoint-samples<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>正式的算法验证规模把 <code>--td-updates</code> 拉到 40。参数语义速查：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--macro-rounds</code></td>
+<td>10</td>
+<td>H，一个 macro-step 走几轮</td>
+</tr>
+<tr>
+<td><code>--branches</code></td>
+<td>4</td>
+<td>N，每个起点分几条分支（actor 的 group 大小）</td>
+</tr>
+<tr>
+<td><code>--critic-samples</code></td>
+<td>4</td>
+<td>K，同一状态估几次值（critic 的 group 大小）</td>
+</tr>
+<tr>
+<td><code>--states-per-batch</code></td>
+<td>4</td>
+<td>每次 TD 更新取几个起点；每步 Datum 数 = states × (N + K)</td>
+</tr>
+<tr>
+<td><code>--warmup-updates</code> / <code>--td-updates</code></td>
+<td>4 / 40</td>
+<td>两阶段各自的步数，加起来就是总进度条</td>
+</tr>
+<tr>
+<td><code>--endpoint-samples</code></td>
+<td>2</td>
+<td>每个终点估几次取均值（拼 return 用，并非训练 group）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 运行观察</h2>
+<p>冒烟运行的第一个 warm-up update 就能看到链路全部活了：</p>
+<div class="highlight"><pre><span></span><code>warmup=1 critic/abs_error_mean=0.606 warmup/boundary_states=22
+         warmup/steps_mean=19.688 warmup/success_rate=0.750 loss=0.0513
+</code></pre></div>
+<ul>
+<li>16 条轨迹平均 19.7 轮终局，收集到 22 个边界状态（平均轨迹长度不足两段，属于正常）；</li>
+<li><code>abs_error_mean=0.606</code>：未训练的 critic 基本没在预测成败，这正是 warm-up 要压下去的数字；</li>
+<li><code>success_rate=0.75</code>：prompt 里带可用动作列表时 4B 模型的起点比想象中高。</li>
+</ul>
+<p>判断算法链路是否正常，我们主要看四个指标：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>期望</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>critic/abs_error_mean</code></td>
+<td>随 warm-up 下降</td>
+</tr>
+<tr>
+<td><code>critic/value_corr</code></td>
+<td>V̂ 与实际成败的相关性上升</td>
+</tr>
+<tr>
+<td><code>actor/value_gap_zero_reward</code></td>
+<td>段内奖励相同的分支之间，critic 能拉开 V̂ 差距（"放置骑士"的 ALFWorld 版）</td>
+</tr>
+<tr>
+<td><code>td/fresh_states</code> 第 2 次 TD 起变小</td>
+<td>状态仓库开始复用已保存状态，重放恢复生效，非终局段产生梯度</td>
+</tr>
+</tbody>
+</table>
+<p>冒烟跑 8 次 update（4 warm-up + 4 TD）的 actor 侧观察：</p>
+<p><img alt="SwanLab 冒烟运行：actor 侧指标" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/swanlab-td.png" /></p>
+<p><em>前 4 个 step 是 warm-up，后 4 个是 TD。<code>actor/segment_reward_mean</code> 从 0.62 升到 0.85；<code>actor/degenerate_group_rate</code> 从 0.19 降到 0。初期约五分之一的起点组 return 完全相同，没有训练信号，只能跳过；TD 第 4 步起，V̂ 在组内产生了不同的 return，每组都有了非零 advantage。</em></p>
+<p><img alt="PyTRIO 用量：本次冒烟总开销" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/pytrio-consume.png" /></p>
+<p><em>总开销 15.02 元。对照第 8 篇完整训练的四位数账单，算法级复现的成本确实友好。</em></p>
+<p>critic 侧曲线用于检查估值训练是否正常：</p>
+<p><img alt="SwanLab 冒烟运行：critic 侧指标" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tempo/images/swanlab-critic.png" /></p>
+<p><em>五张子图依次是 <code>critic/abs_error_mean</code>、<code>critic/value_target_mean</code>、<code>critic/value_target_std</code>、<code>critic/value_corr</code>、<code>critic/parse_failure_rate</code>。估值误差从 0.674 降到 0.315，warm-up 三步下降了约四成，TD 阶段继续向下。<code>critic/value_corr</code> 在 warm-up 阶段从 0.60 升到 0.72；解析失败率从 7.3% 降到约 1%，<code>&lt;value&gt;</code> 输出格式趋于稳定。</em></p>
+<p>两组指标结合起来看，<code>abs_error</code> 下降的同时，actor 侧的 <code>degenerate_group_rate</code> 也趋近于 0。critic 估值改善与 actor 组内区分度提高在这次运行中是同步出现的。</p>
+<h2 id="7">7. 代码是怎么组织的</h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>protocol.py</code></td>
+<td>ALFWorld 单工具协议与多轮 token 前缀（复用第 8 篇）</td>
+</tr>
+<tr>
+<td><code>environment.py</code></td>
+<td>同游戏多分支环境封装（复用第 8 篇）</td>
+</tr>
+<tr>
+<td><code>data.py</code></td>
+<td>游戏发现 + <code>load_walkthrough</code> 读取特权信息</td>
+</tr>
+<tr>
+<td><code>states.py</code></td>
+<td><strong>新增</strong>：MacroState 双快照、StateStore、边界/终点状态提取</td>
+</tr>
+<tr>
+<td><code>critic.py</code></td>
+<td><strong>新增</strong>：critic prompt、K 次估值采样、<code>&lt;value&gt;</code> 严格解析与兜底</td>
+</tr>
+<tr>
+<td><code>rollout.py</code></td>
+<td><strong>新增</strong>：重放恢复 + 一个 macro-step 内 N 分支并发 rollout</td>
+</tr>
+<tr>
+<td><code>tempo.py</code></td>
+<td><strong>新增</strong>：Rₙ/G/误差奖励/advantage 拼装与训练 Datum</td>
+</tr>
+<tr>
+<td><code>train.py</code></td>
+<td><strong>新增</strong>：warm-up → TD 两阶段训练闭环</td>
+</tr>
+</tbody>
+</table>
+<p>一轮 TD 更新的数据流，照着 <code>train.py</code> 读会很顺：</p>
+<div class="highlight"><pre><span></span><code>① 取起点   StateStore 均匀抽样，不足用新游戏开局补
+② 恢复环境 新开环境 → reset → 重放 action_history → observation 逐字校验
+③ 跑一段   N 分支并发走 H 轮，停在 macro_boundary
+④ 估终点   每个非终局分支的终点 → critic prompt → V̂（终局分支恒为 0）
+⑤ 拼信号   Rₙ = rₙ + V̂ₙ → G = mean(R) → 双方各自组内中心化
+⑥ 更新     actor + critic 的 Datum 合并 forward_backward（importance_sampling）
+⑦ 入库     边界终点连同历史写回 StateStore，供后续轮次续跑
+</code></pre></div>
+<p>服务端没有任何自定义 loss——TEMPO 的全部新东西（return 拼装、G 的构造、误差奖励、masking）都发生在本地构造 <code>Datum.loss_fn_inputs</code> 之前，这正是 actor 与 critic 能共用一套 GRPO loss 的原因。</p>
+<p>训练序列的形态值得单独一提：一个 actor 分支的 Datum 是"保存的前缀 + 段内各轮"拼成的完整序列，环境 observation 的 token 只做上下文（logprob/advantage 填 0），段内 assistant 生成的 token 才携带该分支的 advantage。critic 的 Datum 同理：估值 prompt 是上下文，整段"推理 + <code>&lt;value&gt;</code>"携带自己的 advantage。</p>
+<h2 id="8">8. 边界与下一步</h2>
+<p>这次复现还有三项未完成：</p>
+<ol>
+<li><strong>前缀重要性采样修正</strong>。起点前缀可能来自旧版 actor，严格的等价性需要按前缀概率比给 advantage 加权。附录证明了前缀 on-policy 时无需修正，而我们的终点状态下一轮就被消费，偏差有限。实现路径已经想好：保存状态时顺带累积 assistant token 的旧 logprob 之和，每轮对每个起点调一次 <code>compute_logprobs</code> 算当前值，比值乘进 advantage。</li>
+<li><strong>ARC-AGI-3 上的对照</strong>。等论文正式发布、超参公开后，值得把环境层换掉再跑一次。</li>
+<li><strong>更长的 horizon</strong>。T=50 只是机制验证；把 T 拉到 100+ 需要面对上下文长度这个真正的硬约束。</li>
+</ol>
+<h2 id="_1">总结</h2>
+<p>这次复现实现了 macro-step 优化、生成式 critic 和 actor/critic 共享参数。新增机制主要落在本地的状态存取和训练信号拼装，服务端只需要标准的 sample / logprob / forward_backward。</p>
+<p>本次冒烟运行花费 <strong>15.02 元</strong>。下一步是补充前缀重要性采样修正，并在论文正式发布、超参公开后检查 ARC-AGI-3 上的表现。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

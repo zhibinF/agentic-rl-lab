@@ -1,0 +1,2113 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/retool/">
+      
+      
+        <link rel="prev" href="../search-r1/">
+      
+      
+        <link rel="next" href="../alfworld/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>RETOOL - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-5-retool" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RETOOL
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#retool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReTool 是从哪里来的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先看实验结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文复现 Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retool_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReTool 的训练闭环详细拆解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ReTool 的训练闭环详细拆解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：准备可验证答案的数学题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第二步：把代码解释器声明成模型原生工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第三步：一组轨迹的分叉与续写
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第四步：本地沙箱执行代码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第五步：只看最终答案的 reward
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observation-token-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第六步：observation token 保留在上下文，但不参与 loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advantage-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第七步：组内中心化 advantage，一次 ppo 更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SwanLab 训练记录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这次复现？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这次复现？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安装项目并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 下载并整理训练数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-20-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 先跑 20-step 验证跑（两杯瑞幸）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-200-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 把轨迹跑满 200 step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-base-model-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测 Base Model 和 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 绘制 checkpoint 对比图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次复现有哪些边界？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#retool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReTool 是从哪里来的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        我们是怎么复现的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先看实验结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文复现 Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retool_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReTool 的训练闭环详细拆解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ReTool 的训练闭环详细拆解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：准备可验证答案的数学题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第二步：把代码解释器声明成模型原生工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第三步：一组轨迹的分叉与续写
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第四步：本地沙箱执行代码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第五步：只看最终答案的 reward
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observation-token-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第六步：observation token 保留在上下文，但不参与 loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advantage-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第七步：组内中心化 advantage，一次 ppo 更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SwanLab 训练记录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这次复现？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这次复现？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安装项目并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 下载并整理训练数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-20-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 先跑 20-step 验证跑（两杯瑞幸）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-200-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 把轨迹跑满 200 step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-base-model-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测 Base Model 和 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 绘制 checkpoint 对比图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次复现有哪些边界？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-5-retool">接下来我将复现 10 篇强化学习算法：第 5 篇，两杯瑞幸，搞定 ReTool</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 训练 → 评测。</p>
+</blockquote>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/封面.png" /></p>
+<div align="center">
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://komarev.com/ghpvc/?username=KMnO4-zx-agentic-rl-lab-retool&amp;label=visitors&amp;color=1283c3&amp;style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本文完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/retool">datawhalechina/agentic-rl-lab/experiments/retool</a></li>
+<li>ReTool 训练脚本：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/train.py">experiments/retool/train.py</a></li>
+<li>SwanLab 训练记录：<a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-retool/overview">查看完整实验曲线</a></li>
+<li>ReTool 论文：<a href="https://arxiv.org/abs/2504.11536">ReTool: Reinforcement Learning for Strategic Tool Use in LLMs</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">https://docs.pytrio.com/docs</a></li>
+<li>PyTRIO 是什么？：<a href="https://zhuanlan.zhihu.com/p/2063265307226019219">知乎介绍</a></li>
+<li>PyTRIO Skill：<a href="https://github.com/SwanHubX/pytrio-skill">SwanHubX/pytrio-skill</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第五篇。</p>
+<p>前面几篇分别讲了：</p>
+<ul>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/loss-functions/readme.md">第 0 篇：强化学习基础——损失函数</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/grpo/readme.md">第 1 篇：GRPO</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/medical-opd/readme.md">第 2 篇：OPD</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/search-r1/readme.md">第 3 篇：一杯喜茶，搞定 Search-R1</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/readme.md">第 4 篇：一顿疯狂星期四，搞定 OPSD</a></li>
+</ul>
+<p>这一次的工具更“硬”一些：<strong>ReTool，让模型在做数学题的 long CoT 里，自己决定什么时候写一段 Python 来算、算什么</strong>。</p>
+<p>翻译成人话就是：</p>
+<blockquote>
+<p>模型一边打草稿一边做题，算不动的地方随手写段代码跑一下，考完只看最后答案对不对——没人教它什么时候该用计算器，这个习惯是它自己练出来的。</p>
+</blockquote>
+<p>先说成本。验证这套算法链路有效，只需要两杯瑞幸。</p>
+<p>我先用 20 个 step 做了一次验证跑，确认闭环成立。这次验证跑的账单是：</p>
+<div class="highlight"><pre><span></span><code>训练会话（20 step）:  ¥22.89   （4.34M prefilling / 1.66M train / 1.77M sample）
+AIME25 评测 × 2:     ¥4.16 + ¥4.61   （Base、Step 20）
+合计:                ¥31.66
+</code></pre></div>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/pytrio-consume-20step.png" /></p>
+<p>瑞幸一杯大概 <code>13～16</code> 元，两杯 <code>26～32</code> 元，所以标题没有夸张：两杯瑞幸的钱，就足够确认 ReTool 值得继续往下跑。</p>
+<p>这 20 个 step 里已经能看到行为变化：</p>
+<div class="highlight"><pre><span></span><code>correct（前 10 步均值 → 后 10 步均值）:  0.289 → 0.389
+code_calls:                              1.24 → 1.72
+degenerate group（整组无梯度）:           0
+</code></pre></div>
+<p>训练曲线之外，评测也在同一个窗口给出了正反馈。这是我们的 checkpoint 评测结果，后面「先看实验结果」一节还会完整展开这张图，现在可以先看 Base 和 Step 20：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/checkpoint_avg_pass_format.png" /></p>
+<div class="highlight"><pre><span></span><code>Base Model:  Average@12 23.61% · Format 25.83%
+Step 20:     Average@12 32.22% · Format 36.67%
+</code></pre></div>
+<p>确认有效之后，我用同一份配置把一条轨迹跑满 200 个 step，这是真正出结果的训练：</p>
+<div class="highlight"><pre><span></span><code>训练会话（200 step）:  ¥224.44   （48.67M prefilling / 15.97M train / 15.84M sample）
+</code></pre></div>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/pytrio-comsume-200step.png" /></p>
+<p>评测是另一笔小钱。Base 加上 5 个 checkpoint 一共评了 6 次 AIME25（30 道题 × 每题 12 次采样），每次约 <code>¥4～5</code>。</p>
+<p>把所有能明确归属的放在一起：</p>
+<div class="highlight"><pre><span></span><code>训练（验证跑 + 200 步轨迹）:  ¥22.89 + ¥224.44 = ¥247.33
+评测（截图中 4 次）:           ¥18.49   （另有 2 次未入镜，每次约 ¥4～5）
+</code></pre></div>
+<h2 id="retool">ReTool 是从哪里来的？</h2>
+<p>ReTool 是字节跳动 Seed 团队在 2025 年 4 月放出来的一项工作，全名是：</p>
+<blockquote>
+<p>ReTool: Reinforcement Learning for Strategic Tool Use in LLMs</p>
+</blockquote>
+<p>它想解决的问题很直接。</p>
+<p>long CoT 推理让模型的数学能力上了一个台阶，但纯文本推理有一个绕不开的弱点：<strong>复杂计算只能靠“心算”</strong>。一道需要开根号、解高次方程或者大规模枚举的题，模型在草稿纸上算得越多，越容易在中间某一步算错，而且错了自己不知道。</p>
+<p>ReTool 的思路是：既然人做数学题会用计算器，那就让模型在推理过程中也能写代码。论文的两个关键设定：</p>
+<ol>
+<li><strong>Code-interlaced rollout</strong>：模型生成到代码就暂停，沙箱执行代码，把 stdout/stderr 拼回上下文继续生成；代码解释器返回的 token 不参与 loss。</li>
+<li><strong>Outcome-only reward</strong>：不奖励“用了代码”这个行为本身，只奖励最终答案正确。什么时候该调代码、调几次，完全是从结果里涌现出来的。</li>
+</ol>
+<p>论文的完整流程还有一个 cold-start SFT 阶段（先用人工构造的代码交织轨迹教格式），以及 SandboxFusion 异步沙箱、KV cache 复用这些工程优化。这篇复现会说明哪些我们照搬了、哪些省掉了。</p>
+<h2 id="_1">我们是怎么复现的？</h2>
+<p>复现只保留论文最核心的算法结构，工程实现围绕三件事展开：</p>
+<ul>
+<li><strong>工具协议</strong>（<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/protocol.py"><code>protocol.py</code></a>）：把代码解释器声明成模型的原生工具，定义 system prompt 和 <code>&lt;tool_call&gt;</code> 解析；</li>
+<li><strong>本地执行沙箱</strong>（<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/sandbox.py"><code>sandbox.py</code></a>）：每段代码起一个全新 Python 进程执行，带超时和资源约束；</li>
+<li><strong>结果奖励</strong>（<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/reward.py"><code>reward.py</code></a>）：只看最终 <code>\boxed{}</code> 答案的数学等价判定，对 +1 / 错 −1。</li>
+</ul>
+<p>在此之上，多轮工具轨迹的 rollout 状态机、GRPO 组内 advantage 和 PyTRIO 训练循环，沿用的是这个系列前几篇已经验证过的骨架。</p>
+<p>复现架构如下，三个阶段对应的预算和硬约束都标在图里：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/ReTool.png" /></p>
+<p>几个关键决策：</p>
+<ul>
+<li><strong>不引入任何特殊 token 或代码围栏</strong>。code 直接走 Qwen 原生的 <code>&lt;tool_call&gt;</code> 协议，模型用原生格式发起调用，沙箱执行后以 <code>role: "tool"</code> 消息返回 stdout/stderr。论文用代码块触发的 code-interlaced 生成，功能上与原生 tool call 等价，但原生协议不需要动 tokenizer 和 chat template，工程上干净得多。</li>
+<li><strong>跳过 cold-start SFT，直接对 base 做 RL</strong>。这是论文流程里我们省掉的最大一块。依据是 base 模型的 smoke test：2 道题 × 8 条轨迹，工具调用率 <code>87.5%</code>（14/16）、合法调用率 <code>85.4%</code>，组内 reward 有正有负，GRPO 信号健康——不需要先教格式。</li>
+<li><strong>reward 对齐官方代码</strong>：只取回答最后 300 个字符、提取最后一个 <code>\boxed{}</code>、用 <code>math_verify</code> 做数学等价判定，对 +1 / 错 −1（格式非法也算错）。</li>
+<li><strong>loss 用 PyTRIO 内置 <code>ppo</code></strong>，clip 阈值覆盖成 <code>0.8 / 1.28</code>，对应官方 recipe 的 ε_low=0.2 / ε_high=0.28（DAPO 的 clip-higher）。</li>
+</ul>
+<h2 id="_2">先看实验结果</h2>
+<p>评测固定使用 AIME25 的 30 道题，每道题采样 12 次；Base Model 和所有 checkpoint 使用完全相同的评测配置：</p>
+<div class="highlight"><pre><span></span><code>temperature = 1.0
+top_p = 0.7
+val_n = 12（每题 12 次采样）
+轨迹预算 = 8,192 tokens（与训练一致）
+模式 = retool（启用 code 工具）
+</code></pre></div>
+<p>一条 200 步训练轨迹上的完整结果如下：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/checkpoint_avg_pass_format.png" /></p>
+<table>
+<thead>
+<tr>
+<th>模型 / Checkpoint</th>
+<th style="text-align: right;">Average@12</th>
+<th style="text-align: right;">Pass@12</th>
+<th style="text-align: right;">Format</th>
+<th style="text-align: right;">平均 code 调用</th>
+<th style="text-align: right;">平均轮数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-4B Base</td>
+<td style="text-align: right;">23.61%</td>
+<td style="text-align: right;">50.00%</td>
+<td style="text-align: right;">25.83%</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">2.69</td>
+</tr>
+<tr>
+<td>Step 20</td>
+<td style="text-align: right;">32.22%</td>
+<td style="text-align: right;">63.33%</td>
+<td style="text-align: right;">36.67%</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">2.37</td>
+</tr>
+<tr>
+<td>Step 50</td>
+<td style="text-align: right;">41.11%</td>
+<td style="text-align: right;">63.33%</td>
+<td style="text-align: right;">52.78%</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">2.70</td>
+</tr>
+<tr>
+<td>Step 100</td>
+<td style="text-align: right;">44.72%</td>
+<td style="text-align: right;">66.67%</td>
+<td style="text-align: right;">57.78%</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">2.66</td>
+</tr>
+<tr>
+<td>Step 150</td>
+<td style="text-align: right;">46.11%</td>
+<td style="text-align: right;">73.33%</td>
+<td style="text-align: right;">70.83%</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">3.43</td>
+</tr>
+<tr>
+<td><strong>Step 200</strong></td>
+<td style="text-align: right;"><strong>47.50%</strong></td>
+<td style="text-align: right;"><strong>63.33%</strong></td>
+<td style="text-align: right;"><strong>76.11%</strong></td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">2.98</td>
+</tr>
+</tbody>
+</table>
+<p>这里的三个指标分别表示：</p>
+<ul>
+<li><strong>Average@12</strong>：360 条 generation 里有多少条最终答对，约等于 pass@1；</li>
+<li><strong>Pass@12</strong>：30 道题里，有多少题在 12 次采样中至少答对过一次；</li>
+<li><strong>Format</strong>：给出合法 <code>\boxed{}</code> 答案的 generation 比例。</li>
+</ul>
+<p>Step 200 与 Base 相比：</p>
+<div class="highlight"><pre><span></span><code>Average@12:  23.61% → 47.50%  （+23.89 个百分点）
+Pass@12:     50.00% → 63.33%  （+13.33 个百分点）
+Format:      25.83% → 76.11%  （+50.28 个百分点）
+</code></pre></div>
+<p>换成更直观的数字：正确 generation 从 <code>85</code> 条增加到 <code>171</code> 条，至少答对一次的题目从 <code>15</code> 道增加到 <code>19</code> 道（Step 150 时最高 <code>22</code> 道）。</p>
+<blockquote>
+<p>一条 200 步的训练轨迹下来，Average@12 全程单调上升、Format 翻倍，训练方向稳定正确；但 30 道题、单次训练、没有多随机种子的实验，还不足以宣称稳定复现了论文收益。Pass@12 在 Step 150 → 200 之间出现回落（73.33% → 63.33%），在这个题量下属于正常波动。</p>
+</blockquote>
+<p>Format 没有到 100% 的主要原因不是模型学不会，而是预算：AIME 的长推理在 8,192 tokens 的轨迹预算下会被截断，论文用的是 16k。</p>
+<h2 id="config">本文复现 Config</h2>
+<p>本次实验配置如下（验证跑与 200 步轨迹使用同一份配置，只有 <code>--max-steps</code> 不同）：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>本文实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Model</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>训练方式</td>
+<td>LoRA rank 32（PyTRIO 训练客户端）</td>
+</tr>
+<tr>
+<td>训练数据</td>
+<td><code>BytedTsinghua-SIA/DAPO-Math-17k</code> → <code>datasets/train.jsonl</code></td>
+</tr>
+<tr>
+<td>每个 step</td>
+<td>8 道问题 × group 8 = 64 条轨迹</td>
+</tr>
+<tr>
+<td>轮次预算</td>
+<td><code>max_code_calls=4</code>、<code>max_assistant_turns=6</code></td>
+</tr>
+<tr>
+<td>token 预算</td>
+<td>轨迹 ≤ 8,192 · 单回合 ≤ 1,024 · 单次工具回包 ≤ 512</td>
+</tr>
+<tr>
+<td>Rollout 采样</td>
+<td>temperature 1.0 · top_p 1.0</td>
+</tr>
+<tr>
+<td>沙箱</td>
+<td>本地 subprocess · 30s 超时 · 8 worker</td>
+</tr>
+<tr>
+<td>优化器</td>
+<td>Adam，lr <code>4e-5</code>，β (0.9, 0.95)</td>
+</tr>
+<tr>
+<td>Loss</td>
+<td><code>ppo</code>，clip 0.8 / 1.28</td>
+</tr>
+<tr>
+<td>Advantage</td>
+<td>GRPO 组内中心化；observation token 置 0</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>200 步轨迹每 50 step 保存（验证跑每 5 step）</td>
+</tr>
+<tr>
+<td>随机种子</td>
+<td>42</td>
+</tr>
+</tbody>
+</table>
+<p>与官方 recipe 的主要差异：官方 <code>train_batch_size=512</code>、<code>n_resp_per_prompt=16</code>、max seq 16384、<code>max_turns=8</code>、actor_lr <code>1e-6</code>，论文用 Qwen2.5-32B 全量训练；我们按配额等比缩小，并用 LoRA 代替全量。官方 released 代码里答错时按工具轮数减免惩罚的 shaping（<code>score = min(0, score + (num_turns - 2) / 2 * 0.1)</code>）与论文“outcome-only”的说法不一致，本文跟随论文，不加 shaping。</p>
+<h2 id="retool_1">ReTool 的训练闭环详细拆解</h2>
+<p>下面结合真实代码，把一个训练 step 拆成七步。</p>
+<h3 id="_3">第一步：准备可验证答案的数学题</h3>
+<p>数据脚本是 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/prepare_data.py"><code>prepare_data.py</code></a>，跟随官方 recipe 使用 <a href="https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k"><code>BytedTsinghua-SIA/DAPO-Math-17k</code></a>，整理成 <code>question + answer</code> 的 JSONL：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"40f50547-..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The points $P,$ $Q,$ and $R$ are represented by ..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"answer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"math_dapo"</span><span class="p">}</span>
+</code></pre></div>
+<p>注意一个细节：DAPO 原始 prompt 自带 <code>"Answer:"</code> 格式模板，我们已经剥掉了——它会和我们自己的 <code>\boxed{}</code> 协议打架。</p>
+<h3 id="_4">第二步：把代码解释器声明成模型原生工具</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/protocol.py"><code>protocol.py</code></a> 在 chat template 的 <code>tools</code> 里声明唯一一个工具：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"code_interpreter"</span><span class="p">,</span>
+<span class="s2">"parameters"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"code"</span><span class="p">:</span> <span class="s2">"The Python code to be executed."</span><span class="p">}</span>
+</code></pre></div>
+<p>system prompt 直接讲清楚三件事：要做什么任务、有哪些工具可用、应该怎么调用；同时写死<strong>代码资源约束</strong>——代码必须在几秒内跑完、内存占用要低、不做文件读写、枚举/暴力搜索要控制规模、结果必须看 <code>print()</code> 输出、每次执行独立无状态。chat template 固定 <code>enable_thinking=False</code>：论文基座没有 thinking 开关，long CoT 就是普通生成文本；官方也实测 Qwen3 思考模式很少写代码、训练效果差。</p>
+<h3 id="_5">第三步：一组轨迹的分叉与续写</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/rollout.py"><code>rollout.py</code></a> 的多轮轨迹状态机：首轮每道题用 <code>num_samples=group_size</code> 一次分叉出 8 条轨迹，之后每条轨迹单独采样；模型生成到 <code>&lt;tool_call&gt;</code> 就暂停，等沙箱返回后用 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/protocol.py#L127"><code>build_next_prompt</code></a> 把真实采样 token 拼上 assistant 结束符和 tool observation，继续生成。</p>
+<p>这里是 token-in token-out：续写用的是真实采样出来的 token 序列，不做 text↔token 重编码。官方实测重编码不可逆会导致约 100 步后性能崩塌、grad_norm NaN，这个坑我们直接绕开。</p>
+<h3 id="_6">第四步：本地沙箱执行代码</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/sandbox.py"><code>sandbox.py</code></a> 用本地 subprocess 代替论文的 SandboxFusion 云沙箱，零成本零运维：</p>
+<div class="highlight"><pre><span></span><code>python -B -c &lt;code&gt;   # 每次调用起全新进程
+list 形式 argv        # 无 shell、无脚本文件、天然无状态
+30s wall-clock 超时    # os.killpg 杀死整个进程组
+RLIMIT_CPU            # 内核级 CPU 时间兜底
+stdout/stderr 截断     # 单次回包最多 512 tokens
+</code></pre></div>
+<p>两个和官方对齐的细节：执行前自动给代码最后一行非空行补 <code>print()</code>（官方 recipe 的 auto-print 技巧）；tool 返回文本先做无害化消毒再拼回上下文——模型代码如果打印出 <code>&lt;|im_end|&gt;</code> 这类特殊 token，不消毒会直接破坏 observation 结构。</p>
+<h3 id="reward">第五步：只看最终答案的 reward</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/reward.py"><code>reward.py</code></a> 实现纯结果奖励，和官方 <code>compute_score(strict_box_verify=True)</code> 一致：</p>
+<div class="highlight"><pre><span></span><code>取回答最后 300 个字符 → 提取最后一个 \boxed{} → math_verify 数学等价
+对 +1 / 错 −1（找不到合法 \boxed{} 也算错）
+</code></pre></div>
+<p>不奖励“调了代码”这个行为。工具使用策略完全是结果奖励的副产品。</p>
+<h3 id="observation-token-loss">第六步：observation token 保留在上下文，但不参与 loss</h3>
+<p>沙箱返回的 stdout/stderr 会留在轨迹里（模型需要看到执行结果），但这些 token 不是模型生成的，不能进 loss。<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/train.py"><code>train.py</code></a> 构造 Datum 时，observation 区间的 advantage 直接置零：</p>
+<div class="highlight"><pre><span></span><code><span class="n">advantages_by_token</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">delta_observation</span><span class="p">))</span>
+<span class="n">advantages_by_token</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">trajectory</span><span class="o">.</span><span class="n">advantage</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">turn</span><span class="o">.</span><span class="n">completion_tokens</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>真正参与优化的只有 assistant 自己生成的 token。</p>
+<h3 id="advantage-ppo">第七步：组内中心化 advantage，一次 ppo 更新</h3>
+<p>同一道题的 8 条轨迹算完 reward 后，在题内做 GRPO 组内中心化（<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/rollout.py#L273"><code>assign_group_advantages</code></a>），整组 reward 全同的 degenerate group 单独统计——8 题/步的 batch 下没有出现零梯度灾难。然后把整批 Datum 提交一次训练更新：</p>
+<div class="highlight"><pre><span></span><code><span class="n">loss_fn</span><span class="o">=</span><span class="s2">"ppo"</span><span class="p">,</span>
+<span class="n">loss_fn_config</span><span class="o">=</span><span class="p">{</span><span class="s2">"clip_low_threshold"</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">"clip_high_threshold"</span><span class="p">:</span> <span class="mf">1.28</span><span class="p">}</span>
+</code></pre></div>
+<p>micro-batch 是动态装箱的，所以提交前 advantage 会按样本占比缩放，保证拆批后的梯度累计等价于全局样本均值。</p>
+<p>另外两个真实踩过的坑，给要复现的人提个醒：</p>
+<ol>
+<li><strong>Qwen3.5 的 chat template 会 strip assistant 内容</strong>，且采样文本含 <code>&lt;/think&gt;</code> 时模板会把消息重构成 reasoning/content 两段——用真实文本在模板渲染里定位 assistant 结束边界必然失败。解法：<code>build_next_prompt</code> 的 canonical 计算一律用占位内容，增量片段只与 tool 消息有关。</li>
+<li><strong>tool 返回不消毒会污染 observation 结构</strong>（见第四步），这个在 review 阶段才抓到。</li>
+</ol>
+<h2 id="swanlab">SwanLab 训练记录</h2>
+<p>reward、correct rate、代码调用次数、轨迹长度、沙箱指标都记录到了 SwanLab，<a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-retool/overview">完整训练记录可以在这里查看</a>。</p>
+<p>reward 曲线（200 step）：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/swanlab-reward.png" /></p>
+<div class="highlight"><pre><span></span><code>reward/mean:    -0.5 → +0.3
+reward/correct:  0.2 → 0.6
+reward/format:  0.25 → 0.85
+</code></pre></div>
+<p>rollout 行为曲线：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/swanlab-rollout.png" /></p>
+<div class="highlight"><pre><span></span><code>rollout/valid_tool_call_rate:  0.6 → 0.95    # 模型越调越规范
+rollout/code_calls:            1.0 → 2.0     # step 90 附近峰值约 2.6
+rollout/turns:                 2.0 → 2.8
+rollout/trajectory_tokens:     稳定在 ~2,200 # 训练分布上 8k 预算宽裕
+rollout/degenerate_group_rate: 缓降           # 无零梯度灾难
+</code></pre></div>
+<p>沙箱健康度曲线：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/retool/images/swanlab-sandbox.png" /></p>
+<div class="highlight"><pre><span></span><code>sandbox/success_rate:  0.68 → 0.80
+sandbox/error_rate:    0.32 → 0.18   # 模型写的代码越来越能跑
+sandbox/timeout_rate:  稳定在 2～3%
+sandbox/latency:       0.36s → 1.4s  # 代码变复杂，执行时间自然变长
+</code></pre></div>
+<p>几条曲线放在一起读，故事是完整的：模型先学会“调出一个合法的 tool call”（valid rate 0.6 → 0.95），再学会“写能跑通的代码”（error rate 腰斩），最后才是“写对答案有用的代码”（correct 0.2 → 0.6）。Format 和 correct 的差距，对应的就是 8k 预算截断掉的那部分长推理。</p>
+<h2 id="_7">如何运行这次复现？</h2>
+<h3 id="1">1. 安装项目并登录</h3>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+swanlab<span class="w"> </span>login
+</code></pre></div>
+<p>本地只需要 CPU 环境，模型采样与 LoRA 训练由 PyTRIO 远端执行；代码解释器跑在本地 subprocess 沙箱里。</p>
+<h3 id="2">2. 下载并整理训练数据</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/prepare_data.py
+</code></pre></div>
+<p>脚本会下载 <code>BytedTsinghua-SIA/DAPO-Math-17k</code> 并导出：</p>
+<div class="highlight"><pre><span></span><code>experiments/retool/datasets/
+├── raw/dapo-math-17k.parquet   # 原始数据
+├── train.jsonl                  # 训练集（question + answer）
+└── dev.jsonl                    # 50 条开发集
+</code></pre></div>
+<h3 id="3-20-step">3. 先跑 20-step 验证跑（两杯瑞幸）</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-steps<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save-every<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-name<span class="w"> </span>retool-qwen35-4b-step20
+</code></pre></div>
+<p>20 个 step 足够确认闭环：correct 上升、code_calls 上升、degenerate group 为 0。</p>
+<h3 id="4-200-step">4. 把轨迹跑满 200 step</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-steps<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save-every<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-name<span class="w"> </span>retool-qwen35-4b-step200
+</code></pre></div>
+<p>每 50 step 保存断点 state 和用于采样/评测的 sampler weights。</p>
+<h3 id="5-base-model-checkpoint">5. 评测 Base Model 和 checkpoint</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Base Model</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mode<span class="w"> </span>retool<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--val-n<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--temperature<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--top-p<span class="w"> </span><span class="m">0</span>.7<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>experiments/retool/eval-results/aime25-retool-base.jsonl
+
+<span class="c1"># checkpoint（填入训练日志里的 trio:// 路径）</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mode<span class="w"> </span>retool<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--val-n<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--temperature<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--top-p<span class="w"> </span><span class="m">0</span>.7<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span>trio://&lt;your_sampler_weights_path&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>experiments/retool/eval-results/aime25-retool-step200.jsonl
+</code></pre></div>
+<p>评测脚本还支持 <code>--mode text</code>（禁用工具），用于对比 text-only 基线。</p>
+<h3 id="6-checkpoint">6. 绘制 checkpoint 对比图</h3>
+<p>当 <code>eval-results/</code> 里集齐 Base 和各 Step 的 JSONL 后：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/retool/analysis.py
+</code></pre></div>
+<p>结果写到 <code>experiments/retool/images/checkpoint_avg_pass_format.png</code>。</p>
+<h2 id="_8">这次复现有哪些边界？</h2>
+<ul>
+<li><strong>轨迹预算 8k vs 论文 16k</strong>：这是我们为省配额做的最大妥协，直接后果是 AIME 长推理被截断，Format 停在 76% 而不是更高。预算翻倍是最值得先试的改进。</li>
+<li><strong>本地沙箱 ≠ 云沙箱</strong>：<code>python -c</code> + 30s 超时 + <code>RLIMIT_CPU</code> 能兜住 4B 模型数学代码的绝大多数意外（死循环、超时），但文件读写只靠 system prompt 软约束，macOS 上内存限制也不可靠——不要无人值守跑。</li>
+<li><strong>跳过 cold-start SFT</strong>：对 Qwen3.5-4B 成立（base 工具调用率就够高），换基座不一定成立。</li>
+<li><strong>未实现 dual-clip</strong>：官方 recipe 的 <code>clip_ratio_c=10.0</code> 在 PyTRIO 内置 <code>ppo</code> 里不支持，本文忽略。</li>
+<li><strong>评测量级</strong>：30 题 × 12 次采样，Pass@12 级别的指标天然有 ±1～2 题的波动；单次训练、单种子。</li>
+</ul>
+<h2 id="_9">小结</h2>
+<p>这次复现主要新增了工具协议、本地沙箱和结果奖励，多轮轨迹、GRPO advantage 和训练循环沿用了系列前作的实现。20 步验证跑花费 ¥31.66，200 步正式训练花费 ¥224.44，AIME25 Average@12 从 23.61% 提高到 47.50%。</p>
+<p>训练中的行为变化比分数更值得继续观察：模型先学会规范调用工具，再写出能运行的代码，最后才逐渐提高代码对解题的帮助。8K 轨迹预算和单次训练仍是当前结果的主要限制。</p>
+<h2 id="_10">参考资料</h2>
+<h3 id="_11">论文与官方实现</h3>
+<ol>
+<li>Jiazhan Feng et al. <a href="https://arxiv.org/abs/2504.11536">ReTool: Reinforcement Learning for Strategic Tool Use in LLMs</a>, 2025.</li>
+<li><a href="https://github.com/volcengine/verl/tree/main/recipe/retool">verl <code>recipe/retool</code>（官方复现代码）</a></li>
+<li><a href="https://developer.volcengine.com/articles/7545026392128225323">火山引擎 veRL 复现指南</a></li>
+<li><a href="https://huggingface.co/datasets/swordfaith/ReTool-SFT-multi-turn">swordfaith/ReTool-SFT-multi-turn（官方冷启动 SFT 数据）</a></li>
+</ol>
+<h3 id="_12">数据与模型</h3>
+<ol>
+<li><a href="https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k">BytedTsinghua-SIA/DAPO-Math-17k</a></li>
+<li><a href="https://huggingface.co/datasets/yentinglin/aime_2025">yentinglin/aime_2025</a></li>
+<li><a href="https://huggingface.co/Qwen/Qwen3.5-4B">Qwen/Qwen3.5-4B</a></li>
+</ol>
+<h3 id="_13">本文实现</h3>
+<ol>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/retool">ReTool PyTRIO 完整代码</a></li>
+<li><a href="https://docs.pytrio.com/docs">PyTRIO 文档</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/2063265307226019219">PyTRIO 是什么？——知乎介绍</a></li>
+<li><a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-retool/overview">本文的 SwanLab 训练记录</a></li>
+<li><a href="https://docs.swanlab.cn/">SwanLab 文档</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1777 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/pytrio-jev/">
+      
+      
+        <link rel="prev" href="../vision-grpo/">
+      
+      
+        <link rel="next" href="../general-opd/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>PYTRIO-JEV - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#95-jev" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PYTRIO-JEV
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-jev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Jev 到底是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 先看结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-forward-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 方法：一次 Forward，一个 Token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 方法：一次 Forward，一个 Token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 不让模型"生成"答案
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-softmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 推理：候选符号上的受限 softmax
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-2160-intern-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 数据：训练 2160 条，评测与 Intern-Decision 完全一致
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 数据：训练 2160 条，评测与 Intern-Decision 完全一致">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 训练集
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-intern-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 评测集（与 Intern-Decision 完全一致）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 防污染红线
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-270" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 训练：270 步，一顿麦当劳早餐
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 校准：让概率"说真话"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-hard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Hard 为什么越训越差？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 文件结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-jev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Jev 到底是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 先看结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-forward-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 方法：一次 Forward，一个 Token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 方法：一次 Forward，一个 Token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 不让模型"生成"答案
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-softmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 推理：候选符号上的受限 softmax
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-2160-intern-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 数据：训练 2160 条，评测与 Intern-Decision 完全一致
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 数据：训练 2160 条，评测与 Intern-Decision 完全一致">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 训练集
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-intern-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 评测集（与 Intern-Decision 完全一致）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 防污染红线
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-270" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 训练：270 步，一顿麦当劳早餐
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 校准：让概率"说真话"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-hard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Hard 为什么越训越差？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 文件结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="95-jev">第 9.5 篇，一顿麦当劳早餐，人人都可训练自己的 Jev 决策模型！</h1>
+<div align="center">
+  <img src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/head.png" alt="一顿麦当劳，训练你自己的 Jev 决策模型" width="100%">
+</div>
+
+<div align="center">
+  <a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/pytrio-jev"><img alt="Code" src="https://img.shields.io/badge/Code-09--pytrio--jev-2563eb?style=flat"></a>
+  <a href="https://huggingface.co/datasets/LocalLLaMA/typed-decisions"><img alt="Dataset" src="https://img.shields.io/badge/Dataset-Typed--Decisions-f59e0b?style=flat"></a>
+  <a href="https://docs.pytrio.com/docs"><img alt="PyTRIO" src="https://img.shields.io/badge/PyTRIO-0.2.9-7c3aed?style=flat"></a>
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6?style=flat"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49?style=flat"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://visitor-badge.laobi.icu/badge?page_id=KMnO4-zx.agentic-rl-lab.pytrio-jev"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/pytrio-jev"><code>experiments/pytrio-jev</code></a> / 快速启动：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/pytrio-jev/start.md"><code>start.md</code></a></li>
+<li>方法参考：<a href="https://github.com/InternLM/Intern-Decision">Intern-Decision</a>、<a href="https://archerhume.com/posts/jevs-architecture-unmasked">Jev 架构逆向</a>、<a href="https://mp.weixin.qq.com/s/F7i83rn8oDzQ-sg13MKwWA">Datawhale AgentJev 教程</a></li>
+<li>训练数据：<a href="https://huggingface.co/datasets/LocalLLaMA/typed-decisions"><code>LocalLLaMA/typed-decisions</code></a>、<a href="https://huggingface.co/datasets/Team-ACE/ToolACE"><code>Team-ACE/ToolACE</code></a></li>
+<li>SwanLab：<a href="https://swanlab.cn/@kmno4/agentic-rl-lab-pytrio-jev/v1/qt5fzd/runs/g4i73a65/chart">查看本次实验公开的训练记录</a></li>
+<li>PyTRIO：<a href="https://pytrio.com">官网</a> / <a href="https://docs.pytrio.com/docs">官方文档</a></li>
+</ul>
+</blockquote>
+<p>本次训练使用了 2160 条训练数据、2 个 epoch、270 步 LoRA，训练和两次评测合计 14.34 元。在与 Intern-Decision 完全一致的评测集上，五项平均分从 base 的 76.30 提到 83.74：Typed Decision 和 ToolACE 两项直接超过 Jev，其余大部分逼近 Jev。</p>
+<h2 id="0-jev">0. Jev 到底是什么？</h2>
+<p>Jev 是一个拥有通用世界知识的分类决策模型。给它一段状态（state）和一组带固定选项的问题（questions），它不生成开放回答，只返回选项及其概率。</p>
+<p>它适合选项固定的业务场景：</p>
+<ul>
+<li><strong>意图理解</strong>：售后场景里，用户的诉求就是退款、退货退款、仅退款这三四个选项；</li>
+<li><strong>工单路由</strong>：这条消息该给账单组、物流组还是技术组；</li>
+<li><strong>风险分级</strong>：低风险放行、中风险复核、高风险拦截。</li>
+</ul>
+<p>OpenRouter 的 "Top models by task" 统计里，<strong>Classification 一个任务就占了全平台 10.4% 的花销</strong>，是 General 类别（31.2%）下最大的单一任务：</p>
+<p><img alt="OpenRouter Top models by task：Classification 占全平台 10.4% 花销" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/openrouter.png" /></p>
+<p>榜单前列包括 Claude Opus 5、GPT-6 Astra、Gemini 3.1 Pro 等通用大模型。这些模型能够处理分类任务，但对于高频、固定的判断，专门训练的决策模型通常更便宜，也更快。</p>
+<p>我的看法是：通用大模型负责开放问题的推理与规划，决策模型负责高频、固定、可枚举的路由与判断；模型拿不准时，再把任务交给上游流程。</p>
+<h2 id="1">1. 先看结果</h2>
+<p>评测集与 Intern-Decision 官方榜单完全一致（Jevbench 三档 + Typed Decision test + ToolACE 310 条），均为准确率（%）：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align: right;">Easy</th>
+<th style="text-align: right;">Original</th>
+<th style="text-align: right;">Hard</th>
+<th style="text-align: right;">Typed</th>
+<th style="text-align: right;">ToolACE</th>
+<th style="text-align: right;">平均</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-4B（base）</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">87.50</td>
+<td style="text-align: right;">55.86</td>
+<td style="text-align: right;">50.40</td>
+<td style="text-align: right;">87.74</td>
+<td style="text-align: right;">76.30</td>
+</tr>
+<tr>
+<td><strong>PyTrio-Jev（本文）</strong></td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">95.83</td>
+<td style="text-align: right;">47.75</td>
+<td style="text-align: right;">79.20</td>
+<td style="text-align: right;">94.52</td>
+<td style="text-align: right;"><strong>83.46</strong></td>
+</tr>
+<tr>
+<td><strong>PyTrio-Jev（+温度校准）</strong></td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">95.83</td>
+<td style="text-align: right;">49.55</td>
+<td style="text-align: right;">79.10</td>
+<td style="text-align: right;">94.19</td>
+<td style="text-align: right;"><strong>83.74</strong></td>
+</tr>
+<tr>
+<td>Intern-Decision-0.8B</td>
+<td style="text-align: right;">97.92</td>
+<td style="text-align: right;">80.56</td>
+<td style="text-align: right;">52.25</td>
+<td style="text-align: right;">77.35</td>
+<td style="text-align: right;">94.52</td>
+<td style="text-align: right;">80.52</td>
+</tr>
+<tr>
+<td>Intern-Decision-2B</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">84.72</td>
+<td style="text-align: right;">63.96</td>
+<td style="text-align: right;">79.35</td>
+<td style="text-align: right;">96.45</td>
+<td style="text-align: right;">84.90</td>
+</tr>
+<tr>
+<td>Intern-Decision-4B</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">98.61</td>
+<td style="text-align: right;">73.87</td>
+<td style="text-align: right;">80.55</td>
+<td style="text-align: right;">96.45</td>
+<td style="text-align: right;">89.90</td>
+</tr>
+<tr>
+<td>Jev</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">98.61</td>
+<td style="text-align: right;">72.07</td>
+<td style="text-align: right;">73.35</td>
+<td style="text-align: right;">91.29</td>
+<td style="text-align: right;">87.06</td>
+</tr>
+<tr>
+<td>Laya</td>
+<td style="text-align: right;">95.83</td>
+<td style="text-align: right;">72.22</td>
+<td style="text-align: right;">28.83</td>
+<td style="text-align: right;">35.95</td>
+<td style="text-align: right;">63.87</td>
+<td style="text-align: right;">59.34</td>
+</tr>
+</tbody>
+</table>
+<p>官方数值来自 <a href="https://github.com/InternLM/Intern-Decision">Intern-Decision 公开榜单</a>。注意两个口径差异：官方模型在 Typed Decision 上是<strong>零样本</strong>评测，而我们是 specialist 模式（train/test 同 workflow）；官方是全参数微调，我们是 LoRA，且仅仅用了 2400 条通用数据，如果是在企业里训一个自己领域的 Jev 模型，效果会更好。</p>
+<p><img alt="五项基准对比" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/benchmark-comparison.png" /></p>
+<h2 id="2-forward-token">2. 方法：一次 Forward，一个 Token</h2>
+<p>整条 Pipline 的总览：</p>
+<p><img alt="训练与推理管线" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/pipeline.png" /></p>
+<h3 id="21">2.1 不让模型"生成"答案</h3>
+<p>普通 SFT 教模型把答案一个字一个字写出来；决策模型的做法完全不同。assistant 侧的输入是一个<strong>含占位符的 JSON 骨架</strong>，每个问题字段对应一个 marker token；真正的监督只落在 marker 前一个位置，模型在那里应该预测出正确答案对应的符号（A/B/C、Yes/No、1-5）。</p>
+<p>下面是一张真实的训练输入（chat template 渲染后），高亮处就是计算 loss 的位置。为了去除系统提示词等额外文本对决策的干扰，我们没有沿用模型自带的 chat template，而是专门写了一个干净的模板（<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/pytrio-jev/templates/qwen3_5_jev.jinja"><code>templates/qwen3_5_jev.jinja</code></a>）——除了对话结构本身，不多塞一个字：</p>
+<p><img alt="训练输入：marker 位置高亮" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/train-chat-template.png" /></p>
+<p>三个关键设计：</p>
+<ul>
+<li><strong>共享 state，一次前向</strong>：一条记录 = 一个序列，所有字段在同一次前向里同时被监督。字段的答案不出现在输入里，字段之间互相看不到对方的答案，不存在泄漏；问题的排列顺序也不影响输出概率。</li>
+<li><strong>marker 用一个 token 定位</strong>：每个字段的占位符就是 <code>decision</code> 这<strong>一个 token</strong>（id 61781），训练靠它定位监督位置，推理靠它定位读取位置，一个词表内的普通 token 就够用了。</li>
+<li><strong>Datum 构造</strong>：<code>cross_entropy</code> loss，<code>target_tokens</code> 和 <code>weights</code> 只落在 marker 前一位置，其余位置权重全 0。模型其余部分的表示能力白捡，梯度只用来学"这个位置该选谁"。</li>
+</ul>
+<h3 id="22-softmax">2.2 推理：候选符号上的受限 softmax</h3>
+<p>推理时不采样文本：<code>sample(max_tokens=1, topk_prompt_logprobs=K)</code> 直接在 marker 位置读回候选符号的 logprob，只在这几个候选上做 softmax（并除以校准温度 T）：</p>
+<p><img alt="受限 softmax 推理" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/inference-principle.png" /></p>
+<p>三种题型共用这一个机制，只是输出映射不同：</p>
+<table>
+<thead>
+<tr>
+<th>题型</th>
+<th>候选符号</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>choice</code>（多选一）</td>
+<td>A/B/C/…</td>
+<td>argmax 选项 + 概率分布</td>
+</tr>
+<tr>
+<td><code>noul</code>（是否判断）</td>
+<td>Yes/No</td>
+<td>p(Yes)</td>
+</tr>
+<tr>
+<td><code>score</code>（打分）</td>
+<td>1/2/3/4/5</td>
+<td>期望分 + 概率分布</td>
+</tr>
+</tbody>
+</table>
+<p>因为输出永远是一个归一化的概率分布，下游可以直接拿它做阈值判断、灰度放行、意图识别、工单路由等等。</p>
+<p>不想看原理的朋友，从克隆仓库到正式训练只要四步（要求 Python ≥ 3.13）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 0. 克隆仓库 + 安装依赖 + 登录</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login<span class="w">       </span><span class="c1"># PyTRIO 训练服务（必需）</span>
+swanlab<span class="w"> </span>login<span class="w">    </span><span class="c1"># SwanLab 训练曲线（可选，也可用 --swanlab-mode offline）</span>
+
+<span class="c1"># 1. 下载并切分全部数据（训练 2160 条 + 五项评测集）</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/pytrio-jev/00-prepare-data.py
+
+<span class="c1"># 2. 冒烟：64 条跑 1 个 epoch，确认 loss 下降、marker 对齐正常</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/pytrio-jev/train.py<span class="w"> </span>--max-samples<span class="w"> </span><span class="m">64</span><span class="w"> </span>--epochs<span class="w"> </span><span class="m">1</span><span class="w"> </span>--save-every<span class="w"> </span><span class="m">0</span><span class="w"> </span>--swanlab-mode<span class="w"> </span>offline
+
+<span class="c1"># 3. 正式训练：2160 条 × 2 epoch ÷ 16 = 270 步</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/pytrio-jev/train.py<span class="w"> </span>--epochs<span class="w"> </span><span class="m">2</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">16</span><span class="w"> </span>--save-every<span class="w"> </span><span class="m">60</span><span class="w"> </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>训练结束会打印 <code>trio://</code> 开头的权重路径，之后依次做温度校准（<code>calibrate.py</code>，见第 5 节）和五项评测（<code>eval.py</code>）；推理、校准、评测的完整命令清单都在 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/pytrio-jev/start.md"><code>start.md</code></a>。</p>
+<h2 id="3-2160-intern-decision">3. 数据：训练 2160 条，评测与 Intern-Decision 完全一致</h2>
+<h3 id="31">3.1 训练集</h3>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>规模</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LocalLLaMA/typed-decisions</code> train split</td>
+<td>960 案例（4800 题）</td>
+<td>4 个 workflow × 300 案例，案例级切出 240/30/30（train/dev/calibration）后用于训练；覆盖 choice/score/noul</td>
+</tr>
+<tr>
+<td><code>Team-ACE/ToolACE</code></td>
+<td>1200 条</td>
+<td><strong>先剔除 310 条评测行再采样</strong>；转换为"给定请求和工具列表，选哪个工具"的 choice 题</td>
+</tr>
+</tbody>
+</table>
+<p>合计 <strong>2160 条记录、6000 个决策题</strong>。noul 题型的训练信号只来自 typed-decisions（ToolACE 是纯 choice），这个偏科后面会看到影响。</p>
+<h3 id="32-intern-decision">3.2 评测集（与 Intern-Decision 完全一致）</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th style="text-align: right;">规模</th>
+<th style="text-align: right;">Intern-Decision-4B 参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jevbench Easy</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">100.00%</td>
+</tr>
+<tr>
+<td>Jevbench Original</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">98.61%</td>
+</tr>
+<tr>
+<td>Jevbench Hard</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">73.87%</td>
+</tr>
+<tr>
+<td>Typed Decision test</td>
+<td style="text-align: right;">400 案例 / 2000 题</td>
+<td style="text-align: right;">80.55%</td>
+</tr>
+<tr>
+<td>ToolACE</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">96.45%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33">3.3 防污染红线</h3>
+<ul>
+<li>typed-decisions 的 train/test 是官方独立生成的（不同 seed、train id 带 <code>tr_</code> 前缀），直接"train 训、test 评"；</li>
+<li>ToolACE 的 310 条评测行、Jevbench 全部 231 条<strong>一律不进训练</strong>；跨划分另做 state 文本哈希查重；</li>
+<li>温度只在校准划分上拟合；测试集在所有决策（checkpoint、T）冻结之后才读。<code>dev.jsonl</code> 120 条留给未来做 checkpoint 选择。</li>
+</ul>
+<p>一条命令完成全部下载与切分：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span><span class="m">00</span>-prepare-data.py
+</code></pre></div>
+<h2 id="4-270">4. 训练：270 步，一顿麦当劳早餐</h2>
+<p>核心配置：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base 模型</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>训练方式</td>
+<td>LoRA rank 32（mlp/attn/unembed），原版为全参数微调</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>2160 条 × 2 epoch</td>
+</tr>
+<tr>
+<td>batch size</td>
+<td>16（每步约 45 个监督 token）</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td><code>1e-4</code></td>
+</tr>
+<tr>
+<td>总步数</td>
+<td>270（每 epoch 末自动保存权重）</td>
+</tr>
+<tr>
+<td>框架</td>
+<td>PyTRIO 0.2.9，全异步 API</td>
+</tr>
+</tbody>
+</table>
+<p>训练循环是全异步的：<code>forward_backward_async()</code> 和 <code>optim_step_async()</code> 提交后不阻塞等结果，日志由独立 task 消费，270 步很快就跑完。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 冒烟（确认 loss 下降、marker 对齐正常）</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span>--max-samples<span class="w"> </span><span class="m">64</span><span class="w"> </span>--epochs<span class="w"> </span><span class="m">1</span><span class="w"> </span>--save-every<span class="w"> </span><span class="m">0</span><span class="w"> </span>--swanlab-mode<span class="w"> </span>disabled
+
+<span class="c1"># 正式训练</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span>--epochs<span class="w"> </span><span class="m">2</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">16</span><span class="w"> </span>--save-every<span class="w"> </span><span class="m">60</span><span class="w"> </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p><img alt="SwanLab 训练曲线" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/swanlab-loss.png" /></p>
+<p><em>完整的交互式曲线见 <a href="https://swanlab.cn/@kmno4/agentic-rl-lab-pytrio-jev/v1/qt5fzd/runs/g4i73a65/chart">SwanLab 训练记录</a>。</em></p>
+<p>第一步 loss 3.78，十几步内就压到 1 以下，毕竟每步只学几十个 token 的分类，收敛快是正常的。<code>supervised_tokens</code> 曲线一直在 20-70 之间波动，这是每条记录字段数不同导致的，并不是异常。</p>
+<p><img alt="SwanLab 运行总览" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/swanlab-overview.png" /></p>
+<p><strong>这一整次训练在 PyTRIO 上的总开销是 ¥12.36（不到 2 美元）。</strong></p>
+<p><img alt="PyTRIO 会话开销" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/pytrio-comsume.png" /></p>
+<p>训练会话消耗 2.72M train tokens，花销 ¥12.36；上面两个 ¥0.99 的会话是五项基准评测（各 0.66M prefilling tokens——评测全是读长 prompt 的一次前向，几乎不生成）。也就是说，从训练到评测全跑完一遍，总花费不到 15 块钱。</p>
+<h2 id="5">5. 校准：让概率"说真话"</h2>
+<p>决策模型的输出是概率，下游会拿它做阈值判断。这就要求"说 80% 把握"的时候，真的大约有 80% 的时候是对的。两个常用度量：</p>
+<ul>
+<li><strong>ECE</strong>（Expected Calibration Error，期望校准误差）：把预测按置信度分桶，比较每桶的置信度和实际准确率的差距，越小越好；</li>
+<li><strong>Brier 分数</strong>：预测概率分布与真实标签的均方误差，同时惩罚"答错"和"自信地答错"，越小越好。</li>
+</ul>
+<p>做法是温度缩放（temperature scaling）：在 120 案例 / 600 题的 calibration 划分上，对逆温度二分搜索使 NLL 最小。拟合得到 <strong>T = 1.13</strong>，NLL 从 0.4990 降到 0.4959：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>calibrate.py<span class="w"> </span>--weights<span class="w"> </span>trio://...
+</code></pre></div>
+<p><img alt="校准前后对比" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/pytrio-jev/images/calibration-before-after.png" /></p>
+<p>效果最明显的是最难的 Hard 档：ECE 从 0.2311 降到 0.1884，Brier 从 0.6510 降到 0.6331。模型在难题上原本系统性地过度自信，温度拉开之后概率诚实多了。数学上温度不改变 argmax（accuracy 那 0.1-2 个点的微波动来自服务端采样的数值不确定性），它改善的是概率本身的可信度。</p>
+<h2 id="6-hard">6. Hard 为什么越训越差？</h2>
+<p>Jevbench-Hard 从 base 的 55.86% 一路降到 47.75%，训练在帮倒忙。这并不意外 <strong>这是训练数据分布和 Hard 分布的不匹配导致的</strong>：</p>
+<ul>
+<li>训练数据以短 case 为主（state 中位约 727 字符），ToolACE 更是"请求里有关键词、工具名里就有答案"的表面匹配；</li>
+<li>Hard 档全是另一种生物：长政策文档（state 中位约 1611 字符）、多跳推理（multi_hop）、需要同时权衡多条规则的判难题（judge_hard）。</li>
+</ul>
+<p>模型在短 case 上学到的"抓关键词快速下结论"的风格，迁移到长政策上就是灾难：结论下得太早、太自信（Hard 的 ECE 也印证了这一点）。这不是方法问题，是数据问题。后期按 Hard 的分布扩充训练数据（长文档、多跳、规则冲突）即可，这也是我们下一步最先要做的事。</p>
+<h2 id="7">7. 文件结构</h2>
+<div class="highlight"><pre><span></span><code>experiments/pytrio-jev/
+├── 00-prepare-data.py    # 下载 typed-decisions / ToolACE / Jevbench，完成切分与防污染
+├── templates/
+│   └── qwen3_5_jev.jinja # 钉死的 chat template，训练/推理共用
+├── data.py               # record → messages → tokens/weights，记录 marker 索引
+├── train.py              # 全异步 LoRA SFT：cross_entropy + SwanLab，epoch 末存权重
+├── inference.py          # topk_prompt_logprobs 受限 softmax 推理（choice/noul/score）
+├── calibrate.py          # calibration 划分上拟合温度 T
+├── eval.py               # 五项基准并发评测（acc / ECE / Brier）
+├── analysis.py           # 汇总评测结果，生成对比图
+├── start.md              # 从零开始的命令清单
+└── images/
+</code></pre></div>
+<p>完整命令清单见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/pytrio-jev/start.md"><code>start.md</code></a></p>
+<h2 id="_1">总结</h2>
+<p>这次复现完成了共享 state、marker 占位、受限 softmax 和温度校准的完整训练与推理链路。五项平均分达到 83.74，两项超过 Jev；Hard 准确率下降也说明，训练效果仍受数据分布限制。</p>
+<p>对于意图理解、工单路由、风险分级等固定选项任务，可以先留出一批真实测试题，再用小规模训练验证决策模型是否适合自己的业务。</p>
+<p>如果你有具体数据和场景，欢迎联系我（知乎 / 小红书 / 邮箱），我可以帮你评估训练一个 Jev 决策模型的可行性和成本。更欢迎邮件联系：violin@pytrio.com</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

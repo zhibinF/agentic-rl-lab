@@ -1,0 +1,2676 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/medical-opd/">
+      
+      
+        <link rel="prev" href="../general-opd/">
+      
+      
+        <link rel="next" href="../dapo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>MEDICAL-OPD - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-2-opd-llm" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MEDICAL-OPD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先看最终结果
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="先看最终结果">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        统一评测口径
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两套方案的关键 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPD 到底在训练什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据是怎么准备的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medical-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：先得到一个 Medical Teacher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sar-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方案一：SAR-OPD，分阶段锚点恢复
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="方案一：SAR-OPD，分阶段锚点恢复">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-1medical-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1：Medical SFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-2-fresh-student-medical-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2：让 fresh Student 学 Medical OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-3-base-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3：用 Base Teacher 恢复通用能力
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sar-opd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAR-OPD 的结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#idt-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方案二：IDT-OPD，交替双教师训练
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="方案二：IDT-OPD，交替双教师训练">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        固定 1:1 调度怎么写？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idt-opd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDT-OPD 的正式配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idt-opd_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDT-OPD 的结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两套方案应该怎么选？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这套实验？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这套实验？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 下载并整理数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-medical-sft-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 训练 Medical SFT Teacher
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-medical-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 运行 Medical OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-sar-opd-base-anchor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 运行 SAR-OPD 的 Base-anchor 阶段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-idt-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 运行 IDT-OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-sampler-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 评测 sampler weights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练时应该看哪些指标？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次实验还有哪些边界？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方法与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据集与评测基准
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现与实验工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先看最终结果
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="先看最终结果">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        统一评测口径
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两套方案的关键 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPD 到底在训练什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据是怎么准备的？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medical-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：先得到一个 Medical Teacher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sar-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方案一：SAR-OPD，分阶段锚点恢复
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="方案一：SAR-OPD，分阶段锚点恢复">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-1medical-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1：Medical SFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-2-fresh-student-medical-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2：让 fresh Student 学 Medical OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-3-base-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3：用 Base Teacher 恢复通用能力
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sar-opd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAR-OPD 的结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#idt-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方案二：IDT-OPD，交替双教师训练
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="方案二：IDT-OPD，交替双教师训练">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        固定 1:1 调度怎么写？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idt-opd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDT-OPD 的正式配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idt-opd_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDT-OPD 的结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两套方案应该怎么选？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这套实验？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这套实验？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 下载并整理数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-medical-sft-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 训练 Medical SFT Teacher
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-medical-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 运行 Medical OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-sar-opd-base-anchor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 运行 SAR-OPD 的 Base-anchor 阶段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-idt-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 运行 IDT-OPD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-sampler-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 评测 sampler weights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练时应该看哪些指标？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次实验还有哪些边界？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方法与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据集与评测基准
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现与实验工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-2-opd-llm">接下来我将复现 10 篇强化学习算法：第 2 篇，OPD 如何增强 LLM 的医疗能力，同时保住通用能力</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 训练 → 评测。</p>
+</blockquote>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/OPD-head.png" /></p>
+<div align="center">
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://komarev.com/ghpvc/?username=KMnO4-zx-agentic-rl-lab-medical-opd&amp;label=visitors&amp;color=1283c3&amp;style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>开源仓库：<a href="https://github.com/datawhalechina/agentic-rl-lab">datawhalechina/agentic-rl-lab</a></li>
+<li>PyTRIO 官网与注册入口：<a href="https://pytrio.cn/">https://pytrio.cn/</a>（远程训练、采样与权重保存）</li>
+<li>SwanLab 注册入口：<a href="https://swanlab.cn/login">https://swanlab.cn/login</a>（训练过程与实验指标记录）</li>
+<li>Medical SFT 数据集：<a href="https://huggingface.co/datasets/FreedomIntelligence/medical-o1-reasoning-SFT">FreedomIntelligence/medical-o1-reasoning-SFT</a></li>
+<li>MedQA-zh 评测数据：<a href="https://huggingface.co/datasets/bigbio/med_qa">bigbio/med_qa</a></li>
+<li>C-Eval 数据集：<a href="https://huggingface.co/datasets/ceval/ceval-exam">ceval/ceval-exam</a></li>
+<li>前置阅读：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/general-opd/readme.md">通用 OPD 入门教程</a></li>
+<li>PyTRIO Skill：<a href="https://github.com/SwanHubX/pytrio-skill">SwanHubX/pytrio-skill</a></li>
+<li>SwanLab Skill：<a href="https://github.com/SwanHubX/swanlab-skill">SwanHubX/swanlab-skill</a></li>
+</ul>
+</blockquote>
+<p>决定写这个系列后的第二天，其实我就已经完成了 DeepMath OPD 的代码和教程。那是一套很干净的入门实验：Student 在数学题上采样，Teacher 给同一条轨迹计算 logprobs，再通过 reverse KL 更新 Student。如果当时直接把它整理成一篇 Blog 发出来，这一篇也算是完成了。</p>
+<p>但我觉得这样太简单了。如果只是发一篇“代码可以跑通”的 Blog 就算交差，那既有点敷衍这个系列，也有点敷衍一直在等后续的读者们。我希望每一篇除了能运行，还能留下一个真正值得讨论的问题，以及一段比较完整的实验过程。</p>
+<p>所以我又花了一周左右，从 Medical SFT 开始设计实验，训练 Medical Teacher，尝试 Medical OPD，再一点点处理领域能力增强之后的通用能力遗忘。最后才有了这篇 Blog 里的两套方案，以及每个阶段完整的 MedQA-zh 和 C-Eval 评测结果。这一周里我从 Medical OPD 实验中获得了很多知识和反馈，也踩了不少坑。希望把这些过程写下来之后，能够帮助到同样在研究 OPD、模型蒸馏和领域能力训练的朋友。做完整个实验我大概花了 500 块钱左右吧，但这是我所有的实验操作，如果大家来复现的话大概可以在200块钱以内吧，如果只是完成 DeepMath OPD 的实验，应该只需要50 块钱吧，如果只是想要了解 OPD 的原理，简单跑几十个 step ，那应该几块钱吧？</p>
+<p>我很喜欢 Thinking Machines Lab 的 Lilian Weng 写的 Blog。读她的 Blog，会感觉她正在坐在对面，慢慢讲清楚自己为什么研究这个问题、做过哪些尝试、看到了什么结果，又从结果里得出了什么判断。希望我在未来的某天也可以做到这一步～</p>
+<p>为什么要用 PyTrio 做 RL 算法的复现呢？我之前也尝试过用 Verl 等一些开源的 RL 训练框架，但是我认为这些框架都太 Heavey 了。我只是想研究损失函数，但是却要付出比研究损失函数更多的时间去研究如何配置训练环境和研究开源框架的结构？我认为这是本末倒置的事情。我用过 Tinker 和 PyTrio，相比 Tinker ，PyTrio 对国人更友好，支付宝就可以充值，Tinker 需要有一张外币的信用卡，可恶！还有就是 Agentic-RL 现在要求训推一体，rollout、工具调用和长尾轨迹往往比 train 更久，自己租 8 卡时，训练侧会等 rollout，rollout 侧也会等参数更新，机器空着照样计费。但是 PyTrio 是按 Token 收费的，也就是说显卡空转的时间是不收费的，这也是我很关心的一点。</p>
+<blockquote>
+<p>所以大家希望下一篇是 GSPO 还是 Search-R1 呢？</p>
+</blockquote>
+<p>上一篇写 GRPO 的时候，训练信号来自 reward：同一道题采样多个回答，答得比组内平均水平好，就提高这条轨迹的概率；答得更差，就把概率压低。</p>
+<p>OPD 的训练信号不一样。它不要求每个问题都有标准答案，也不需要先写一个 reward function。Student 先生成自己的回答，Teacher 再沿着 Student 真正走过的 token 轨迹逐个打分，然后把 Student 拉向 Teacher 更认可的分布。</p>
+<p>DeepMath-103K 的版本已经整理成了一份 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/general-opd/readme.md">通用 OPD 入门教程</a>，把最小训练闭环完整跑通了。但只把算法跑起来还不太够，我更想知道它能不能解决一个真实一点的问题。</p>
+<p>经好朋友推荐，这次我选择的是中文医疗能力增强。</p>
+<p>我先用 <code>medical-o1-reasoning-SFT-zh</code> 对 <code>Qwen/Qwen3.5-4B</code> 做 Medical SFT。医疗评测确实提高了，但 C-Eval 通用能力从 <code>81.67%</code> 降到了 <code>69.33%</code>。领域能力学进去了，原本的通用能力也被明显破坏了。</p>
+<p>所以这篇真正想研究的是：</p>
+<blockquote>
+<p>能不能让一个 Medical Teacher 教 Student 医疗能力，同时让原始 Base Model 充当通用能力锚点，最后得到一个医疗能力和通用能力都比 Base 更好的模型？</p>
+</blockquote>
+<p>我最终做了两套方案：</p>
+<ol>
+<li><strong>SAR-OPD（Staged Anchor-Restoration OPD）</strong>：先做 Medical OPD，再用 Base Teacher 分阶段恢复通用能力。</li>
+<li><strong>IDT-OPD（Interleaved Dual-Teacher OPD）</strong>：在同一个训练循环里，让 Medical Teacher 和 Base Teacher 按 step 交替指导同一个 Student。</li>
+</ol>
+<p>先说结果：在这次实验里，SAR-OPD 的最终 checkpoint 在 MedQA-zh 上达到 <code>84.33%</code>，在 C-Eval non-med 上达到 <code>84.67%</code>，两项都超过了原始 4B Base。</p>
+<blockquote>
+<p>说明一下：SAR-OPD 和 IDT-OPD 是我为了描述这两套实验方案使用的名字，并不是已有论文里的标准算法名称。本文复现的是 OPD 的核心训练机制，再在这个基础上探索医疗能力与通用能力的平衡方法。</p>
+</blockquote>
+<p>代码都在这里：<a href="https://github.com/datawhalechina/agentic-rl-lab">https://github.com/datawhalechina/agentic-rl-lab</a></p>
+<h2 id="_1">先看最终结果</h2>
+<h3 id="_2">统一评测口径</h3>
+<p>为了让不同阶段能够直接比较，我固定使用两套测试集：</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>评测集</th>
+<th style="text-align: right;">样本数</th>
+<th style="text-align: right;">输出预算</th>
+<th>指标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>医疗能力</td>
+<td>MedQA-zh 4 options</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">1024 tokens</td>
+<td>Accuracy</td>
+</tr>
+<tr>
+<td>通用能力</td>
+<td>C-Eval non-med</td>
+<td style="text-align: right;">300</td>
+<td style="text-align: right;">8192 tokens</td>
+<td>Accuracy</td>
+</tr>
+</tbody>
+</table>
+<p>这里的 <code>1024</code> 和 <code>8192</code> 是每道题的最大输出 token 数，不是测试集样本数。后面的结果表统一写真实样本数，避免把输出预算和数据量混在一起。</p>
+<h3 id="checkpoint">两套方案的关键 checkpoint</h3>
+<table>
+<thead>
+<tr>
+<th>模型 / Checkpoint</th>
+<th style="text-align: right;">MedQA-zh（600 题）</th>
+<th style="text-align: right;">C-Eval non-med（300 题）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4B Base</td>
+<td style="text-align: right;">72.17% <code>433/600</code></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 3</td>
+<td style="text-align: right;">79.00% <code>474/600</code></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+<tr>
+<td>Medical OPD step 300</td>
+<td style="text-align: right;">80.00% <code>480/600</code></td>
+<td style="text-align: right;">73.00% <code>219/300</code></td>
+</tr>
+<tr>
+<td><strong>SAR-OPD step 300</strong></td>
+<td style="text-align: right;"><strong>84.33% <code>506/600</code></strong></td>
+<td style="text-align: right;"><strong>84.67% <code>254/300</code></strong></td>
+</tr>
+<tr>
+<td>IDT-OPD step 100</td>
+<td style="text-align: right;">79.17% <code>475/600</code></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td>IDT-OPD step 200</td>
+<td style="text-align: right;">76.50% <code>459/600</code></td>
+<td style="text-align: right;"><strong>86.00% <code>258/300</code></strong></td>
+</tr>
+</tbody>
+</table>
+<p>先不用急着理解两套方案的训练结构，可以先看它们各自的完整结果图。</p>
+<p><strong>方案一：SAR-OPD。</strong> 重点看右侧的能力恢复轨迹：随着 Base-anchor OPD 继续训练，C-Eval 被逐步拉回，MedQA-zh 也没有掉回 Base 水平，最终两项指标都超过了原始 4B Base。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/sar_opd_analysis.png" /></p>
+<p><strong>方案二：IDT-OPD。</strong> 重点看右侧的 Pareto frontier：step 100 更偏医疗，step 200 更偏通用；继续训练到 step 600 并没有得到更好的平衡，所以最后一步并不等于最好结果。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/idt_opd_analysis.png" /></p>
+<p>这张表里有三个比较有意思的现象。</p>
+<p>第一，Medical SFT 虽然把医疗准确率从 <code>72.17%</code> 提高到 <code>79.00%</code>，但 C-Eval 同时掉了 <code>12.34</code> 个百分点。只看领域 benchmark，很容易忽略这种能力交换。</p>
+<p>第二，SAR-OPD 最终把 MedQA-zh 提高到 <code>84.33%</code>，比 Base 高 <code>12.17</code> 个百分点；C-Eval 也达到 <code>84.67%</code>，比 Base 高 <code>3.00</code> 个百分点。这是本次实验综合结果最好的 checkpoint。</p>
+<p>第三，IDT-OPD 没有一个“所有指标都持续上涨”的终点。step 100 更偏医疗，step 200 更偏通用，它形成的是一条能力 Tride-off 曲线。对于这种多 Teacher 训练，选 checkpoint 和早停比单纯把训练跑到最后更重要。</p>
+<h2 id="opd">OPD 到底在训练什么？</h2>
+<p>OPD，全称 On-Policy Distillation。这里的 on-policy 指的是：训练轨迹来自当前 Student，而不是固定数据，也不是 Teacher 预先生成的答案。</p>
+<p>这条思路主要来自两条工作线：2023 年的 <a href="https://arxiv.org/abs/2306.13649">Generalized Knowledge Distillation（GKD）</a> 强调让 Student 在自己生成的序列上接受 Teacher 反馈；<a href="https://arxiv.org/abs/2306.08543">MiniLLM</a> 则系统研究了生成式语言模型蒸馏中的 reverse KL。本文把这两个关键点放进同一条可运行训练链路：轨迹由当前 Student 生成，Teacher 对同一条轨迹打分，再用 reverse-KL advantage 更新 Student。</p>
+<p>一次最小的 OPD 训练循环是：</p>
+<ol>
+<li>从 prompt-only 数据中取一个问题。</li>
+<li>用当前 Student 采样 completion，同时保存采样时的 token logprobs。</li>
+<li>把完全相同的 <code>prompt + student completion</code> 交给 Teacher。</li>
+<li>Teacher 不重新回答问题，只计算同一条 token 轨迹的 logprobs。</li>
+<li>用 Student 和 Teacher 的 logprob 差构造 reverse-KL advantage。</li>
+<li>用 PPO 或 importance sampling 更新 Student。</li>
+<li>导出最新 Student sampler，进入下一个 step。</li>
+</ol>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/opd-training-loop.png" /></p>
+<p>设 Student 是 <span class="arithmatex">\(\pi_\theta\)</span>，Teacher 是 <span class="arithmatex">\(\pi_T\)</span>，Student 采样出的第 <span class="arithmatex">\(t\)</span> 个 token 是 <span class="arithmatex">\(y_t\)</span>。代码里的 token-level reverse KL 是：</p>
+<div class="arithmatex">\[
+r_t^{\mathrm{KL}}
+=
+\log \pi_\theta(y_t \mid x,y_{\lt t})
+-
+\log \pi_T(y_t \mid x,y_{\lt t}).
+\]</div>
+<p>然后把它转成 advantage：</p>
+<div class="arithmatex">\[
+A_t=-\beta r_t^{\mathrm{KL}}.
+\]</div>
+<p>对应代码只有两行：</p>
+<div class="highlight"><pre><span></span><code><span class="n">reverse_kl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">student_logprobs</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">teacher_logprobs</span><span class="p">)</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="o">-</span><span class="n">args</span><span class="o">.</span><span class="n">kl_penalty_coef</span> <span class="o">*</span> <span class="n">reverse_kl</span>
+</code></pre></div>
+<p>如果 Student 比 Teacher 更偏爱某个 token，<code>reverse_kl</code> 为正，advantage 为负，训练会压低这个 token 的概率；如果 Teacher 更偏爱某个 token，advantage 为正，训练会提高它的概率。</p>
+<p>这和上一篇 GRPO 的区别很清楚：</p>
+<div class="highlight"><pre><span></span><code>GRPO: advantage 来自同一组回答的相对 reward
+OPD:  advantage 来自 Teacher 与 Student 的 token logprob 差
+</code></pre></div>
+<p>OPD 代码里也有 <code>group_size</code>，但它只是让一个 prompt 产生更多 Student 轨迹。它不会像 GRPO 一样在组内计算相对 reward，每条 completion 都独立接受 Teacher 的逐 token 监督。</p>
+<p>如果你第一次接触 OPD，建议先看 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/general-opd/readme.md">通用 OPD 入门教程</a>。那篇会更详细地解释 reverse KL、自回归右移、Datum 对齐和同步/异步训练。本文重点放在两套 Medical OPD 实验为什么这样设计，以及它们最后得到了什么结果。</p>
+<h2 id="_3">数据是怎么准备的？</h2>
+<p>这次实验一共用了三类数据：</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>用途</th>
+<th>训练时使用的字段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FreedomIntelligence/medical-o1-reasoning-SFT</code> 中文数据</td>
+<td>Medical SFT、Medical OPD prompt pool</td>
+<td>SFT 使用 <code>question + complex_cot + response</code>；OPD 只使用 <code>question</code></td>
+</tr>
+<tr>
+<td><code>bigbio/med_qa</code> 的 MedQA-zh 4 options</td>
+<td>医疗能力评测</td>
+<td>只用于 held-out evaluation</td>
+</tr>
+<tr>
+<td><code>ceval/ceval-exam</code> 精选 8 个 non-med subset</td>
+<td>Base-anchor OPD、通用能力评测</td>
+<td>OPD 只使用题目和选项，不使用 <code>answer_idx</code></td>
+</tr>
+</tbody>
+</table>
+<p>下载脚本会在固定 seed 下准备数据：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/00-download-dataset.py
+</code></pre></div>
+<p>其中 C-Eval 会先按 <code>80% / 20%</code> 划分 OPD train pool 和 held-out test pool，再从 test pool 里固定抽取 300 道题。为了减少医疗领域重叠，排除了 <code>basic_medicine</code>、<code>clinical_medicine</code>、<code>physician</code>、<code>veterinary_medicine</code>、高中生物和初中生物，最后保留 8 个非医疗 subset：</p>
+<div class="highlight"><pre><span></span><code>computer_network
+college_programming
+advanced_mathematics
+discrete_mathematics
+college_physics
+logic
+chinese_language_and_literature
+college_economics
+</code></pre></div>
+<p>这里刻意保留了几个边界：</p>
+<ul>
+<li>MedQA-zh 的 600 道测试题不进入任何训练。</li>
+<li>C-Eval 的 held-out test 不进入 OPD。</li>
+<li>C-Eval OPD train pool 虽然包含 <code>answer_idx</code>，训练脚本会明确忽略它，只使用题目和选项作为 prompt。</li>
+<li>Medical OPD 不读取原数据里的 <code>complex_cot</code> 和 <code>response</code>，只读取 <code>question</code>。</li>
+<li>Teacher 不生成训练答案，只给 Student 实际生成的 completion 计算 logprobs。</li>
+</ul>
+<p>所以这两套 OPD 都是 prompt-only distillation。真正的监督信号来自 Teacher 分布，而不是数据集答案。</p>
+<h2 id="medical-teacher">第一步：先得到一个 Medical Teacher</h2>
+<p>两套方案共用同一个 Medical Teacher。</p>
+<p>我先用 <code>02-medical-sft.py</code> 在中文 <code>medical-o1-reasoning-SFT</code> 上训练 <code>Qwen/Qwen3.5-4B</code>。原始数据把推理过程和最终回答分成 <code>complex_cot</code> 与 <code>response</code>，脚本会把它们整理成：</p>
+<div class="highlight"><pre><span></span><code>&lt;think&gt;
+{complex_cot}
+&lt;/think&gt;
+
+{response}
+</code></pre></div>
+<p>SFT 时，system 和 user prompt 只作为上下文，不参与 loss；assistant completion 和 EOS 才有非零权重：</p>
+<div class="highlight"><pre><span></span><code><span class="n">tokens</span> <span class="o">=</span> <span class="n">prompt_tokens</span> <span class="o">+</span> <span class="n">assistant_tokens</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_tokens</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">assistant_tokens</span><span class="p">)</span>
+
+<span class="n">datum</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">Datum</span><span class="p">(</span>
+    <span class="n">model_input</span><span class="o">=</span><span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="o">.</span><span class="n">from_ints</span><span class="p">(</span><span class="n">tokens</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">loss_fn_inputs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"target_tokens"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+        <span class="s2">"weights"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>我一共训练了 3 个 epoch，每个 epoch 都保存完整 Train state 和用于推理的 sampler weights。评测结果是：</p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">MedQA-zh（600 题）</th>
+<th style="text-align: right;">C-Eval non-med（300 题）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4B Base</td>
+<td style="text-align: right;">72.17% <code>433/600</code></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 1</td>
+<td style="text-align: right;">77.67% <code>466/600</code></td>
+<td style="text-align: right;">71.67% <code>215/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 2</td>
+<td style="text-align: right;"><strong>79.17% <code>475/600</code></strong></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 3</td>
+<td style="text-align: right;">79.00% <code>474/600</code></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+</tbody>
+</table>
+<p>医疗能力确实上去了，但 C-Eval 从 <code>81.67%</code> 一路掉到 <code>69.33%</code>。为了固定后面两套 OPD 实验的 Teacher，我统一选择完成 3 个 epoch 训练后的 checkpoint。它不会作为最终模型直接部署，而是被冻结下来，专门给 fresh Student 提供医疗 token-level supervision。</p>
+<p>这里要区分两类保存结果：</p>
+<table>
+<thead>
+<tr>
+<th>路径类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>trio://.../sampler_weights/...</code></td>
+<td>推理、评测、作为冻结 Teacher</td>
+</tr>
+<tr>
+<td><code>trio://.../training_states/...</code></td>
+<td>恢复 TrainingClient，继续训练</td>
+</tr>
+</tbody>
+</table>
+<p>Medical OPD 创建 Teacher 时需要的是 SFT <code>sampler_weights</code>；后面 SAR-OPD 的第三阶段恢复 Student 时需要的是 Medical OPD <code>training_state</code>。这两个路径不能混用。</p>
+<h2 id="sar-opd">方案一：SAR-OPD，分阶段锚点恢复</h2>
+<p>第一套方案的想法很直接：先让 Student 专心学习医疗能力，再用原始 Base Model 把通用能力拉回来。</p>
+<p>我把它叫作 Staged Anchor-Restoration OPD，简称 SAR-OPD。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/SAR-OPD.png" /></p>
+<p>完整流程分成三个阶段：</p>
+<div class="highlight"><pre><span></span><code>Stage 1: Qwen3.5-4B --Medical SFT--&gt; Medical Teacher
+
+Stage 2: Fresh 4B Student --Medical Teacher OPD--&gt; Medical OPD Student
+
+Stage 3: Medical OPD Student --4B Base Teacher OPD--&gt; SAR-OPD Student
+</code></pre></div>
+<h3 id="stage-1medical-sft">Stage 1：Medical SFT</h3>
+<p>第一阶段就是前面已经完成的 Teacher 准备。Medical SFT epoch 3 会被冻结，不再更新，只负责对 Student 的医疗 completion 计算 logprobs。</p>
+<h3 id="stage-2-fresh-student-medical-opd">Stage 2：让 fresh Student 学 Medical OPD</h3>
+<p>第二阶段没有从 SFT 权重继续训练，而是重新从 <code>Qwen/Qwen3.5-4B</code> 创建一个 fresh LoRA Student：</p>
+<div class="highlight"><pre><span></span><code><span class="n">service_client</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">ServiceClient</span><span class="p">()</span>
+
+<span class="n">training_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_lora_training_client_async</span><span class="p">(</span>
+    <span class="n">base_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">base_model</span><span class="p">,</span>
+    <span class="n">rank</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">lora_rank</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">teacher_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_sampling_client_async</span><span class="p">(</span>
+    <span class="n">base_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">teacher_base_model</span><span class="p">,</span>
+    <span class="n">model_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">teacher_model_path</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>这里的 <code>training_client</code> 是可训练 Student，<code>teacher_client</code> 指向 Medical SFT epoch 3 的 sampler weights。</p>
+<p>每个 step 开始时，先从当前 Student 权重导出 sampler：</p>
+<div class="highlight"><pre><span></span><code><span class="n">student_sampler</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">save_weights_and_get_sampling_client_async</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>然后 Student 对医疗问题采样 <code>group_size</code> 条 completion：</p>
+<div class="highlight"><pre><span></span><code><span class="n">sample_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">student_sampler</span><span class="o">.</span><span class="n">sample_async</span><span class="p">(</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="o">.</span><span class="n">from_ints</span><span class="p">(</span><span class="n">prompt_ids</span><span class="p">),</span>
+    <span class="n">num_samples</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">group_size</span><span class="p">,</span>
+    <span class="n">sampling_params</span><span class="o">=</span><span class="n">sampling_params</span><span class="p">,</span>
+    <span class="n">return_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Teacher 接收的是同一条 <code>prompt + completion</code>：</p>
+<div class="highlight"><pre><span></span><code><span class="n">all_ids</span> <span class="o">=</span> <span class="n">prompt_ids</span> <span class="o">+</span> <span class="n">completion_ids</span>
+<span class="n">all_logprobs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">teacher_client</span><span class="o">.</span><span class="n">compute_logprobs_async</span><span class="p">(</span>
+    <span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="o">.</span><span class="n">from_ints</span><span class="p">(</span><span class="n">all_ids</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">teacher_logprobs</span> <span class="o">=</span> <span class="n">all_logprobs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prompt_ids</span><span class="p">):]</span>
+</code></pre></div>
+<p>这里不能让 Teacher 自己重新生成一个答案。OPD 比较的是 Student 和 Teacher 在完全相同的上下文、完全相同的 token 上分别给出多大概率。如果两条 completion 不一样，就无法进行这种 token 级别的对齐。</p>
+<p>最后构造 reverse-KL advantage，再通过 PPO 更新：</p>
+<div class="highlight"><pre><span></span><code><span class="n">reverse_kl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">student_logprobs</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">teacher_logprobs</span><span class="p">)</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="o">-</span><span class="n">args</span><span class="o">.</span><span class="n">kl_penalty_coef</span> <span class="o">*</span> <span class="n">reverse_kl</span>
+
+<span class="n">fwd_bwd_future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">forward_backward_async</span><span class="p">(</span>
+    <span class="n">datums</span><span class="p">,</span>
+    <span class="n">loss_fn</span><span class="o">=</span><span class="s2">"ppo"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">optim_future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">optim_step_async</span><span class="p">(</span><span class="n">adam</span><span class="p">)</span>
+
+<span class="n">fwd_bwd_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fwd_bwd_future</span>
+<span class="k">await</span> <span class="n">optim_future</span>
+</code></pre></div>
+<p>这次 Medical OPD 的正式配置是：</p>
+<div class="highlight"><pre><span></span><code>Student: Qwen/Qwen3.5-4B fresh LoRA
+Teacher: Medical SFT epoch 3
+Steps: 300
+Batch size: 4 prompts
+Group size: 4 completions per prompt
+Max completion tokens: 2048
+Learning rate: 4e-5
+Loss: PPO
+Sampler refresh: every step
+</code></pre></div>
+<p>300 step 后，医疗能力从 Base 的 <code>72.17%</code> 提高到 <code>80.00%</code>，但 C-Eval 只有 <code>73.00%</code>。相比 Medical SFT 的 <code>69.33%</code> 已经好一些，但通用能力仍然没有回到 Base 水平。</p>
+<p>所以我继续做第三阶段。</p>
+<h3 id="stage-3-base-teacher">Stage 3：用 Base Teacher 恢复通用能力</h3>
+<p>第三阶段把 Medical OPD step 300 的完整 Train state 恢复成新的 TrainingClient：</p>
+<div class="highlight"><pre><span></span><code><span class="n">training_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_training_client_from_state_async</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">student_state_path</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>然后把原始 <code>Qwen/Qwen3.5-4B</code> 作为冻结 Teacher：</p>
+<div class="highlight"><pre><span></span><code><span class="n">teacher_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_sampling_client_async</span><span class="p">(</span>
+    <span class="n">base_model</span><span class="o">=</span><span class="s2">"Qwen/Qwen3.5-4B"</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>训练 prompt 换成 C-Eval non-med 的题目和选项，但不读取 <code>answer_idx</code>。Student 仍然先自己作答，Base Teacher 再给 Student 的实际 completion 计算 logprobs。</p>
+<p>这里的目标不是让 Student 背 C-Eval 答案，而是让它重新靠近原始 Base 在通用问题上的 token 分布。我把 Base Model 当成一个 anchor，所以这一阶段叫 Base-anchor C-Eval OPD。</p>
+<p>第三阶段的配置比 Medical OPD 更保守：</p>
+<div class="highlight"><pre><span></span><code>Student initialization: Medical OPD step 300 Train state
+Teacher: original Qwen/Qwen3.5-4B
+Steps: 300
+Batch size: 4 prompts
+Group size: 4 completions per prompt
+Max completion tokens: 2048
+Learning rate: 5e-6
+Loss: PPO
+Checkpoint: every 50 steps
+</code></pre></div>
+<p>学习率从 <code>4e-5</code> 降到 <code>5e-6</code>，是因为这一阶段更像能力恢复和细调，我不希望一次更新把刚学到的医疗能力冲掉。</p>
+<h3 id="sar-opd_1">SAR-OPD 的结果</h3>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/sar_opd_analysis.png" /></p>
+<p>完整结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>阶段 / Checkpoint</th>
+<th style="text-align: right;">MedQA-zh（600 题）</th>
+<th style="text-align: right;">C-Eval non-med（300 题）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4B Base</td>
+<td style="text-align: right;">72.17% <code>433/600</code></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 1</td>
+<td style="text-align: right;">77.67% <code>466/600</code></td>
+<td style="text-align: right;">71.67% <code>215/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 2</td>
+<td style="text-align: right;">79.17% <code>475/600</code></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT epoch 3（Medical Teacher）</td>
+<td style="text-align: right;">79.00% <code>474/600</code></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+<tr>
+<td>Medical OPD step 300（第三阶段 step 0）</td>
+<td style="text-align: right;">80.00% <code>480/600</code></td>
+<td style="text-align: right;">73.00% <code>219/300</code></td>
+</tr>
+<tr>
+<td>Base-anchor OPD step 50</td>
+<td style="text-align: right;">84.17% <code>505/600</code></td>
+<td style="text-align: right;">76.67% <code>230/300</code></td>
+</tr>
+<tr>
+<td>Base-anchor OPD step 100</td>
+<td style="text-align: right;">82.50% <code>495/600</code></td>
+<td style="text-align: right;">79.33% <code>238/300</code></td>
+</tr>
+<tr>
+<td>Base-anchor OPD step 150</td>
+<td style="text-align: right;">83.00% <code>498/600</code></td>
+<td style="text-align: right;">80.33% <code>241/300</code></td>
+</tr>
+<tr>
+<td>Base-anchor OPD step 200</td>
+<td style="text-align: right;">82.17% <code>493/600</code></td>
+<td style="text-align: right;">83.67% <code>251/300</code></td>
+</tr>
+<tr>
+<td>Base-anchor OPD step 250</td>
+<td style="text-align: right;">83.33% <code>500/600</code></td>
+<td style="text-align: right;">82.67% <code>248/300</code></td>
+</tr>
+<tr>
+<td><strong>Base-anchor OPD step 300</strong></td>
+<td style="text-align: right;"><strong>84.33% <code>506/600</code></strong></td>
+<td style="text-align: right;"><strong>84.67% <code>254/300</code></strong></td>
+</tr>
+</tbody>
+</table>
+<p>C-Eval 的恢复趋势比较清楚：从 Medical OPD 的 <code>73.00%</code> 逐步提高到 <code>84.67%</code>。中间会有波动，但整体重新越过了 Base 的 <code>81.67%</code>。</p>
+<p>更意外的是 MedQA-zh。Base-anchor 阶段没有使用医疗问题，Teacher 也是原始 Base，但医疗准确率没有掉回去，反而从 <code>80.00%</code> 提高到 <code>84.33%</code>。这说明在这次实验里，恢复通用分布和保持医疗能力并不一定是零和关系。</p>
+<p>不过这里只能把它当作这次训练结果，不能直接推断成普遍规律。学习率、prompt、生成预算、checkpoint 方差都可能影响最终数值。后面还需要多随机种子和消融实验，才能判断这部分提升具体来自哪里。</p>
+<p>最终我选择的 SAR-OPD checkpoint 是：</p>
+<div class="highlight"><pre><span></span><code>trio://run_1vbwh91n5le5/sampler_weights/opd-ceval-async-qwen35-4b-base-anchor-ppo-steps300-step000300
+</code></pre></div>
+<p>相对原始 4B Base：</p>
+<div class="highlight"><pre><span></span><code>MedQA-zh:       72.17% -&gt; 84.33%  (+12.17 percentage points)
+C-Eval non-med: 81.67% -&gt; 84.67%  (+3.00 percentage points)
+</code></pre></div>
+<h2 id="idt-opd">方案二：IDT-OPD，交替双教师训练</h2>
+<p>SAR-OPD 的效果很好，但它的工程流程比较长：</p>
+<div class="highlight"><pre><span></span><code>训练 SFT Teacher
+    ↓
+训练 Medical OPD Student
+    ↓
+保存并恢复 Train state
+    ↓
+继续做 Base-anchor OPD
+</code></pre></div>
+<p>于是我想试另一种设计：能不能让同一个 fresh Student 在一条训练循环里同时接受两个 Teacher 的监督？</p>
+<p>我把这个方案叫作 Interleaved Dual-Teacher OPD，简称 IDT-OPD。</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/IDT-OPD.png" /></p>
+<p>它仍然使用前面训练好的 Medical SFT Teacher，但 Student 重新从 fresh <code>Qwen/Qwen3.5-4B</code> 初始化。训练时采用固定 <code>1:1</code> 调度：</p>
+<div class="highlight"><pre><span></span><code>Medical -&gt; C-Eval -&gt; Medical -&gt; C-Eval -&gt; ...
+</code></pre></div>
+<p>Medical step 使用 Medical SFT epoch 3 作为 Teacher；C-Eval step 使用原始 4B Base 作为 Teacher。两种 step 共用：</p>
+<ul>
+<li>同一个 LoRA Student；</li>
+<li>同一个 TrainingClient；</li>
+<li>同一份 Adam optimizer state；</li>
+<li>同一个全局 step；</li>
+<li>每一步更新后的最新 Student 权重。</li>
+</ul>
+<h3 id="11">固定 1:1 调度怎么写？</h3>
+<p>代码先根据参数构造一个周期：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_task_schedule</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">"medical"</span><span class="p">,)</span> <span class="o">*</span> <span class="n">args</span><span class="o">.</span><span class="n">medical_steps_per_cycle</span>
+        <span class="o">+</span> <span class="p">(</span><span class="s2">"ceval"</span><span class="p">,)</span> <span class="o">*</span> <span class="n">args</span><span class="o">.</span><span class="n">ceval_steps_per_cycle</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p>当两个参数都是 1 时，schedule 就是：</p>
+<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="s2">"medical"</span><span class="p">,</span> <span class="s2">"ceval"</span><span class="p">)</span>
+</code></pre></div>
+<p>训练循环根据全局 step 选择当前任务、数据和 Teacher：</p>
+<div class="highlight"><pre><span></span><code><span class="n">task</span> <span class="o">=</span> <span class="n">schedule</span><span class="p">[</span><span class="n">step</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">schedule</span><span class="p">)]</span>
+
+<span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">"medical"</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">medical_rows</span>
+    <span class="n">teacher_client</span> <span class="o">=</span> <span class="n">medical_teacher</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">medical_system_message</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">ceval_rows</span>
+    <span class="n">teacher_client</span> <span class="o">=</span> <span class="n">base_teacher</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ceval_system_message</span>
+</code></pre></div>
+<p>后面的 Student sampling、Teacher logprobs、reverse KL、PPO update 都是同一套逻辑。区别只有当前 step 使用什么 prompt，以及由哪个 Teacher 打分。</p>
+<p>我还给两种任务分别维护自己的 task step：</p>
+<div class="highlight"><pre><span></span><code><span class="n">task_steps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"medical"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"ceval"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">batch</span> <span class="o">=</span> <span class="n">batch_for_task_step</span><span class="p">(</span>
+    <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span>
+    <span class="n">task_step</span><span class="o">=</span><span class="n">task_steps</span><span class="p">[</span><span class="n">task</span><span class="p">],</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">task_steps</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>这样 Medical 与 C-Eval 会各自按自己的进度取 batch，不会因为全局 step 交替而跳过一半数据。</p>
+<h3 id="idt-opd_1">IDT-OPD 的正式配置</h3>
+<div class="highlight"><pre><span></span><code>Student: Qwen/Qwen3.5-4B fresh LoRA
+Medical Teacher: Medical SFT epoch 3
+C-Eval Teacher: original Qwen/Qwen3.5-4B
+Schedule: Medical 1 step + C-Eval 1 step
+Global steps: 600 = M300 + C300
+Batch size: 4 prompts
+Group size: 4 completions per prompt
+Max completion tokens: 2048
+Learning rate: 1e-5
+Loss: PPO
+Sampler refresh: every global step
+</code></pre></div>
+<p>每 100 个全局 step，Medical 和 C-Eval 实际各完成 50 个 optimizer step。所以 step 200 对应 <code>M100 + C100</code>，不是两种任务各训练了 200 step。</p>
+<h3 id="idt-opd_2">IDT-OPD 的结果</h3>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/medical-opd/images/idt_opd_analysis.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th>任务进度</th>
+<th style="text-align: right;">MedQA-zh（600 题）</th>
+<th style="text-align: right;">C-Eval non-med（300 题）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4B Base</td>
+<td>-</td>
+<td style="text-align: right;">72.17% <code>433/600</code></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td>Medical SFT Teacher</td>
+<td>-</td>
+<td style="text-align: right;">79.00% <code>474/600</code></td>
+<td style="text-align: right;">69.33% <code>208/300</code></td>
+</tr>
+<tr>
+<td><strong>IDT-OPD step 100</strong></td>
+<td><code>M50 + C50</code></td>
+<td style="text-align: right;"><strong>79.17% <code>475/600</code></strong></td>
+<td style="text-align: right;">81.67% <code>245/300</code></td>
+</tr>
+<tr>
+<td><strong>IDT-OPD step 200</strong></td>
+<td><code>M100 + C100</code></td>
+<td style="text-align: right;">76.50% <code>459/600</code></td>
+<td style="text-align: right;"><strong>86.00% <code>258/300</code></strong></td>
+</tr>
+<tr>
+<td>IDT-OPD step 300</td>
+<td><code>M150 + C150</code></td>
+<td style="text-align: right;">76.33% <code>458/600</code></td>
+<td style="text-align: right;">84.33% <code>253/300</code></td>
+</tr>
+<tr>
+<td>IDT-OPD step 400</td>
+<td><code>M200 + C200</code></td>
+<td style="text-align: right;">75.17% <code>451/600</code></td>
+<td style="text-align: right;">81.33% <code>244/300</code></td>
+</tr>
+<tr>
+<td>IDT-OPD step 500</td>
+<td><code>M250 + C250</code></td>
+<td style="text-align: right;">75.33% <code>452/600</code></td>
+<td style="text-align: right;">83.67% <code>251/300</code></td>
+</tr>
+<tr>
+<td>IDT-OPD step 600</td>
+<td><code>M300 + C300</code></td>
+<td style="text-align: right;">75.00% <code>450/600</code></td>
+<td style="text-align: right;">82.00% <code>246/300</code></td>
+</tr>
+</tbody>
+</table>
+<p>step 100 是一个更偏医疗的 checkpoint：MedQA-zh 达到 <code>79.17%</code>，C-Eval 正好保持 Base 的 <code>81.67%</code>。</p>
+<p>step 200 则更偏通用：MedQA-zh 为 <code>76.50%</code>，C-Eval 达到整个 IDT 实验最高的 <code>86.00%</code>。相对 Base，两项指标都提高了 <code>4.33</code> 个百分点，是一个更均衡的 checkpoint。</p>
+<p>继续训练到 step 600 并没有继续提高。医疗准确率逐渐下降到 <code>75.00%</code>，C-Eval 也回落到 <code>82.00%</code>。这说明固定 1:1 调度并不会自动收敛到一个越来越好的平衡点，Teacher 之间的拉扯、学习率、任务顺序和训练时长都会影响轨迹。</p>
+<p>所以 IDT-OPD 最重要的结果不是“最后一步是多少”，而是 step 100 和 step 200 形成了两个 Pareto 有效 checkpoint：</p>
+<div class="highlight"><pre><span></span><code>step 100: 更偏医疗，同时把 C-Eval 保持在 Base 水平
+step 200: 医疗仍高于 Base，C-Eval 达到最高
+</code></pre></div>
+<p>如果优先选择综合更均衡的结果，我会选 step 200：</p>
+<h2 id="_4">两套方案应该怎么选？</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>SAR-OPD</th>
+<th>IDT-OPD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>训练结构</td>
+<td>分阶段顺序训练</td>
+<td>双 Teacher 按 step 交替训练</td>
+</tr>
+<tr>
+<td>Student 初始化</td>
+<td>Medical OPD 从 fresh Base 开始；第三阶段从 Medical OPD state 恢复</td>
+<td>fresh Base Student，一条训练循环到底</td>
+</tr>
+<tr>
+<td>Teacher 使用方式</td>
+<td>先 Medical Teacher，再 Base Teacher</td>
+<td>Medical Teacher 与 Base Teacher 交替</td>
+</tr>
+<tr>
+<td>当前最佳 MedQA-zh</td>
+<td><strong>84.33%</strong></td>
+<td>79.17%</td>
+</tr>
+<tr>
+<td>当前最佳 C-Eval</td>
+<td>84.67%</td>
+<td><strong>86.00%</strong></td>
+</tr>
+<tr>
+<td>主要优点</td>
+<td>当前综合效果最好，能力恢复过程清楚</td>
+<td>结构统一，容易扩展任务比例和更多 Teacher</td>
+</tr>
+<tr>
+<td>主要难点</td>
+<td>流程更长，需要正确保存和恢复 Train state</td>
+<td>对 schedule、学习率、早停和 checkpoint 选择敏感</td>
+</tr>
+<tr>
+<td>更适合的场景</td>
+<td>追求这次实验里的最终综合性能</td>
+<td>多领域、多 Teacher、持续训练和 Pareto 探索</td>
+</tr>
+</tbody>
+</table>
+<p>如果只根据这轮实验选最终模型，我会选择 SAR-OPD step 300。它的 MedQA-zh 和 C-Eval 都超过 Base，也是两套方案里综合表现最好的 checkpoint。</p>
+<p>IDT-OPD 的意义更多在结构上。今天可以是一个 Medical Teacher 和一个 Base Teacher，后面也可以扩展成代码、数学、Agent tool-use 等多个 Teacher，再通过调度比例决定训练时更关注哪种能力。</p>
+<p>当然，Teacher 数量增加以后，问题也会更复杂：不同 Teacher 的 tokenizer 必须兼容，任务 prompt 要对齐，调度比例要调，optimizer state 还会把不同任务的更新历史混在一起。IDT-OPD 更灵活，但不代表它天然比顺序训练稳定。</p>
+<h2 id="_5">如何运行这套实验？</h2>
+<p>如果直接 clone 仓库，先安装依赖并登录 PyTRIO：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+</code></pre></div>
+<p>训练脚本通过 PyTRIO SDK 运行；两个评测脚本使用 TRIO 的 OpenAI-compatible API，需要在 <code>experiments/medical-opd/.env</code> 中配置同一个 API key：</p>
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>experiments/medical-opd/.env.example<span class="w"> </span>experiments/medical-opd/.env
+</code></pre></div>
+<p>然后把 <code>.env</code> 里的占位符替换掉：</p>
+<div class="highlight"><pre><span></span><code>PYTRIO_API_KEY="your_pytrio_api_key_here"
+</code></pre></div>
+<h3 id="1">1. 下载并整理数据</h3>
+<p>正式下载：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/00-download-dataset.py
+</code></pre></div>
+<p>如果只想先检查数据链路：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/00-download-dataset.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--medical-sft-sample-size<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--medqa-sample-size<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ceval-train-size<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ceval-test-size<span class="w"> </span><span class="m">20</span>
+</code></pre></div>
+<h3 id="2-medical-sft-teacher">2. 训练 Medical SFT Teacher</h3>
+<p>小成本试跑：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/02-medical-sft.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sample-size<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-epochs<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-length<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>disabled
+</code></pre></div>
+<p>正式训练：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/02-medical-sft.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-epochs<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-length<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>训练完成后记录 epoch 3 的 <code>sampler_weights</code> 路径，后面两套方案都会把它作为 Medical Teacher。</p>
+<h3 id="3-medical-opd">3. 运行 Medical OPD</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/03-medical-opd-async.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--teacher-model-path<span class="w"> </span>YOUR_SFT_SAMPLER_WEIGHTS_PATH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--steps<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sample-size<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--learning-rate<span class="w"> </span>4e-5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-every-steps<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>训练结束后会同时得到：</p>
+<div class="highlight"><pre><span></span><code>Medical OPD Train state      -&gt; 用于 SAR-OPD 第三阶段继续训练
+Medical OPD sampler weights  -&gt; 用于评测或推理
+</code></pre></div>
+<h3 id="4-sar-opd-base-anchor">4. 运行 SAR-OPD 的 Base-anchor 阶段</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/04-ceval-opd-async.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--student-state-path<span class="w"> </span>YOUR_MEDICAL_OPD_TRAIN_STATE_PATH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--steps<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sample-size<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--learning-rate<span class="w"> </span>5e-6<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-every-steps<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p><code>--student-state-path</code> 必须传 <code>save_state</code> 生成的 Train state，不能传 <code>/sampler_weights/</code> 路径。脚本会在任何 C-Eval OPD update 之前先保存一份 source-copy state，并为正式 run 保存 step 0 的 state 和 sampler weights，方便之后精确比较恢复轨迹。</p>
+<h3 id="5-idt-opd">5. 运行 IDT-OPD</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/05-interleaved-multi-teacher-opd.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--medical-teacher-model-path<span class="w"> </span>YOUR_SFT_SAMPLER_WEIGHTS_PATH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--steps<span class="w"> </span><span class="m">600</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--medical-steps-per-cycle<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ceval-steps-per-cycle<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--learning-rate<span class="w"> </span>1e-5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-every-steps<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>如果想试 <code>2:1</code> 医疗偏置调度，只需要改成：</p>
+<div class="highlight"><pre><span></span><code>--medical-steps-per-cycle<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+--ceval-steps-per-cycle<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<p>checkpoint 最好保存在完整调度周期结束后。<code>1:1</code> 的周期长度是 2，所以保存间隔应该是 2 的倍数；<code>2:1</code> 的周期长度是 3，保存间隔应该是 3 的倍数。</p>
+<h3 id="6-sampler-weights">6. 评测 sampler weights</h3>
+<p>MedQA-zh：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/01-eval-medical.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model<span class="w"> </span>YOUR_SAMPLER_WEIGHTS_PATH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--concurrency<span class="w"> </span><span class="m">16</span>
+</code></pre></div>
+<p>C-Eval non-med：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/medical-opd/01-eval-ceval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model<span class="w"> </span>YOUR_SAMPLER_WEIGHTS_PATH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-tokens<span class="w"> </span><span class="m">8192</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--concurrency<span class="w"> </span><span class="m">16</span>
+</code></pre></div>
+<p>评测结果会写入 <code>experiments/medical-opd/eval-results/</code>，每次会保存逐题 JSONL 和汇总 metrics JSON。比较 checkpoint 时要保持数据文件、system prompt、temperature 和输出预算一致，否则准确率没有直接可比性。</p>
+<h2 id="_6">训练时应该看哪些指标？</h2>
+<p>两套 OPD 脚本都会把训练过程记录到 SwanLab。重点指标包括：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>opd/reverse_kl_mean</code></td>
+<td>Student 与 Teacher 在采样 token 上的平均 logprob 差</td>
+</tr>
+<tr>
+<td><code>opd/reverse_kl_std</code></td>
+<td>token-level reverse KL 的离散程度</td>
+</tr>
+<tr>
+<td><code>data/datums</code></td>
+<td>当前 step 实际进入训练的 completion 数</td>
+</tr>
+<tr>
+<td><code>data/completion_tokens_mean</code></td>
+<td>每条 completion 的平均 token 数</td>
+</tr>
+<tr>
+<td><code>data/completion_tokens_total</code></td>
+<td>当前 step 的 completion token 总数</td>
+</tr>
+<tr>
+<td><code>step/completion_tokens_per_second</code></td>
+<td>整个 OPD step 的 token 吞吐</td>
+</tr>
+<tr>
+<td><code>trainer/*</code></td>
+<td>PyTRIO 返回的 PPO loss 等训练指标</td>
+</tr>
+</tbody>
+</table>
+<p>IDT-OPD 会把 Medical 与 C-Eval 的指标分别记录到 <code>medical/*</code> 和 <code>ceval/*</code> 下，同时额外记录：</p>
+<div class="highlight"><pre><span></span><code>train/medical_steps
+train/ceval_steps
+train/medical_ratio
+train/ceval_ratio
+</code></pre></div>
+<p>这里的 tokens/s 是整步 OPD 吞吐，包含 Student sampling、Teacher logprobs、forward/backward、optimizer step 和 sampler refresh，不等同于纯推理服务的生成速度。</p>
+<p>另外，reverse KL 下降只表示 Student 更接近当前 Teacher，不代表 benchmark 一定提高。尤其 IDT-OPD 有两个目标不同的 Teacher，单独看 loss 或 KL 很难判断最终能力平衡，还是要定期保存 checkpoint，并用独立评测集验证。</p>
+<h2 id="_7">这次实验还有哪些边界？</h2>
+<p>这篇已经把两套流程完整跑通并做了固定评测，但它还不是一个完整的论文级消融实验。</p>
+<p>第一，目前每套方案只有一条主要训练轨迹，没有多随机种子均值和方差。像 <code>84.33%</code> 这种结果可能包含 checkpoint 波动，不能把小幅差异都理解成稳定提升。</p>
+<p>第二，SAR-OPD 和 IDT-OPD 使用的学习率不同：Medical OPD 是 <code>4e-5</code>，Base-anchor 阶段是 <code>5e-6</code>，IDT-OPD 是 <code>1e-5</code>。因此两套方案的结果差异不能全部归因于“顺序训练”或“交替训练”。</p>
+<p>第三，还没有系统消融 <code>group_size</code>、<code>kl_penalty_coef</code>、PPO 与 importance sampling、sampler refresh 间隔，以及 Medical/C-Eval 的调度比例。IDT-OPD 的 <code>1:1</code> 只是这次已经跑完的一条配置，不代表最优比例。</p>
+<p>第四，MedQA-zh 和 C-Eval 都是选择题 benchmark。它们适合观察模型能力变化，但不能代表真实临床问答安全性，也不能把这些准确率直接解释成可以用于医疗诊断。</p>
+<p>最后，这篇复现的是 OPD 的训练闭环，并基于它做了两个应用方案。它不是对 GKD、MiniLLM 或其他 OPD 论文全部数据、模型和 benchmark 的严格复刻。本文能够确认的是：在这套本地代码、训练配置和固定评测下，两种多能力 OPD 训练路径都跑通了，并产生了可复核的 checkpoint 结果。</p>
+<h2 id="_8">小结</h2>
+<p>这次实验最开始只是想给 4B 模型增加一点中文医疗能力，最后真正遇到的问题却是领域增强和通用能力遗忘之间的平衡。</p>
+<p>Medical SFT 很快把医疗知识教给了模型，但也让 C-Eval 从 <code>81.67%</code> 掉到 <code>69.33%</code>。OPD 给了我另一种训练方式：Student 不再背固定答案，而是先暴露自己当前会生成什么，再由不同 Teacher 沿着这些真实轨迹提供 token-level supervision。</p>
+<p>SAR-OPD 把训练拆成两个清楚的目标：先学医疗，再用 Base anchor 恢复通用能力。它在当前实验里得到最好的综合结果：</p>
+<div class="highlight"><pre><span></span><code>MedQA-zh:       84.33%
+C-Eval non-med: 84.67%
+</code></pre></div>
+<p>IDT-OPD 则把两个 Teacher 放进同一个训练循环。它没有产生一个单调变好的最终点，但给出了两个不同取向的 Pareto checkpoint，也说明多 Teacher OPD 可以被做成一种更通用的能力调度结构。</p>
+<p>我觉得 OPD 最有意思的地方，也正在这里。它不只是一种“大模型压缩到小模型”的蒸馏方法。只要 Teacher 和 Student 能在同一条 token 轨迹上对齐 logprobs，我们就可以让不同 Teacher 分别代表不同能力，再决定 Student 应该在什么时候、在哪类 prompt 上向谁学习。</p>
+<h2 id="_9">参考资料</h2>
+<h3 id="_10">方法与模型</h3>
+<ol>
+<li>Rishabh Agarwal et al. <a href="https://arxiv.org/abs/2306.13649">On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes</a>, 2023.</li>
+<li>Yuxian Gu, Li Dong, Furu Wei, Minlie Huang. <a href="https://arxiv.org/abs/2306.08543">MiniLLM: Knowledge Distillation of Large Language Models</a>, 2023.</li>
+<li>Junying Chen et al. <a href="https://arxiv.org/abs/2412.18925">HuatuoGPT-o1, Towards Medical Complex Reasoning with LLMs</a>, 2024.</li>
+</ol>
+<h3 id="_11">数据集与评测基准</h3>
+<ol>
+<li>Di Jin et al. <a href="https://arxiv.org/abs/2009.13081">What Disease does this Patient Have? A Large-scale Open Domain Question Answering Dataset from Medical Exams</a>, 2020.</li>
+<li>Yuzhen Huang et al. <a href="https://arxiv.org/abs/2305.08322">C-Eval: A Multi-Level Multi-Discipline Chinese Evaluation Suite for Foundation Models</a>, 2023.</li>
+<li>Medical SFT 数据集：<a href="https://huggingface.co/datasets/FreedomIntelligence/medical-o1-reasoning-SFT">FreedomIntelligence/medical-o1-reasoning-SFT</a></li>
+<li>MedQA 评测数据：<a href="https://huggingface.co/datasets/bigbio/med_qa">bigbio/med_qa</a></li>
+<li>C-Eval 评测数据：<a href="https://huggingface.co/datasets/ceval/ceval-exam">ceval/ceval-exam</a></li>
+</ol>
+<h3 id="_12">实现与实验工具</h3>
+<ol>
+<li>本文完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/medical-opd">datawhalechina/agentic-rl-lab</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.cn/docs">快速开始</a> · <a href="https://docs.pytrio.cn/docs/advanced/compute_logprobs">Compute Logprobs</a> · <a href="https://docs.pytrio.cn/docs/guide/loss_fn">自定义 Loss Function</a></li>
+<li>SwanLab 文档：<a href="https://docs.swanlab.cn/guide_cloud/general/quick-start.html">快速开始</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

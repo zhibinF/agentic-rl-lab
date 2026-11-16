@@ -1,0 +1,2451 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/opsd/">
+      
+      
+        <link rel="prev" href="../gspo/">
+      
+      
+        <link rel="next" href="../agentopsd/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>OPSD - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-4-opsd" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OPSD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复现结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 是什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        同一个模型，为什么会同时有 Student 和 Teacher？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd-sftgrpo-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 和 SFT、GRPO、普通 OPD 有什么区别？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次复现的目标函数是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文复现 Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么用 PyTRIO 可以在两天内做完？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 的异步训练闭环
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problem-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：准备 problem + solution 数据
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-teacher_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第二步：创建可训练 Student 和固定 Teacher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-on-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第三步：让 Student 先生成 on-policy 轨迹
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#teacher-student-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第四步：Teacher 只给同一条 Student completion 打分
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logprob-token-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第五步：把 logprob 差变成逐 token advantage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completionprompt-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第六步：只训练 completion，prompt 全部 mask
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asynciogather-rollout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第七步：用 asyncio.gather 并发整批 rollout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forwardbackward-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第八步：一次 forward/backward，再更新 Student
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SwanLab 训练记录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这次复现？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这次复现？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安装项目并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-opsd-aime25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 下载 OPSD 和 AIME25 数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-100-step-opsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 运行 100-step 异步 OPSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-base-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 评测 Base Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-opsd-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测 OPSD checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 绘制 checkpoint 对比图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复现结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 是什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-teacher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        同一个模型，为什么会同时有 Student 和 Teacher？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd-sftgrpo-opd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 和 SFT、GRPO、普通 OPD 有什么区别？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        这次复现的目标函数是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文复现 Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么用 PyTRIO 可以在两天内做完？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPSD 的异步训练闭环
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problem-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第一步：准备 problem + solution 数据
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-teacher_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第二步：创建可训练 Student 和固定 Teacher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-on-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第三步：让 Student 先生成 on-policy 轨迹
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#teacher-student-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第四步：Teacher 只给同一条 Student completion 打分
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logprob-token-advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第五步：把 logprob 差变成逐 token advantage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completionprompt-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第六步：只训练 completion，prompt 全部 mask
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asynciogather-rollout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第七步：用 asyncio.gather 并发整批 rollout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forwardbackward-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第八步：一次 forward/backward，再更新 Student
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swanlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SwanLab 训练记录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何运行这次复现？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何运行这次复现？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安装项目并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-opsd-aime25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 下载 OPSD 和 AIME25 数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-100-step-opsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 运行 100-step 异步 OPSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-base-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 评测 Base Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-opsd-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 评测 OPSD checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 绘制 checkpoint 对比图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="参考资料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        论文与官方实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数据与模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-4-opsd">接下来我将复现 10 篇强化学习算法：第 4 篇，一顿疯狂星期四，搞定 OPSD</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 训练 → 评测。</p>
+</blockquote>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/head.png" /></p>
+<div align="center">
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian" target="_blank"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c" target="_blank"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://komarev.com/ghpvc/?username=KMnO4-zx-agentic-rl-lab-opsd&amp;label=visitors&amp;color=1283c3&amp;style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本文完整代码：<a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/opsd">datawhalechina/agentic-rl-lab/experiments/opsd</a></li>
+<li>异步 OPSD 训练脚本：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py">01-opsd-async.py</a></li>
+<li>SwanLab 训练记录：<a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-opsd/runs/pxsnuza4/chart">查看完整实验曲线</a></li>
+<li>OPSD 论文：<a href="https://arxiv.org/abs/2601.18734">Self-Distilled Reasoner: On-Policy Self-Distillation for Large Language Models</a></li>
+<li>OPSD 官方实现：<a href="https://github.com/siyan-zhao/OPSD">siyan-zhao/OPSD</a></li>
+<li>PyTRIO 文档：<a href="https://docs.pytrio.com/docs">https://docs.pytrio.com/docs</a></li>
+<li>PyTRIO 是什么？：<a href="https://zhuanlan.zhihu.com/p/2063265307226019219">知乎介绍</a></li>
+<li>PyTRIO Skill：<a href="https://github.com/SwanHubX/pytrio-skill">SwanHubX/pytrio-skill</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第四篇。</p>
+<p>前面几篇分别讲了：</p>
+<ul>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/loss-functions/readme.md">第 0 篇：强化学习基础——损失函数</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/grpo/readme.md">第 1 篇：GRPO</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/medical-opd/readme.md">第 2 篇：OPD</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/search-r1/readme.md">第 3 篇：一杯喜茶，搞定 Search-R1</a></li>
+</ul>
+<p>这次想做的是一篇刚刚放出来不久、思路又特别漂亮的工作：<strong>OPSD，On-Policy Self-Distillation</strong>。</p>
+<p>翻译成人话就是：</p>
+<blockquote>
+<p>不找一个更大的 Teacher，直接让同一个模型一边闭卷答题，一边拿着参考答案给自己判卷。</p>
+</blockquote>
+<p>前面几篇复现里，我已经用 PyTRIO 跑过 GRPO、OPD 和 Search-R1，对这套开发方式并不陌生。这一次真正想验证的是：面对一篇刚发布不久的 OPSD，能不能继续把时间集中在双 prompt、Teacher logprob 和 sampled-token loss 这些算法问题上。最后从读论文、写代码，到跑完 100 step、评测 Base Model 和 4 个 checkpoint、画出结果，整个过程没有超过两天。</p>
+<p>正式训练会话的 PyTRIO 花销是 <code>41.81</code> 元：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/pytrio-consume.png" /></p>
+<p>这里的 <code>41.81</code> 元只计算 100-step 正式训练，不包含后面的完整 AIME25 评测。</p>
+<p>评测反而是这次实验里更贵的一部分。我们需要分别评测 Base Model、Step 25、Step 50、Step 75 和 Step 100，一共 5 个模型状态。每次评测包含：</p>
+<div class="highlight"><pre><span></span><code>30 道题 × 每题 12 次采样 = 360 条 completions
+每条 completion 的 max_tokens = 38,912
+</code></pre></div>
+<p>因此，每个模型状态的最大生成预算是：</p>
+<div class="highlight"><pre><span></span><code>30 × 12 × 38,912 = 14,008,320 tokens
+</code></pre></div>
+<p><code>14.01M</code> 是上限，不是实际花销。模型通常会在达到 <code>max_tokens</code> 前生成 EOS，所以截图中的实际 sample 消耗为每次 <code>3.40M～3.86M tokens</code>：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/sample-consume.png" /></p>
+<table>
+<thead>
+<tr>
+<th>评测对象</th>
+<th style="text-align: right;">实际 sample tokens</th>
+<th style="text-align: right;">花销</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Model</td>
+<td style="text-align: right;">3.49M</td>
+<td style="text-align: right;">¥16.15</td>
+</tr>
+<tr>
+<td>Step 25</td>
+<td style="text-align: right;">3.40M</td>
+<td style="text-align: right;">¥15.79</td>
+</tr>
+<tr>
+<td>Step 50</td>
+<td style="text-align: right;">3.53M</td>
+<td style="text-align: right;">¥16.37</td>
+</tr>
+<tr>
+<td>Step 75</td>
+<td style="text-align: right;">3.77M</td>
+<td style="text-align: right;">¥17.44</td>
+</tr>
+<tr>
+<td>Step 100</td>
+<td style="text-align: right;">3.86M</td>
+<td style="text-align: right;">¥17.86</td>
+</tr>
+<tr>
+<td><strong>5 次评测合计</strong></td>
+<td style="text-align: right;"><strong>18.05M</strong></td>
+<td style="text-align: right;"><strong>¥83.61</strong></td>
+</tr>
+</tbody>
+</table>
+<p>把正式训练和这 5 次完整评测放在一起，明确可归属的花销是 <code>41.81 + 83.61 = 125.42</code> 元。</p>
+<p>所以标题里的“一顿疯狂星期四”，指的是把 OPSD 训练跑起来：四十多块钱确实跑通了一条完整训练链路；为了得到 Base + 4 个 checkpoint 的完整 Pass@12 曲线，评测成本会更高。</p>
+<h2 id="_1">复现结果</h2>
+<p>我们固定使用 30 道题，每道题采样 12 次；Base Model 和所有 checkpoint 使用完全相同的评测配置：</p>
+<div class="highlight"><pre><span></span><code>temperature = 1.0
+top_p = 1.0
+top_k = -1
+max_tokens = 38,912
+thinking = off
+</code></pre></div>
+<p>结果如下：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/aime25-opsd-progress.png" /></p>
+<table>
+<thead>
+<tr>
+<th>模型 / Checkpoint</th>
+<th style="text-align: right;">Average@12</th>
+<th style="text-align: right;">Pass@12</th>
+<th style="text-align: right;">正确 generations</th>
+<th style="text-align: right;">至少答对一次的题目</th>
+<th style="text-align: right;">Format Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-4B Base</td>
+<td style="text-align: right;">51.67%</td>
+<td style="text-align: right;">80.00%</td>
+<td style="text-align: right;">186 / 360</td>
+<td style="text-align: right;">24 / 30</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td>Step 25</td>
+<td style="text-align: right;">51.11%</td>
+<td style="text-align: right;">73.33%</td>
+<td style="text-align: right;">184 / 360</td>
+<td style="text-align: right;">22 / 30</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td>Step 50</td>
+<td style="text-align: right;">50.28%</td>
+<td style="text-align: right;">86.67%</td>
+<td style="text-align: right;">181 / 360</td>
+<td style="text-align: right;">26 / 30</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td>Step 75</td>
+<td style="text-align: right;">48.61%</td>
+<td style="text-align: right;">76.67%</td>
+<td style="text-align: right;">175 / 360</td>
+<td style="text-align: right;">23 / 30</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td><strong>Step 100</strong></td>
+<td style="text-align: right;"><strong>52.78%</strong></td>
+<td style="text-align: right;"><strong>86.67%</strong></td>
+<td style="text-align: right;"><strong>190 / 360</strong></td>
+<td style="text-align: right;"><strong>26 / 30</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>这里的两个指标分别表示：</p>
+<ul>
+<li><strong>Average@12</strong>：360 条 generation 里有多少条最终答对；</li>
+<li><strong>Pass@12</strong>：30 道题里，有多少题在 12 次采样中至少答对过一次。</li>
+</ul>
+<p>Step 100 是这组实验里 Average@12 最好的 checkpoint：</p>
+<div class="highlight"><pre><span></span><code>Average@12: 51.67% → 52.78%  （+1.11 个百分点）
+Pass@12:    80.00% → 86.67%  （+6.67 个百分点）
+</code></pre></div>
+<p>换成更直观的数字，就是正确 generation 从 <code>186</code> 增加到 <code>190</code>，至少答对一次的题目从 <code>24</code> 道增加到 <code>26</code> 道。</p>
+<p>这个提升是正的，但并不大。中间 checkpoint 也不是单调上升：Step 75 的 Average@12 甚至低于 Base Model。因此这组结果更适合说明：</p>
+<blockquote>
+<p>OPSD 的完整训练链路确实跑通了，最终 checkpoint 在当前评测上得到小幅正向变化；但 30 道题、单次训练、没有多随机种子的实验，还不足以宣称稳定复现了论文收益。</p>
+</blockquote>
+<h2 id="opsd">OPSD 是什么</h2>
+<p>OPSD 来自 Siyan Zhao 等人的论文：</p>
+<blockquote>
+<p>Self-Distilled Reasoner: On-Policy Self-Distillation for Large Language Models</p>
+</blockquote>
+<p>论文想解决两个很实际的问题。</p>
+<p>第一个问题来自 SFT。</p>
+<p>SFT 训练时，模型看到的是专家写好的标准轨迹：</p>
+<div class="highlight"><pre><span></span><code>problem → expert solution
+</code></pre></div>
+<p>但是推理时，模型真正面对的是自己已经生成出来的 token。它可能在第三步就走错了，后面看到的上下文也会越来越偏。训练时从没见过这些“自己的错误状态”，推理时却必须处理它们，这就是典型的 off-policy distribution mismatch。</p>
+<p>第二个问题来自 GRPO 一类 RLVR。</p>
+<p>GRPO 可以在模型自己的 rollout 上学习，但通常只在整条回答结束后获得一个结果奖励：</p>
+<div class="highlight"><pre><span></span><code>答对 → 1
+答错 → 0
+</code></pre></div>
+<p>一条上千 token 的推理轨迹，最终只有一个稀疏信号。如果同一道题的 8 条轨迹全对或者全错，group-relative advantage 还会整体变成 0。</p>
+<p>OPSD 的想法是把两者结合起来：</p>
+<ul>
+<li>rollout 必须由当前 Student 自己生成，保持 on-policy；</li>
+<li>Teacher 沿着 Student 的这条真实轨迹，在每一个 token 位置提供监督；</li>
+<li>Teacher 不需要是一个更大的模型，它和 Student 来自同一个初始模型；</li>
+<li>两者的差别，只是 Teacher 能看到参考解答，Student 看不到。</li>
+</ul>
+<p>论文里的完整流程是这样的：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/opsd.png" /></p>
+<p>可以把它想成同一个学生在做两件事。</p>
+<p>第一次是闭卷：</p>
+<div class="highlight"><pre><span></span><code>Student：只看题目，自己尝试解题。
+</code></pre></div>
+<p>第二次是开卷判卷：</p>
+<div class="highlight"><pre><span></span><code>Teacher：看到题目、参考解答，以及 Student 已经写出的前缀，
+         判断 Student 的下一个 token 是否合理。
+</code></pre></div>
+<p>这里最容易误解的一点是：</p>
+<blockquote>
+<p>Teacher 不会重新生成一条答案。整条轨迹只有 Student 生成一次，Teacher 只是对 Student 已经生成的 token 做一次 forward，计算它们的 logprob。</p>
+</blockquote>
+<p>因此，它仍然是严格的 on-policy 学习。训练发生在当前 Student 真正访问到的 token 前缀上，而不是拿一批固定的专家答案做模仿。</p>
+<h2 id="student-teacher">同一个模型，为什么会同时有 Student 和 Teacher？</h2>
+<p>关键在 prompt。</p>
+<p>Student 和 Teacher 使用同一个 Qwen3.5-4B tokenizer，也来自同一个初始模型，但上下文不同：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/prompt.png" /></p>
+<p>Student prompt 只有题目和输出要求：</p>
+<div class="highlight"><pre><span></span><code>Problem: {problem}
+
+Please reason step by step, and put your final answer within \boxed{}.
+</code></pre></div>
+<p>Teacher prompt 会额外加入数据集中的参考解答：</p>
+<div class="highlight"><pre><span></span><code>Problem: {problem}
+
+Here is a reference solution to this problem:
+=== Reference Solution Begin ===
+{solution}
+=== Reference Solution End ===
+
+请理解上面的推理，但不要直接复制；用自己的方式推导同一个答案。
+</code></pre></div>
+<p>真实实现位于 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L279-L305"><code>build_student_prompt_ids()</code> 和 <code>build_teacher_prompt_ids()</code></a>。</p>
+<p>参考解答并不是让 Teacher 输出一份新的标准答案，而是作为 privileged information 改变 Teacher 对“下一个 token”的判断。</p>
+<p>举个极简例子。假设 Student 已经写到：</p>
+<div class="highlight"><pre><span></span><code>f'(x) = 6x + 2, so at x = 2 ...
+</code></pre></div>
+<p>Student 只能根据题目和自己的推理前缀，判断下一个 token 是什么；Teacher 已经看过参考解答，因此可能对正确的 <code>14</code> 给出更高概率，对错误分支给出更低概率。</p>
+<p>这就是所谓的“同一个模型教自己”：Teacher 的能力不是来自更多参数，而是来自更多上下文。</p>
+<h2 id="opsd-sftgrpo-opd">OPSD 和 SFT、GRPO、普通 OPD 有什么区别？</h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>训练轨迹来自哪里</th>
+<th>监督信号</th>
+<th>Teacher</th>
+<th>是否在 Student 自己的状态上学习</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SFT</td>
+<td>固定专家轨迹</td>
+<td>token-level CE</td>
+<td>不需要在线 Teacher</td>
+<td>否</td>
+</tr>
+<tr>
+<td>GRPO</td>
+<td>当前策略 rollout</td>
+<td>sequence-level reward</td>
+<td>Reward / Verifier</td>
+<td>是</td>
+</tr>
+<tr>
+<td>普通 OPD</td>
+<td>当前 Student rollout</td>
+<td>Teacher token logprob</td>
+<td>独立 Teacher 模型</td>
+<td>是</td>
+</tr>
+<tr>
+<td>OPSD</td>
+<td>当前 Student rollout</td>
+<td>privileged Teacher token logprob</td>
+<td>同一个初始模型，不同 prompt</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>OPSD 最漂亮的地方，就是同时保留了三件事：</p>
+<ol>
+<li><strong>On-policy</strong>：训练数据来自 Student 当前会生成的内容；</li>
+<li><strong>Dense feedback</strong>：每一个 completion token 都有 Teacher 信号；</li>
+<li><strong>Self-distillation</strong>：不需要再部署一个更大的 Teacher 模型。</li>
+</ol>
+<h2 id="_2">这次复现的目标函数是什么？</h2>
+<p>论文给出了两种实现 OPSD 的方式。</p>
+<p>第一种是 full-vocabulary logit distillation：在每一个位置拿到 Teacher 和 Student 对整个词表的分布，再计算 JSD 或 KL。论文主实验使用 <code>JSD β=0.5</code>，后续官方代码还加入了 point-wise KL clipping，避免少数风格 token 支配训练信号。</p>
+<p>第二种是 sampled-token distillation：只计算 Student 实际采样 token 在两个策略下的 logprob，再把两者的差作为 token-level advantage。</p>
+<p>本文使用的是第二种。</p>
+<p>对于 Student 在位置 <code>t</code> 实际采样出的 token <code>ŷ_t</code>：</p>
+<div class="highlight"><pre><span></span><code>reverse_kl_t = log p_S(ŷ_t | x, ŷ_&lt;t&gt;)
+             - log p_T(ŷ_t | x, y*, ŷ_&lt;t&gt;)
+
+advantage_t  = -β × reverse_kl_t
+             = β × (log p_T - log p_S)
+</code></pre></div>
+<p>代码就是两行：</p>
+<div class="highlight"><pre><span></span><code><span class="n">reverse_kl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">student_lps</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">teacher_lps</span><span class="p">)</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="o">-</span><span class="n">args</span><span class="o">.</span><span class="n">kl_penalty_coef</span> <span class="o">*</span> <span class="n">reverse_kl</span>
+</code></pre></div>
+<p>完整位置见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L373-L468"><code>run_prompt_rollout_async()</code></a>。</p>
+<p>如果 Teacher 比 Student 更认可这个 token，那么 <code>log p_T - log p_S</code> 为正，这个 token 会被鼓励；如果 Teacher 更不认可，它就会被压低。</p>
+<h2 id="config">本文复现 Config</h2>
+<p>本次实验配置如下：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>本文实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Model</td>
+<td><code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>Student</td>
+<td>LoRA rank 64；训练 attention + MLP</td>
+</tr>
+<tr>
+<td>Teacher</td>
+<td>固定的 step-0 <code>Qwen/Qwen3.5-4B</code></td>
+</tr>
+<tr>
+<td>训练数据</td>
+<td><code>siyanzhao/Openthoughts_math_30k_opsd</code></td>
+</tr>
+<tr>
+<td>数据量</td>
+<td>29,434 对 <code>problem + solution</code></td>
+</tr>
+<tr>
+<td>实际分析区间</td>
+<td>100 steps</td>
+</tr>
+<tr>
+<td>每个 step</td>
+<td>32 道问题</td>
+</tr>
+<tr>
+<td>每道问题</td>
+<td>1 条 Student completion</td>
+</tr>
+<tr>
+<td>最大 completion</td>
+<td>1,024 tokens</td>
+</tr>
+<tr>
+<td>最大远程并发</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Student / Teacher thinking</td>
+<td>均关闭</td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td>temperature 1.1 / top-p 0.95 / top-k 20</td>
+</tr>
+<tr>
+<td>KL coefficient</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Learning rate</td>
+<td><code>5e-6</code></td>
+</tr>
+<tr>
+<td>Sampler refresh</td>
+<td>每 step 刷新，严格 on-policy</td>
+</tr>
+<tr>
+<td>Loss</td>
+<td><code>importance_sampling</code></td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>每 25 step 保存 state + sampler weights</td>
+</tr>
+</tbody>
+</table>
+<p>训练 run 最初把上限写成了 200 step，所以 SwanLab 截图中的名字仍然带有 <code>steps200</code>；本文只分析实际完成并持久化的前 100 step，复现命令也直接写成 100 step，避免歧义。</p>
+<h2 id="pytrio">为什么用 PyTRIO 可以在两天内做完？</h2>
+<p>如果你是第一次接触 PyTRIO，可以先看这篇知乎文章：<a href="https://zhuanlan.zhihu.com/p/2063265307226019219">PyTRIO 是什么？</a>。下面只结合这次 OPSD 复现，讲它具体省掉了哪些工作。</p>
+<p>OPSD 官方实现使用 TRL 的 experimental GOLD Trainer 和 Accelerate；环境安装还包括 Conda 与 FlashAttention，评测脚本使用 vLLM。论文中的实验则运行在 <code>8×A100</code> 上。</p>
+<p>如果从一台普通开发机开始，按照这套官方方案复现，需要先处理一整套基础设施：</p>
+<div class="highlight"><pre><span></span><code>CUDA / PyTorch 版本
+FlashAttention
+FSDP 或其他分布式策略
+vLLM / SGLang rollout
+训练权重与推理权重同步
+多卡资源调度
+checkpoint 与恢复
+</code></pre></div>
+<p>这些框架并不是不好。相反，它们非常适合有固定 GPU 集群、需要深入控制分布式执行的团队。</p>
+<p>但这篇 Blog 的目标是：我想先在两天内知道 OPSD 到底能不能工作，而不是先把两天全部花在环境上。</p>
+<p>PyTRIO 把分工切得很清楚：</p>
+<table>
+<thead>
+<tr>
+<th>本地 Python 负责</th>
+<th>PyTRIO 远端负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>下载和读取数据</td>
+<td>Student sampling</td>
+</tr>
+<tr>
+<td>构造 Student / Teacher prompt</td>
+<td>Teacher logprob forward</td>
+</tr>
+<tr>
+<td><code>asyncio</code> 并发与 batch 编排</td>
+<td>LoRA forward / backward</td>
+</tr>
+<tr>
+<td>计算 reverse KL 和 advantage</td>
+<td>optimizer step</td>
+</tr>
+<tr>
+<td>SwanLab 记录与实验分析</td>
+<td>state / sampler weights 保存</td>
+</tr>
+</tbody>
+</table>
+<p>本地机器不需要 GPU。这次 run 的 SwanLab 元数据记录的是一台 <code>Apple M4</code> 的 MacBook Air；训练和采样请求通过 PyTRIO 远端执行。</p>
+<p>100 个 step 的 <code>time/step_elapsed_time</code> 累计约 <code>7,540.6</code> 秒，也就是约 <code>2 小时 6 分钟</code>。这不包含数据准备和完整 AIME25 评测，但已经足够说明：从写好算法到拿到一个可评测 checkpoint，中间不需要先租和维护一套多卡机器。</p>
+<p>对我来说，真正节省的还不是这两个小时，而是前面的环境时间。我可以直接把精力放在这些问题上：</p>
+<div class="highlight"><pre><span></span><code>Teacher 到底应该看到什么？
+Teacher 能不能生成新 token？
+Student 和 Teacher 的 logprob 如何逐 token 对齐？
+prompt 区间为什么必须 mask？
+什么时候刷新 Student sampler 才算严格 on-policy？
+</code></pre></div>
+<p>这些才是复现 OPSD 真正应该花时间理解的地方。</p>
+<h2 id="opsd_1">OPSD 的异步训练闭环</h2>
+<p>下面开始结合真实代码拆训练流程。</p>
+<p>完整异步脚本在：</p>
+<blockquote>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py"><code>experiments/opsd/01-opsd-async.py</code></a></p>
+</blockquote>
+<p>一次训练 step 可以压缩成下面这段伪代码：</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_steps</span><span class="p">):</span>
+    <span class="n">student_sampler</span> <span class="o">=</span> <span class="n">refresh_latest_student_weights</span><span class="p">()</span>
+
+    <span class="n">rollouts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">[</span>
+            <span class="n">student_sample_then_teacher_score</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">problem</span> <span class="ow">in</span> <span class="n">batch</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">datums</span> <span class="o">=</span> <span class="n">build_importance_sampling_datums</span><span class="p">(</span><span class="n">rollouts</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">datums</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">optim_step</span><span class="p">()</span>
+</code></pre></div>
+<p>看上去很短，但里面有几个非常关键的对齐关系。</p>
+<h2 id="problem-solution">第一步：准备 <code>problem + solution</code> 数据</h2>
+<p>数据下载脚本是 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/00-datasets.py"><code>00-datasets.py</code></a>。</p>
+<p>训练集使用论文作者公开的 <a href="https://huggingface.co/datasets/siyanzhao/Openthoughts_math_30k_opsd"><code>siyanzhao/Openthoughts_math_30k_opsd</code></a>，固定 revision 后一共 <code>29,434</code> 条，每条至少包含：</p>
+<div class="highlight"><pre><span></span><code>problem   # Student 和 Teacher 都能看到
+solution  # 只有 Teacher 能看到
+</code></pre></div>
+<p>这里的 <code>solution</code> 不是 SFT label。</p>
+<p>训练不会直接把它拼到 Student 的 target 中，而是只用它改变 Teacher 的条件分布。Student 真正学习的 token，仍然来自 Student 自己的 rollout。</p>
+<h2 id="student-teacher_1">第二步：创建可训练 Student 和固定 Teacher</h2>
+<p>对应代码在 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L558-L616"><code>train()</code></a>：</p>
+<div class="highlight"><pre><span></span><code><span class="n">training_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_lora_training_client_async</span><span class="p">(</span>
+    <span class="n">base_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">base_model</span><span class="p">,</span>
+    <span class="n">rank</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">lora_rank</span><span class="p">,</span>
+    <span class="n">train_attn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">train_mlp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">train_unembed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">teacher_client</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service_client</span><span class="o">.</span><span class="n">create_sampling_client_async</span><span class="p">(</span>
+    <span class="n">base_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">base_model</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Student 和 Teacher 都从 <code>Qwen/Qwen3.5-4B</code> 开始。</p>
+<p>区别是：</p>
+<ul>
+<li>Student 挂着可训练 LoRA；</li>
+<li>Teacher 不传 <code>model_path</code>，永远保持 step-0 base policy；</li>
+<li>每个 step 结束只更新 Student；</li>
+<li>Teacher 没有 optimizer，也不会跟着 Student 漂移。</li>
+</ul>
+<p>固定 Teacher 很重要。否则 Teacher 和 Student 一起更新，监督目标也会不断移动，训练更容易不稳定。</p>
+<h2 id="student-on-policy">第三步：让 Student 先生成 on-policy 轨迹</h2>
+<p>每个 step 开始时，先拿到最新 Student 权重对应的 sampler：</p>
+<div class="highlight"><pre><span></span><code><span class="n">student_sampler</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">save_weights_and_get_sampling_client_async</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>然后 Student 只看题目进行采样：</p>
+<div class="highlight"><pre><span></span><code><span class="n">sample_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">student_sampler</span><span class="o">.</span><span class="n">sample_async</span><span class="p">(</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="n">student_prompt</span><span class="p">,</span>
+    <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">sampling_params</span><span class="o">=</span><span class="n">sampling_params</span><span class="p">,</span>
+    <span class="n">return_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>本文每道题只采样一条 completion，最大长度 1,024 tokens。</p>
+<p><code>sampler_refresh_steps=1</code> 表示每完成一次 optimizer update，下一 step 都重新刷新 sampler。因此新一批 rollout 始终来自最新 Student，而不是一个落后很多步的旧策略。</p>
+<p>这就是“on-policy”在代码里的实际含义。</p>
+<h2 id="teacher-student-completion">第四步：Teacher 只给同一条 Student completion 打分</h2>
+<p>Student 生成完成后，Teacher 收到的是：</p>
+<div class="highlight"><pre><span></span><code>teacher_prompt_ids + student_completion_ids
+</code></pre></div>
+<p>代码位于 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L308-L330"><code>teacher_completion_logprobs_async()</code></a>：</p>
+<div class="highlight"><pre><span></span><code><span class="n">all_ids</span> <span class="o">=</span> <span class="n">teacher_prompt_ids</span> <span class="o">+</span> <span class="n">completion_ids</span>
+<span class="n">all_logprobs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">teacher_client</span><span class="o">.</span><span class="n">compute_logprobs_async</span><span class="p">(</span>
+    <span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="o">.</span><span class="n">from_ints</span><span class="p">(</span><span class="n">all_ids</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">teacher_logprobs</span> <span class="o">=</span> <span class="n">all_logprobs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">teacher_prompt_ids</span><span class="p">):]</span>
+</code></pre></div>
+<p>注意这里调用的是 <code>compute_logprobs_async()</code>，不是 <code>sample_async()</code>。</p>
+<p>Teacher 没有生成另一条轨迹。它只是换了一份包含参考解答的 prompt，对 Student 的原始 completion 做 teacher forcing forward，并截取 completion 区间的 logprob。</p>
+<p>因此三者必须严格等长：</p>
+<div class="highlight"><pre><span></span><code>Student completion tokens
+Student rollout logprobs
+Teacher completion logprobs
+</code></pre></div>
+<p>只要有一个 token 对不上，reverse KL 就没有意义。代码会直接检查长度和 <code>None</code>，而不是悄悄截断。</p>
+<h2 id="logprob-token-advantage">第五步：把 logprob 差变成逐 token advantage</h2>
+<p>对于同一个 Student token：</p>
+<div class="highlight"><pre><span></span><code><span class="n">reverse_kl</span> <span class="o">=</span> <span class="n">student_logprobs</span> <span class="o">-</span> <span class="n">teacher_logprobs</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="o">-</span><span class="n">kl_penalty_coef</span> <span class="o">*</span> <span class="n">reverse_kl</span>
+</code></pre></div>
+<p>它和 GRPO 最大的区别在这里。</p>
+<p>GRPO 的 advantage 来自同一道题多条 rollout 的最终 reward 差；OPSD 的 advantage 来自 Teacher 与 Student 在每一个 token 上的 logprob 差。</p>
+<p>因此 OPSD 不需要等模型生成完整答案，也不需要先判断最终答案是否正确。哪怕 Student 的最终结果是错的，只要 Teacher 对中间 token 的偏好不同，这条轨迹仍然能产生训练信号。</p>
+<p>当然，这也意味着 Teacher 是否真的理解参考解答非常重要。模型太弱、题目太难时，privileged context 并不会自动变成可靠监督。</p>
+<h2 id="completionprompt-mask">第六步：只训练 completion，prompt 全部 mask</h2>
+<p>PyTRIO 的 <code>importance_sampling</code> Datum 需要：</p>
+<div class="highlight"><pre><span></span><code>model_input
+target_tokens
+old logprobs
+advantages
+</code></pre></div>
+<p>对应实现见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L333-L371"><code>build_opd_datum()</code></a>。</p>
+<p>核心逻辑如下：</p>
+<div class="highlight"><pre><span></span><code><span class="n">input_ids</span> <span class="o">=</span> <span class="n">student_prompt_ids</span> <span class="o">+</span> <span class="n">completion_ids</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">target_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">prompt_loss_len</span> <span class="o">+</span> <span class="n">completion_ids</span>
+<span class="n">old_logprobs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">prompt_loss_len</span> <span class="o">+</span> <span class="n">student_logprobs</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">prompt_loss_len</span> <span class="o">+</span> <span class="n">token_advantages</span>
+</code></pre></div>
+<p>prompt 区间的 <code>target_tokens</code>、<code>logprobs</code> 和 <code>advantages</code> 都填 0，只作为上下文存在，不参与优化。</p>
+<p>真正进入 loss 的只有 Student 自己生成的 completion token。</p>
+<p>这里还做了标准的自回归右移：<code>model_input</code> 去掉最后一个 completion token，<code>target_tokens</code> 则保留完整 completion，保证位置 <code>t</code> 的输入预测位置 <code>t+1</code> 的目标。</p>
+<h2 id="asynciogather-rollout">第七步：用 <code>asyncio.gather</code> 并发整批 rollout</h2>
+<p>OPSD 一道题至少需要两类远程请求：</p>
+<ol>
+<li>Student sample；</li>
+<li>Teacher compute logprobs。</li>
+</ol>
+<p>如果 32 道题完全串行执行，大量时间会浪费在网络和远程任务等待上。</p>
+<p>异步版在单题内部先完成 Student→Teacher 的依赖，再在题目之间并发：</p>
+<div class="highlight"><pre><span></span><code><span class="n">rollouts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">rollout_and_track</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>同时使用一个 <code>asyncio.Semaphore(32)</code> 统一限制 Student sampling 和 Teacher scoring 的总并发，避免一次提交过多请求。</p>
+<p>完整逻辑见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L373-L468"><code>run_prompt_rollout_async()</code></a> 和 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L623-L666"><code>train()</code> 中的 batch gather</a>。</p>
+<p>这里的并发不会破坏 on-policy：当前 batch 的所有 rollout 都基于同一个 Student checkpoint，全部完成后才进行一次 optimizer update。</p>
+<h2 id="forwardbackward-student">第八步：一次 forward/backward，再更新 Student</h2>
+<p>当前 step 的全部 Datum 展平后，只提交一次训练更新：</p>
+<div class="highlight"><pre><span></span><code><span class="n">fwd_bwd_future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">forward_backward_async</span><span class="p">(</span>
+    <span class="n">datums</span><span class="p">,</span>
+    <span class="n">loss_fn</span><span class="o">=</span><span class="s2">"importance_sampling"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">optim_future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">training_client</span><span class="o">.</span><span class="n">optim_step_async</span><span class="p">(</span><span class="n">adam</span><span class="p">)</span>
+
+<span class="k">await</span> <span class="n">fwd_bwd_future</span>
+<span class="k">await</span> <span class="n">optim_future</span>
+</code></pre></div>
+<p>完整位置见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/opsd/01-opsd-async.py#L670-L699"><code>01-opsd-async.py#L670-L699</code></a>。</p>
+<p>PyTRIO 负责远端的 forward、backward、梯度累积与 LoRA optimizer；本地代码仍然完全控制 rollout、advantage、batch 边界和更新时机。</p>
+<p>等 optimizer 真正完成后，代码才进入下一 step，并刷新 Student sampler。</p>
+<h2 id="swanlab">SwanLab 训练记录</h2>
+<p>我们把 Trainer loss、reverse KL、advantage、token 数和耗时记录到了 SwanLab。下面是部分曲线截图，<a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-opsd/runs/pxsnuza4/chart">完整训练记录可以在这里查看</a>：</p>
+<p><img alt="" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/opsd/images/swanlab-record.png" /></p>
+<p>在前 100 step 中：</p>
+<div class="highlight"><pre><span></span><code>trainer/loss_mean:    0.0577 → 0.0425
+reverse_kl_mean:      0.0644 → 0.0471
+reverse_kl_std:       0.4378 → 0.3687
+</code></pre></div>
+<p>这说明 Student 和 privileged Teacher 在 Student 采样 token 上的差异整体收缩了，训练目标确实在被优化。</p>
+<p><code>opd/advantage_mean</code> 是负数并不奇怪。因为我们定义：</p>
+<div class="highlight"><pre><span></span><code>advantage = -(student_logprob - teacher_logprob)
+</code></pre></div>
+<p>当 Student 在自己的采样分布下，平均比 Teacher 更偏好这些 token 时，sampled reverse KL 为正，平均 advantage 就会为负。</p>
+<p>但是要注意：</p>
+<blockquote>
+<p>loss 和 reverse KL 下降，只能说明 Student 正在靠近 Teacher，不能直接证明数学能力一定提高。</p>
+</blockquote>
+<p>最终能力仍然要看独立 benchmark。本文的 AIME25 曲线也证明了这一点：训练目标在稳定下降，checkpoint 准确率却会波动。</p>
+<h2 id="_3">如何运行这次复现？</h2>
+<h3 id="1">1. 安装项目并登录</h3>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+
+uv<span class="w"> </span>sync
+trio<span class="w"> </span>login
+swanlab<span class="w"> </span>login
+</code></pre></div>
+<p>本地只需要 CPU 环境。模型采样与 LoRA 训练由 PyTRIO 远端执行。</p>
+<h3 id="2-opsd-aime25">2. 下载 OPSD 和 AIME25 数据</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/opsd/00-datasets.py
+</code></pre></div>
+<p>脚本会下载并校验：</p>
+<div class="highlight"><pre><span></span><code>experiments/opsd/datasets/
+├── openthoughts_math_30k_opsd/   # 29,434 条训练数据
+└── aime_2025/                     # 30 道评测题
+</code></pre></div>
+<p>两份数据都固定了 Hugging Face revision，避免上游更新后实验数据静默变化。</p>
+<h3 id="3-100-step-opsd">3. 运行 100-step 异步 OPSD</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/opsd/01-opsd-async.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--steps<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch-size<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--group-size<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample-size<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save-every-steps<span class="w"> </span><span class="m">25</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-concurrency<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>每 25 step 会保存两份内容：</p>
+<div class="highlight"><pre><span></span><code>*-state            # 包含优化器状态，用于断点续训
+*-sampler_weights  # 用于采样和 AIME25 评测
+</code></pre></div>
+<h3 id="4-base-model">4. 评测 Base Model</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/opsd/00-eval-aime25.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--val-n<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">38912</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--temperature<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--enable-thinking<span class="w"> </span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>experiments/opsd/eval-results/aime25-base.jsonl
+</code></pre></div>
+<h3 id="5-opsd-checkpoint">5. 评测 OPSD checkpoint</h3>
+<p>把训练日志中 <code>save_weights_for_sampler</code> 返回的 <code>trio://</code> 路径填进去：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/opsd/00-eval-aime25.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--val-n<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">38912</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--temperature<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--enable-thinking<span class="w"> </span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span>trio://&lt;your_sampler_weights_path&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>experiments/opsd/eval-results/aime25-sampler-steps100.jsonl
+</code></pre></div>
+<p>评测脚本会为每道题保存 12 条生成结果，并在 JSONL 最后一行写入统一 summary。</p>
+<h3 id="6-checkpoint">6. 绘制 checkpoint 对比图</h3>
+<p>当 <code>eval-results/</code> 中已经存在 Base、Step 25、50、75、100 的 JSONL 后：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>experiments/opsd/analysis.py
+</code></pre></div>
+<p>结果会写到：</p>
+<div class="highlight"><pre><span></span><code>experiments/opsd/images/aime25-opsd-progress.png
+</code></pre></div>
+<h2 id="_4">小结</h2>
+<p>OPSD 是我最近看到最像“人类复盘”过程的一种训练方法。</p>
+<p>Student 先闭卷写出自己真正会写的东西；Teacher 再拿着参考答案，沿着 Student 的原始思路逐 token 判断哪里应该被鼓励、哪里应该被压低。Teacher 不需要更大，也不需要重新写一份答案，只需要在更有信息的上下文里做一次 forward。</p>
+<p>这次我们用 Qwen3.5-4B、29,434 条 OpenThoughts 数学数据和 PyTRIO 跑了 100 step。正式训练花了 <code>41.81</code> 元，Base + 4 个 checkpoint 的完整 AIME25 评测另外花了 <code>83.61</code> 元；累计 step 时间约 <code>2 小时 6 分钟</code>。Step 100 的 AIME25 Average@12 从 <code>51.67%</code> 提升到 <code>52.78%</code>，Pass@12 从 <code>80.00%</code> 提升到 <code>86.67%</code>。</p>
+<p>结果不算巨大，中间也有明显波动。但对我来说，这篇复现最重要的成果并不是多了几个百分点，而是我确实可以在两天内把一篇新算法从论文公式变成：</p>
+<div class="highlight"><pre><span></span><code>可运行代码
+真实训练
+可恢复 checkpoint
+独立评测
+完整实验记录
+</code></pre></div>
+<p>如果按照官方多卡训练栈从头准备，这两天很可能还在处理 CUDA、FlashAttention、rollout engine 和权重同步。PyTRIO 让我把这段时间真正花在了 Student / Teacher prompt、token 对齐、advantage 和 on-policy 边界上。</p>
+<h2 id="_5">参考资料</h2>
+<h3 id="_6">论文与官方实现</h3>
+<ol>
+<li>Siyan Zhao et al. <a href="https://arxiv.org/abs/2601.18734">Self-Distilled Reasoner: On-Policy Self-Distillation for Large Language Models</a>, 2026.</li>
+<li><a href="https://github.com/siyan-zhao/OPSD">siyan-zhao/OPSD</a></li>
+<li>Siyan Zhao. <a href="https://siyan-zhao.github.io/blog/2026/opsd/">Self-Distilled Reasoner: On-Policy Self-Distillation</a></li>
+</ol>
+<h3 id="_7">数据与模型</h3>
+<ol>
+<li><a href="https://huggingface.co/datasets/siyanzhao/Openthoughts_math_30k_opsd">siyanzhao/Openthoughts_math_30k_opsd</a></li>
+<li><a href="https://huggingface.co/datasets/yentinglin/aime_2025">yentinglin/aime_2025</a></li>
+<li><a href="https://huggingface.co/Qwen/Qwen3.5-4B">Qwen/Qwen3.5-4B</a></li>
+</ol>
+<h3 id="_8">本文实现</h3>
+<ol>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/opsd">OPSD PyTRIO 完整代码</a></li>
+<li><a href="https://docs.pytrio.com/docs">PyTRIO 文档</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/2063265307226019219">PyTRIO 是什么？——知乎介绍</a></li>
+<li><a href="https://docs.pytrio.com/docs/example/opd">PyTRIO On-Policy Distillation 示例</a></li>
+<li><a href="https://swanlab.cn/@kmno4/llm-agent-rl-lab-opsd/runs/pxsnuza4/chart">本文的 SwanLab 训练记录</a></li>
+<li><a href="https://docs.swanlab.cn/">SwanLab 文档</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

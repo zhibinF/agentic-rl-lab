@@ -1,0 +1,2311 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/spec-o3/">
+      
+      
+        <link rel="prev" href="../tempo/">
+      
+      
+        <link rel="next" href="../tournament-grpo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>SPEC-O3 - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#10-94-spec-o3-grpo" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SPEC-O3
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-4b-175-9b-191" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 先看结果：4B 答对 175 题，9B 答对 191 题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-spec-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Spec-o3 到底在做什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 交错多模态思维链：思考与新图片交替出现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 交错多模态思维链：思考与新图片交替出现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速开始：先把 SFT 跑起来
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 图片和工具调用怎样进入 PyTRIO？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 图片和工具调用怎样进入 PyTRIO？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-qwen35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 在 Qwen3.5 的原生模板上改什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-imagechunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 图片通过 ImageChunk 进入上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 “放大光谱”的数据在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 先做 SFT，学会完整的交互过程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 先做 SFT，学会完整的交互过程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 SFT 学的是整条轨迹
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 SFT 冷启动环节
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 再做 GRPO，让模型在交互中学习
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 再做 GRPO，让模型在交互中学习">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 一道题采样 8 条，各自把工具流程走完
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 奖励只看答案与格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 有组内差异，才有相对学习信号
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-assistant-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 只更新实际生成的 assistant token
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SFT 冷启动为什么重要？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. PyTRIO 给科研带来的价值
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 如何运行这次实验？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 如何运行这次实验？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 安装环境并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sft-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 先准备 SFT，再准备 RL 数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-2-epoch-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 运行 2 个 epoch 的 SFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-sft-state-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 从 SFT state 接着训练 RL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-4b-basesft-4b-9b-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 评测 4B Base、SFT，以及 4B / 9B RL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 绘图与代码阅读顺序
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tournament-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-4b-175-9b-191" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 先看结果：4B 答对 175 题，9B 答对 191 题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-spec-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Spec-o3 到底在做什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 交错多模态思维链：思考与新图片交替出现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 交错多模态思维链：思考与新图片交替出现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速开始：先把 SFT 跑起来
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 图片和工具调用怎样进入 PyTRIO？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 图片和工具调用怎样进入 PyTRIO？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-qwen35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 在 Qwen3.5 的原生模板上改什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-imagechunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 图片通过 ImageChunk 进入上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 “放大光谱”的数据在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 先做 SFT，学会完整的交互过程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 先做 SFT，学会完整的交互过程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 SFT 学的是整条轨迹
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 SFT 冷启动环节
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 再做 GRPO，让模型在交互中学习
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 再做 GRPO，让模型在交互中学习">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 一道题采样 8 条，各自把工具流程走完
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 奖励只看答案与格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 有组内差异，才有相对学习信号
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-assistant-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 只更新实际生成的 assistant token
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SFT 冷启动为什么重要？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-pytrio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. PyTRIO 给科研带来的价值
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 如何运行这次实验？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 如何运行这次实验？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 安装环境并登录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sft-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 先准备 SFT，再准备 RL 数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-2-epoch-sft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 运行 2 个 epoch 的 SFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-sft-state-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 从 SFT state 接着训练 RL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-4b-basesft-4b-9b-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 评测 4B Base、SFT，以及 4B / 9B RL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 绘图与代码阅读顺序
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="10-94-spec-o3-grpo">接下来我将复现 10 篇强化学习算法：第 9.4 篇，Spec-o3：我用 GRPO 找天上的星星 🌟</h1>
+<blockquote>
+<p><strong>快速开始：</strong> 环境准备、数据下载、SFT、RL、评测与绘图的运行命令，见 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/start.md">start.md</a>。</p>
+</blockquote>
+<div align="center">
+  <img src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/封面.png" alt="Spec-o3：我用 GRPO 找天上的星星" width="100%">
+</div>
+
+<div align="center">
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="Code" src="https://img.shields.io/badge/Code-agentic--rl--lab-2563eb?style=flat"></a>
+  <a href="https://arxiv.org/abs/2601.06498"><img alt="Paper" src="https://img.shields.io/badge/Paper-Spec--o3-d94a45?style=flat"></a>
+  <a href="https://huggingface.co/datasets/Maxwell-Jia/SpecVI-Bench"><img alt="Dataset" src="https://img.shields.io/badge/Dataset-SpecVI--Bench-f59e0b?style=flat"></a>
+  <a href="https://docs.pytrio.com/docs"><img alt="PyTRIO" src="https://img.shields.io/badge/PyTRIO-0.2.9-7c3aed?style=flat"></a>
+  <a href="https://www.zhihu.com/people/feng-qi-xia-pian"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-知乎-4362f6?style=flat"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/63c2055e000000002502c58c"><img alt="Rednote" src="https://img.shields.io/badge/Rednote-小红书-e93c49?style=flat"></a>
+  <a href="https://github.com/datawhalechina/agentic-rl-lab"><img alt="visitors" src="https://visitor-badge.laobi.icu/badge?page_id=KMnO4-zx.agentic-rl-lab.spec-o3"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本章实现：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/train_sft.py">SFT</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/train_rl.py">GRPO</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/eval.py">评测</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/analysis.py">绘图</a></li>
+<li>论文：<a href="https://arxiv.org/abs/2601.06498">Spec-o3: A Tool-Augmented Vision-Language Agent for Rare Celestial Object Candidate Vetting via Automated Spectral Inspection</a></li>
+<li>作者代码：<a href="https://github.com/Maxwell-Jia/spec-o3">Maxwell-Jia/spec-o3</a></li>
+<li>公开数据：<a href="https://huggingface.co/datasets/Maxwell-Jia/Spec-o3-ColdStartSFT">Cold-start SFT</a> / <a href="https://huggingface.co/datasets/Maxwell-Jia/SpecVI-Bench">SpecVI-Bench</a></li>
+<li>SwanLab：<a href="https://swanlab.cn/@kmno4/agentic-rl-lab-spec-o3/v1/rjj3zx/runs">查看本次实验公开的 SFT 与 RL 实验记录</a></li>
+<li>PyTRIO：<a href="https://docs.pytrio.com/docs">官方文档</a> / <a href="https://docs.pytrio.com/docs/guide/vision">多模态指南</a></li>
+</ul>
+</blockquote>
+<p>这是“接下来我将复现 10 篇强化学习算法”系列的第 9.4 篇。</p>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/vision-grpo/readme.md">Vision GRPO</a> 里，我们让模型看几何图做题；<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/readme.md">ReTool</a> 里，我们让模型在解题过程中调用 Python。这次我想把两件事接起来：<strong>模型一边看图、一边推理，还能主动调用工具，拿到一张新的图片继续分析。</strong></p>
+<p>任务换到了天文学。给模型一张完整光谱，它需要判断这个天体是否属于某个目标类别。如果全图里的细节看不清，模型可以指定一个波长区间，让工具重新画出局部光谱，再根据新证据继续判断。</p>
+<p>我先用 Qwen3.5-4B 和 PyTRIO 跑了 <strong>2 个 epoch 的 cold-start SFT，再接 1 个 epoch 的 GRPO</strong>，随后补充了 <strong>4B 和 9B 的 RL epoch 3</strong> 评测。训练、工具交互和独立评测都已经走完，下面从结果开始讲。</p>
+<h2 id="0-4b-175-9b-191">0. 先看结果：4B 答对 175 题，9B 答对 191 题</h2>
+<p>下面五组结果来自同一批 <strong>256 条开发集样本</strong>。Base、SFT 和前两组 RL 使用 <code>Qwen/Qwen3.5-4B</code>，最后一组使用 <code>Qwen/Qwen3.5-9B</code>。两个模型各自从对应的 SFT 权重开始 RL；表中保留首轮 4B RL epoch 1，便于和新增的 epoch 3 结果对照。</p>
+<table>
+<thead>
+<tr>
+<th>模型 / 阶段</th>
+<th style="text-align: right;">Macro F1</th>
+<th style="text-align: right;">Accuracy</th>
+<th style="text-align: right;">Format</th>
+<th style="text-align: right;">答对题数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-4B Base</td>
+<td style="text-align: right;">53.99%</td>
+<td style="text-align: right;">38.67%</td>
+<td style="text-align: right;">0.39%</td>
+<td style="text-align: right;">99 / 256</td>
+</tr>
+<tr>
+<td>Qwen3.5-4B SFT epoch 2</td>
+<td style="text-align: right;">63.05%</td>
+<td style="text-align: right;">53.91%</td>
+<td style="text-align: right;">85.94%</td>
+<td style="text-align: right;">138 / 256</td>
+</tr>
+<tr>
+<td>Qwen3.5-4B RL epoch 1</td>
+<td style="text-align: right;">71.68%</td>
+<td style="text-align: right;">67.97%</td>
+<td style="text-align: right;">96.09%</td>
+<td style="text-align: right;">174 / 256</td>
+</tr>
+<tr>
+<td>Qwen3.5-4B RL epoch 3</td>
+<td style="text-align: right;">70.93%</td>
+<td style="text-align: right;">68.36%</td>
+<td style="text-align: right;">98.05%</td>
+<td style="text-align: right;">175 / 256</td>
+</tr>
+<tr>
+<td><strong>Qwen3.5-9B RL epoch 3</strong></td>
+<td style="text-align: right;"><strong>75.94%</strong></td>
+<td style="text-align: right;"><strong>74.61%</strong></td>
+<td style="text-align: right;"><strong>99.61%</strong></td>
+<td style="text-align: right;"><strong>191 / 256</strong></td>
+</tr>
+</tbody>
+</table>
+<p>这里的 Macro F1 是五个任务各自正类 F1 的平均值；Accuracy 是全部 256 题中答对的比例；Format 表示轨迹是否以符合严格动作协议的最终答案结束。无法提取答案的样本在 Accuracy 中按错误计。</p>
+<p>五组训练使用相同的样本、工具和当前答案提取规则，总上下文上限均为 16,384 token；历史单轮生成上限分别为 Base 6,132、SFT 2,048、三组 RL 6,144 token，Base 还额外加了一句格式提醒。三组 RL 均使用最多 8 轮、temperature 0.6、seed 42 和并发 16。SFT 与 RL 的差值仍可能包含生成预算的影响；4B 与 9B 使用不同的基模和训练权重，这组结果用于比较当前 checkpoint 的表现。</p>
+<p><img alt="Spec-o3 五组开发集结果：4B Base、SFT epoch 2、RL epoch 1、RL epoch 3，以及 9B RL epoch 3 的 Accuracy、Macro F1、严格格式合规率与答对题数" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/results_comparison.png" /></p>
+<p>4B 从 Base 到 SFT 多答对了 39 题，首轮 RL 又多答对了 36 题。新增的 4B RL epoch 3 比 epoch 1 多答对 1 题，格式合规率提高到 <strong>98.05%</strong>，但 Macro F1 从 <strong>71.68%</strong> 小幅降到 <strong>70.93%</strong>。更多 epoch 在这次开发集评测中没有带来所有指标的同步提升。</p>
+<p>9B RL epoch 3 答对 <strong>191 / 256</strong>，比 4B RL epoch 3 多 16 题，Accuracy 高 <strong>6.25 个百分点</strong>、Macro F1 高 <strong>5.01 个百分点</strong>。它的格式合规率为 <strong>255 / 256（99.61%）</strong>，1,011 次工具调用全部执行成功；4B RL epoch 3 则是 <strong>251 / 256（98.05%）</strong>，1,087 次工具调用全部执行成功。</p>
+<p>两个 epoch 3 checkpoint 的分任务 F1 如下，括号内为该任务的题数：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align: right;">CC 碳星（56）</th>
+<th style="text-align: right;">CV 激变变星（50）</th>
+<th style="text-align: right;">GM M 型巨星（51）</th>
+<th style="text-align: right;">SS S 型星（50）</th>
+<th style="text-align: right;">WD 白矮星（49）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-4B RL epoch 3</td>
+<td style="text-align: right;">52.31%</td>
+<td style="text-align: right;">61.11%</td>
+<td style="text-align: right;"><strong>92.06%</strong></td>
+<td style="text-align: right;">79.17%</td>
+<td style="text-align: right;"><strong>70.00%</strong></td>
+</tr>
+<tr>
+<td>Qwen3.5-9B RL epoch 3</td>
+<td style="text-align: right;"><strong>67.80%</strong></td>
+<td style="text-align: right;"><strong>71.79%</strong></td>
+<td style="text-align: right;">87.72%</td>
+<td style="text-align: right;"><strong>84.62%</strong></td>
+<td style="text-align: right;">67.80%</td>
+</tr>
+</tbody>
+</table>
+<p>9B 在 CC、CV、SS 三个任务上的 F1 更高，4B 在 GM 和 WD 上更高。当前 9B 的整体得分最好，逐任务表现仍有差异。</p>
+<p>Base 已经能答对部分题目，但格式遵循还不稳定。这也是本次 SFT 冷启动重点训练的能力。</p>
+<h2 id="1-spec-o3">1. Spec-o3 到底在做什么？</h2>
+<p>标题里的“找星星”，落到本章代码里，是审核一个已有候选天体的光谱是否符合目标类别。模型面对的是横轴为波长、纵轴为通量的曲线。不同波段的峰、谷和整体形状，为分类提供线索。</p>
+<p>Spec-o3 关注大规模光谱巡天中的候选审核环节：自动筛选得到候选后，还需要检查那些容易混淆的光谱。论文把任务组织成五种独立的 YES/NO 判断，下面同时列出本地数据使用的缩写。<a href="https://arxiv.org/html/2601.06498v1#S3">论文 §3–4</a></p>
+<table>
+<thead>
+<tr>
+<th>本地任务名</th>
+<th>目标类别</th>
+<th>模型需要回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cv</code></td>
+<td>激变变星，Cataclysmic Variables</td>
+<td>这个候选是否符合激变变星的光谱特征？</td>
+</tr>
+<tr>
+<td><code>cc</code></td>
+<td>碳星，Carbon Stars</td>
+<td>这个候选是否为碳星？</td>
+</tr>
+<tr>
+<td><code>ss</code></td>
+<td>S 型星，S-type Stars</td>
+<td>这个候选是否为 S 型星？</td>
+</tr>
+<tr>
+<td><code>gm</code></td>
+<td>M 型巨星，M-type Giants</td>
+<td>这个候选是否为 M 型巨星？</td>
+</tr>
+<tr>
+<td><code>wd</code></td>
+<td>白矮星，White Dwarfs</td>
+<td>这个候选是否为白矮星？</td>
+</tr>
+</tbody>
+</table>
+<p>每道题只询问其中一个类别。输入还带有该类别的诊断提示，例如需要关注哪些谱线、哪些形态容易混淆。模型需要把这些提示与当前图片联系起来；参考 YES/NO 标签保存在评分字段中，不进入 rollout 的输入。</p>
+<p>以本地 CV 题目为例，提示中列出了 Hα、Hβ 等特征。模型可以先看全图，再请求工具查看 <code>6400–6700 Å</code>，随后观察另一个波段。最后返回这样的答案结构，解释也放在标签内部：</p>
+<div class="highlight"><pre><span></span><code>&lt;answer&gt;\boxed{YES}这里写基于光谱观察得到的解释。&lt;/answer&gt;
+</code></pre></div>
+<p>这个任务最有趣的地方是：<strong>下一张要看的图，由模型当前的判断决定。</strong></p>
+<h2 id="2">2. 交错多模态思维链：思考与新图片交替出现</h2>
+<p>Spec-o3 将这种过程称为 iMCoT，即 Interleaved Multimodal Chain-of-Thought。一次完整轨迹包含多段推理，段与段之间穿插工具返回的新图片。</p>
+<p><img alt="Spec-o3 论文框架：多轮光谱可视化、交错多模态推理与 GRPO 训练" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/spec-o3-paper.png" /></p>
+<p><em>图片来源：Spec-o3 论文 Figure 3。上半部分展示组采样、奖励与 advantage；下半部分展开一条文本推理与局部光谱图交替出现的轨迹。</em></p>
+<p>在我们的实现里，一次交互按下面的顺序进行：</p>
+<div class="highlight"><pre><span></span><code>用户问题 + 完整光谱图
+→ assistant 思考，选择需要检查的波段
+→ assistant 输出工具调用
+→ 本地工具从光谱数组生成局部 PNG
+→ tool observation 携带图片回到上下文
+→ assistant 继续思考，再调用工具或输出最终答案
+</code></pre></div>
+<p>训练也分成两步。Cold-start SFT 用现成的完整轨迹示范如何观察、调用工具和作答；GRPO 则让模型在训练题上自己完成交互，按最终答案与格式获得奖励。作者公开实现的 SFT 使用 LLaMA-Factory，RL 使用 VeRL；本章把这一过程接到了 PyTRIO。<a href="https://github.com/Maxwell-Jia/spec-o3#training-pipeline">作者训练说明</a></p>
+<p>原论文基模是 Qwen2.5-VL-3B/7B-Instruct。我们选择 Qwen3.5-4B 和 Qwen3.5-9B、LoRA rank 32，所以本文属于更换基模与训练栈后的方法迁移。后面的重点是这套交互与训练过程如何实现，以及我们实际测到了什么。</p>
+<h3 id="sft">快速开始：先把 SFT 跑起来</h3>
+<p>想先动手的读者，安装好 UV 后，可以直接执行下面的命令。首次使用时，按终端提示完成 PyTRIO 和 SwanLab 登录：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab/experiments/spec-o3
+uv<span class="w"> </span>sync<span class="w"> </span>--locked
+
+uv<span class="w"> </span>run<span class="w"> </span>trio<span class="w"> </span>login
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>login
+
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>prepare_data.py<span class="w"> </span>sft
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train_sft.py<span class="w"> </span>--epochs<span class="w"> </span><span class="m">2</span>
+</code></pre></div>
+<p>这会将 SFT 数据和图片下载到 <code>datasets/sft/</code>，然后使用默认的 Qwen3.5-4B LoRA 配置启动 2 个 epoch 的冷启动训练。每轮结束后，终端会打印继续训练用的 <code>state_path</code> 和推理评测用的 <code>sampler_path</code>。</p>
+<p>接下来可以继续阅读实现细节。数据划分、完整训练参数、如何接上 RL，以及评测和绘图命令，都放在<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/readme.md#8-如何运行这次实验">第 8 节：如何运行这次实验</a>。</p>
+<h2 id="3-pytrio">3. 图片和工具调用怎样进入 PyTRIO？</h2>
+<h3 id="31-qwen35">3.1 在 Qwen3.5 的原生模板上改什么？</h3>
+<p>Qwen3.5 原生模板已经包含思考、工具调用和图片格式，也会保留同一条工具交互链中的 reasoning。我们以<a href="https://huggingface.co/Qwen/Qwen3.5-4B/blob/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/chat_template.jinja">固定版本的官方模板</a>为底稿，整理成 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/templates/qwen3_5_spec_o3.jinja">qwen3_5_spec_o3.jinja</a>，主要做两件事：</p>
+<ul>
+<li>始终保留各轮 assistant 的 <code>reasoning_content</code>，包括跨新 user 问题的早期 reasoning，供完整轨迹监督使用。</li>
+<li>用 <code>{% generation %}</code> 标出 assistant 需要学习的范围，让 tokenizer 返回对应的监督 mask。</li>
+</ul>
+<p>原生角色头、视觉标记和 XML 工具格式继续沿用。下面是一个<strong>格式示意</strong>，展示一轮 assistant 怎样从思考转入工具调用：</p>
+<div class="highlight"><pre><span></span><code>&lt;think&gt;
+下一步检查 Hα 附近的局部光谱。
+&lt;/think&gt;
+&lt;tool_call&gt;
+&lt;function=spectral_visualization_tool&gt;
+&lt;parameter=wavelength_range&gt;
+[6400, 6700]
+&lt;/parameter&gt;
+&lt;parameter=label&gt;
+Hα region
+&lt;/parameter&gt;
+&lt;/function&gt;
+&lt;/tool_call&gt;
+</code></pre></div>
+<p>工具执行完，图片放进 <code>&lt;tool_response&gt;</code> 对应的消息，下一轮再从 assistant 的 <code>&lt;think&gt;</code> 前缀继续生成。模板定义了消息如何排列，SFT 则让模型通过示范学习在这些位置生成什么内容。</p>
+<h3 id="32-imagechunk">3.2 图片通过 ImageChunk 进入上下文</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/protocol.py">protocol.py</a> 先渲染消息，再把每个 <code>&lt;|image_pad|&gt;</code> 替换为真实图片 chunk。整个输入保持文本、图片、文本的原始顺序。下面省略具体编码过程，只展示结构：</p>
+<div class="highlight"><pre><span></span><code><span class="n">prompt</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">ModelInput</span><span class="p">(</span>
+    <span class="n">chunks</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">trio</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">EncodedTextChunk</span><span class="p">(</span><span class="n">tokens</span><span class="o">=</span><span class="n">before_image_tokens</span><span class="p">),</span>
+        <span class="n">trio</span><span class="o">.</span><span class="n">ImageChunk</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">image_bytes</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">"png"</span><span class="p">,</span>
+            <span class="n">expected_tokens</span><span class="o">=</span><span class="n">image_tokens</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">trio</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">EncodedTextChunk</span><span class="p">(</span><span class="n">tokens</span><span class="o">=</span><span class="n">after_image_tokens</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><code>data</code> 装的是 PNG 字节；文件路径只用于本地读取。<code>expected_tokens</code> 由匹配基模的 image processor 根据图片尺寸计算，用来确定图片在序列中占多少个视觉位置。工具返回第二张、第三张图时，也按同样的方式追加。<a href="https://docs.pytrio.com/docs/guide/vision">PyTRIO 多模态指南</a></p>
+<p>这个长度直接关系到训练对齐：一张图片占据的所有位置都要进入上下文，但对应的训练权重为零。随后 <code>target_tokens</code>、mask 等数组统一做自回归右移，保证每个位置预测的是下一个 token。</p>
+<h3 id="33">3.3 “放大光谱”的数据在哪里？</h3>
+<p>工具使用的是公开 Parquet 中附带的光谱数值。<code>prepare_data.py</code> 将它们提取到 <code>datasets/rl/spectra/*.npz</code>，其中保存 <code>wavelength</code>、<code>flux</code> 和 <code>redshift</code>。初始图片单独保存在 <code>datasets/rl/images/</code>。</p>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/tools.py">tools.py</a> 的核心计算很短：</p>
+<div class="highlight"><pre><span></span><code><span class="n">wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">redshift</span><span class="p">)</span>
+<span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">wavelength_range</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="p">(</span><span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelength</span><span class="p">[</span><span class="n">selected</span><span class="p">],</span> <span class="n">flux</span><span class="p">[</span><span class="n">selected</span><span class="p">])</span>
+</code></pre></div>
+<p>先做红移校正，再选中模型要求的波段，重新绘制 PNG。这样，局部图的坐标轴和显示范围会随窗口变化，模型能更清楚地观察该区间的结构。如果窗口里没有足够的数据点，工具返回文字说明，模型在下一轮继续判断。</p>
+<p>数据里的 <code>.fits.gz</code> 名称用于标识原始光谱来源；本章工具直接读取整理好的 <code>.npz</code>。它返回的是新绘制的光谱图，以及对应的波段说明。</p>
+<h2 id="4-sft">4. 先做 SFT，学会完整的交互过程</h2>
+<h3 id="41-sft">4.1 SFT 学的是整条轨迹</h3>
+<p>Cold-start 数据已经包含“思考、工具调用、图片观察、最终回答”。作者用诊断指南与标签辅助 GPT-5 生成初稿，再由天文学专家修订、审核，构建用于 SFT 的示范。<a href="https://arxiv.org/html/2601.06498v1#S3.SS2">论文 §3.2</a></p>
+<p>我们下载的固定版本共有 942 条轨迹，按光谱对象划分为 <strong>848 条训练、94 条验证</strong>。训练读取 <code>sft_train.jsonl</code>；<code>train_sharegpt.json</code> 是保留的原始数据，<code>sft_stats.json</code> 和 <code>sft_cleaning.jsonl</code> 分别用于统计与清理记录。</p>
+<p>公开文本里有一些损坏的科学符号。脚本修复能确定原意的编码，并把无法确定的字符保留为可见标记；当前仍有 273 条轨迹含这类标记，本次训练保留了这些轨迹。这是数据质量上的一项限制，进一步实验需要审阅这些位置。</p>
+<p>对完整轨迹做 SFT 时，监督范围如下：</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>是否参与 SFT loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>assistant 的思考、工具调用、最终答案、结束 token</td>
+<td>是</td>
+</tr>
+<tr>
+<td>system、user、角色头</td>
+<td>否</td>
+</tr>
+<tr>
+<td>工具返回的文字和图片</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>模型要学习的是如何根据已有观察生成下一段思考和动作。工具图片仍然可见，它们会影响后续预测；训练目标集中在 assistant 生成的 token 上。</p>
+<h3 id="42-sft">4.2 SFT 冷启动环节</h3>
+<p>在进入 RL 之前，我们先通过 SFT 冷启动，让 Qwen3.5-4B 学习<strong>交错思维链和工具调用的格式</strong>。模型需要先生成一段思考，在需要进一步观察时输出符合协议的工具调用；收到工具返回的局部光谱图后，再接着思考，直到给出最终答案。</p>
+<p>完整示范轨迹把这些环节连在一起：<code>&lt;think&gt;</code> 中写分析，<code>&lt;tool_call&gt;</code> 中指定工具和波长区间，工具观察回填后开启下一轮思考，最后用 <code>&lt;answer&gt;</code> 包住结论与解释。SFT 对各轮 assistant 的输出进行监督，让模型学习如何按这套协议组织分析和动作，为后续 GRPO 的多轮探索打下基础。</p>
+<p>训练由 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/train_sft.py">train_sft.py</a> 异步执行，使用 <code>cross_entropy</code>，只监督 assistant 生成的内容。下面保留首轮 4B SFT 的训练记录：batch size 4、学习率 <code>2e-5</code>、LoRA rank 32、2 个 epoch，共 <strong>424 个训练 step</strong>。每轮结束后计算验证 loss，并保存供后续训练和评测使用的权重。</p>
+<p><img alt="Spec-o3 cold-start SFT：训练 loss 与每批 assistant 监督 token 数" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/swanlab-sft.png" /></p>
+<p>完整训练曲线与实验配置已公开，可在 <a href="https://swanlab.cn/@kmno4/agentic-rl-lab-spec-o3/v1/rjj3zx/runs">SwanLab 实验列表</a>中查看 SFT 记录。</p>
+<p>图里的平滑训练 loss 从约 0.9 降到约 0.5。对应的 SFT 模型在开发集上答对了 <strong>138 / 256</strong> 道题，严格格式合规率达到 <strong>85.94%</strong>。完成这一轮冷启动后，我们再接上 GRPO，让模型通过实际工具交互和最终奖励，继续改进波段选择与分类判断。</p>
+<h2 id="5-grpo">5. 再做 GRPO，让模型在交互中学习</h2>
+<h3 id="51-8">5.1 一道题采样 8 条，各自把工具流程走完</h3>
+<p>RL 使用 <code>datasets/rl/bench_rl_train.jsonl</code> 中的 <strong>3,108 道题</strong>。每个 batch 取 8 道题，每题生成 8 条轨迹，所以正常一批有 64 条 rollout。</p>
+<p>同一道题的第一轮输入完全相同，可以用一次请求取得 8 个开头：</p>
+<div class="highlight"><pre><span></span><code><span class="n">first_turn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sampler</span><span class="o">.</span><span class="n">sample_async</span><span class="p">(</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span>
+    <span class="n">num_samples</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">group_size</span><span class="p">,</span>
+    <span class="n">sampling_params</span><span class="o">=</span><span class="n">sampling_params</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>后面各条轨迹可能选择不同波段，得到的工具图片也不同，因此分别带着自己的上下文，用 <code>num_samples=1</code> 继续生成。同一道题始终维护这 8 条轨迹，已经完成的分支停止请求。不同题目和分支通过 <code>asyncio.gather()</code> 并发执行。</p>
+<p>整批 rollout 共用同一版 sampler，全部完成后才更新模型；下一批再从更新后的权重创建 sampler。这样，组内比较的 reward 和采样时保存的 old logprob 都对应同一版策略。</p>
+<p>一个 epoch 会生成 <code>3,108 × 8 = 24,864</code> 条轨迹，经过 <strong>389 个 rollout batch</strong>，最后一批为 4 道题、32 条轨迹。终端总进度条按轨迹计数，内层进度条展示当前 batch 的完成情况。实际 optimizer 更新次数还要看是否存在整批都没有有效相对信号的情况。</p>
+<h3 id="52">5.2 奖励只看答案与格式</h3>
+<p>本章的奖励写成：</p>
+<div class="arithmatex">\[
+r(\tau)=\mathbb{1}[\text{答案正确}]-0.2\,\mathbb{1}[\text{格式错误}]
+\]</div>
+<table>
+<thead>
+<tr>
+<th>答案</th>
+<th>格式</th>
+<th style="text-align: right;">Reward</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正确</td>
+<td>合格</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr>
+<td>正确</td>
+<td>不合格</td>
+<td style="text-align: right;">0.8</td>
+</tr>
+<tr>
+<td>错误</td>
+<td>合格</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr>
+<td>错误</td>
+<td>不合格</td>
+<td style="text-align: right;">-0.2</td>
+</tr>
+</tbody>
+</table>
+<p>没有额外的工具调用次数奖励。模型是否值得再看一张图，要通过最终任务结果获得学习信号。</p>
+<p>训练奖励的答案提取只读取最后一轮思考结束后、正文开头的 YES/NO，允许缺少部分标签的答案获得正确性分数。评测则从最后一轮最后一个 <code>&lt;/think&gt;</code> 之后提取最后一个完整 answer 块；两者分别实现。</p>
+<h3 id="53">5.3 有组内差异，才有相对学习信号</h3>
+<p>同一题的 8 条轨迹按 reward 计算 advantage：</p>
+<div class="arithmatex">\[
+A_i=\frac{r_i-\mathrm{mean}(r_1,\ldots,r_8)}{\mathrm{std}(r_1,\ldots,r_8)+10^{-6}}
+\]</div>
+<p>标准差使用样本标准差，即 <code>ddof=1</code>。即使答错只得 0 分，当同组其他轨迹获得更高 reward 时，这条轨迹仍会得到负 advantage。</p>
+<p><strong>跳过的条件是整组 reward 完全相同。</strong> 由于格式也影响 reward，即使整组都答对，也可能因格式不同而产生学习信号。被跳过的组仍计入训练统计；当前代码不重新补采样来填满有效组。</p>
+<h3 id="54-assistant-token">5.4 只更新实际生成的 assistant token</h3>
+<p><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/rollout.py">rollout.py</a> 每轮直接保存服务返回的 token 和 logprob。续写时保留实际生成的历史，仅编码新增的工具观察与下一轮前缀，避免重新渲染 assistant 文本后改变 token 序列。</p>
+<p>一条轨迹中的 assistant token 共享该轨迹的 advantage。问题、图片、工具观察和程序补入的分隔符只作为上下文，对应的 advantage 为零。随后整批 Datum 交给 PyTRIO 内置 <code>ppo</code> loss，裁剪范围为 <code>[0.8, 1.2]</code>，每批更新一次。</p>
+<p><img alt="Spec-o3 首轮 4B RL epoch 1 的训练曲线：reward、严格格式合规率、参与更新的 assistant token 数与训练正确率" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/swanlab-rl.png" /></p>
+<p>这张图保留首轮 <strong>4B RL epoch 1</strong> 的训练过程；新增的 4B、9B epoch 3 独立评测结果列在第 0 节。完整 RL 曲线与实验配置同样保存在公开的 <a href="https://swanlab.cn/@kmno4/agentic-rl-lab-spec-o3/v1/rjj3zx/runs">SwanLab 实验列表</a>中。</p>
+<p>训练曲线里，格式合规率上升比较明显，后段接近 0.95；reward 和训练正确率则在波动中改善，后半段没有持续单调上升。每个 step 遇到的题目不同，所以这些曲线用于观察训练过程，最终表现仍回到固定开发集评测。</p>
+<p>左下角的 <code>train/assistant_tokens</code> 是<strong>当前整批有效训练样本的 token 总数</strong>，同时受轨迹长度、同分组跳过和尾批大小影响。若要判断平均推理是否变短，应查看逐轨迹长度或 <code>rollout/mean_generated_tokens</code>。</p>
+<h2 id="6-sft">6. SFT 冷启动为什么重要？</h2>
+<p>这次实验中，Base 能给出部分正确判断，但严格格式合规率只有 <strong>0.39%</strong>；SFT 后达到 <strong>85.94%</strong>。这个变化让我直观地看到，完整轨迹示范对模型遵循交互协议很有帮助。</p>
+<p>SFT 让模型学习“<strong>思考 → 工具调用 → 图片观察 → 继续思考 → 最终回答</strong>”的交错结构：格式怎么对、收到新图怎么接着分析、最后怎么收尾，都靠示范轨迹教。</p>
+<p>冷启动之后，GRPO 才有一个靠谱的交互流程可以接着练。</p>
+<h2 id="7-pytrio">7. PyTRIO 给科研带来的价值</h2>
+<p>原论文使用 <strong>8 张 NVIDIA H100</strong> 完成训练。<a href="https://arxiv.org/html/2601.06498v1#S4.SS2">论文 §4.2</a> 对想尝试这类研究的人来说，准备算力、部署多卡训练环境、衔接训练和推理，本身就需要投入不少精力。这次我通过 PyTRIO，用 Qwen3.5-4B LoRA 跑通了 SFT、工具交互和 GRPO，模型计算与权重存储都交给远程服务。</p>
+<p>我自己没有 8 卡机器，也不想在部署多卡训练环境上花时间。PyTRIO 按 token 计费，支付宝就能充值，本地这台普通机器只负责画光谱、组织消息、算 reward，训练和采样都提交到远端。这次我主要处理的是交错思维链、图文输入、工具观察、reward 和评测规则；改完这些逻辑，训练接口、checkpoint 和 SwanLab 记录都能沿用。后面想比较不同学习率、奖励设置或随机种子，也可以各开一个训练任务并行跑，LoRA 权重和优化器状态互相独立，不用绑在某一台 GPU 服务器上。<a href="https://docs.pytrio.com/docs">PyTRIO 介绍</a> / <a href="https://docs.pytrio.com/docs/clock-cycle">多作业调度说明</a></p>
+<p>首轮 4B 实验的实际用量保留在下面：SFT 与 RL epoch 1 两个训练会话合计 <strong>¥699.68</strong>，评测与调试会话另计。这个金额仅对应截图中的两个历史训练会话，新增的 4B、9B epoch 3 训练与评测费用未计入。</p>
+<p><img alt="首轮 4B Spec-o3 实验的 PyTRIO 会话用量与费用，标出 SFT、RL epoch 1 及评测与调试会话" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/spec-o3/images/pytrio-consume.png" /></p>
+<p>截图中明确标注的两个训练会话如下，M 表示百万 token：</p>
+<table>
+<thead>
+<tr>
+<th>会话</th>
+<th style="text-align: right;">Prefilling</th>
+<th style="text-align: right;">Train</th>
+<th style="text-align: right;">Sample</th>
+<th style="text-align: right;">费用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SFT 冷启动</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6.11M</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">¥27.72</td>
+</tr>
+<tr>
+<td>4B RL epoch 1</td>
+<td style="text-align: right;">239.39M</td>
+<td style="text-align: right;">79.13M</td>
+<td style="text-align: right;">26.38M</td>
+<td style="text-align: right;">¥671.96</td>
+</tr>
+<tr>
+<td><strong>这两个训练会话合计</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>¥699.68</strong></td>
+</tr>
+</tbody>
+</table>
+<p>首轮 4B 实验从看论文到完成，我只花了<strong>不到一天的时间</strong>。</p>
+<p>我想要的就是这个节奏：先把想法跑起来，再慢慢加对照、检查失败轨迹、调整训练方案。</p>
+<h2 id="8">8. 如何运行这次实验？</h2>
+<h3 id="81">8.1 安装环境并登录</h3>
+<p>在已安装 UV 的机器上，先获取项目并安装锁定依赖：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datawhalechina/agentic-rl-lab.git
+<span class="nb">cd</span><span class="w"> </span>agentic-rl-lab
+uv<span class="w"> </span>sync<span class="w"> </span>--locked
+<span class="nb">cd</span><span class="w"> </span>experiments/spec-o3
+
+uv<span class="w"> </span>run<span class="w"> </span>trio<span class="w"> </span>login
+uv<span class="w"> </span>run<span class="w"> </span>swanlab<span class="w"> </span>login
+</code></pre></div>
+<p>已有项目可直接在根目录执行 <code>uv sync --locked</code>，再进入 <code>experiments/spec-o3/</code>。<strong>下面所有命令都在这个目录运行。</strong> 项目使用 Python 3.13+、PyTRIO 0.2.9；本地负责数据处理、绘图和训练调度，模型训练与采样由远程服务执行。训练所需的认证使用 CLI 保存的登录信息。</p>
+<h3 id="82-sft-rl">8.2 先准备 SFT，再准备 RL 数据</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>prepare_data.py<span class="w"> </span>sft
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>prepare_data.py<span class="w"> </span>bench
+</code></pre></div>
+<p>这个顺序有实际依赖：<code>bench</code> 会读取 SFT 的对象列表，避免把 SFT 出现过的光谱分进 dev。下载的数据、图片和整理结果分别保存在：</p>
+<div class="highlight"><pre><span></span><code>datasets/
+├── sft/
+│   ├── train_sharegpt.json
+│   ├── images/
+│   ├── sft_train.jsonl       # 848 条，用于 SFT
+│   ├── sft_val.jsonl         # 94 条，用于验证 loss
+│   ├── sft_cleaning.jsonl
+│   └── sft_stats.json
+└── rl/
+    ├── data/                 # 下载的原始 Parquet
+    ├── images/               # 初始光谱图片
+    ├── spectra/              # 工具使用的 NPZ 数组
+    ├── bench_rl_train.jsonl  # 3,108 条，用于 RL
+    ├── bench_dev.jsonl       # 256 条，本章评测集
+    ├── bench_test.jsonl      # 6,754 条，尚未评测
+    └── bench_stats.json
+</code></pre></div>
+<p>脚本使用固定数据 revision，直接下载到上述目录。当前下载设置为 Hugging Face 官方 HTTP 通道并关闭 Xet，重新执行会复用已完成文件。JSONL 中保存的是图片和光谱的绝对路径；迁移目录或机器后，需要重新整理以更新路径。</p>
+<h3 id="83-2-epoch-sft">8.3 运行 2 个 epoch 的 SFT</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train_sft.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--epochs<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--rank<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--learning-rate<span class="w"> </span>2e-5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-name<span class="w"> </span>spec-o3-sft<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p>脚本默认只训练 1 个 epoch，因此这里显式传入 <code>--epochs 2</code>。<code>--model-revision</code> 默认是 <code>main</code>，本次 SFT 记录也使用了这一设置；需要固定 tokenizer 与 image processor 文件时，可传入本章数据准备和评测使用的 <code>851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a</code>。</p>
+<p>训练 9B 时，将 <code>--base-model</code> 改为 <code>Qwen/Qwen3.5-9B</code>，并使用独立的 <code>--run-name</code>。固定 revision 时应选择对应模型仓库的版本，上面的 commit 仅用于 4B。</p>
+<p>训练结束后，保留 epoch 2 对应的 <code>state_path</code> 和 <code>sampler_path</code>。它们分别用于下一步 RL 和 SFT 模型评测。</p>
+<h3 id="84-sft-state-rl">8.4 从 SFT state 接着训练 RL</h3>
+<p>把下面的占位符替换成 <strong>PyTRIO 权重控制台获取或训练终端打印的 state_path</strong>：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>train_rl.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--state-path<span class="w"> </span><span class="s1">'&lt;SFT epoch 2 的 state_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--epochs<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--group-size<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--learning-rate<span class="w"> </span>1e-6<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-turns<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save-every<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-name<span class="w"> </span>spec-o3-rl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--swanlab-mode<span class="w"> </span>online
+</code></pre></div>
+<p><code>--max-tokens</code> 限制单次生成长度；<code>--max-seq-len</code> 限制包含文字、图片与工具历史的总上下文。<code>--max-turns 8</code> 是最多 8 轮 assistant 生成，最终答案也占一轮；当前实现最多执行前 7 轮的工具调用。</p>
+<p>上面保留首轮 4B 实验的 1 epoch 命令。要从 SFT state 开始训练 3 个 epoch，将 <code>--epochs</code> 改为 <code>3</code>；训练 9B 时传入 9B SFT 的 <code>state_path</code>，脚本会从 checkpoint 恢复对应基模。不同实验使用独立的 <code>--run-name</code>。</p>
+<p>当前脚本每 100 个累计 rollout step 保存一次 state 和 sampler，epoch 结束时也保存。这个周期保存功能是在首次 RL 实验之后补上的，便于后续运行时保留中间权重。训练日志里同时记录 rollout step 与实际 updates，两者在跳过整批更新时会有差别。</p>
+<p>作者公开配置与首轮 4B 训练有以下主要差异：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>作者公开配置</th>
+<th>首轮 4B 实验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基模</td>
+<td>Qwen2.5-VL-3B/7B-Instruct</td>
+<td>Qwen3.5-4B</td>
+</tr>
+<tr>
+<td>参数更新</td>
+<td>SFT 配置为语言模型全参数更新，冻结视觉部分</td>
+<td>LoRA rank 32</td>
+</tr>
+<tr>
+<td>SFT / RL epoch</td>
+<td>5 / 3</td>
+<td>2 / 1</td>
+</tr>
+<tr>
+<td>SFT / RL 学习率</td>
+<td><code>2e-5</code> / <code>1e-6</code></td>
+<td><code>2e-5</code> / <code>1e-6</code></td>
+</tr>
+<tr>
+<td>SFT 调度</td>
+<td>cosine，warmup ratio 0.05</td>
+<td>恒定学习率</td>
+</tr>
+<tr>
+<td>RL 每批题目数 / 每题轨迹数</td>
+<td>64 / 8</td>
+<td>8 / 8</td>
+</tr>
+<tr>
+<td>序列预算</td>
+<td>SFT cutoff 32,768；RL max response 32,768</td>
+<td>训练轨迹按 16,384 总上下文安排</td>
+</tr>
+</tbody>
+</table>
+<p>作者参数来自固定提交的 <a href="https://github.com/Maxwell-Jia/spec-o3/blob/dd6eb9130d9d850cd67b2a6c55e651da08ab28cb/cold_start/examples/spec_o3/qwen2_5_sft_full.yaml">SFT YAML</a> 与 <a href="https://github.com/Maxwell-Jia/spec-o3/blob/dd6eb9130d9d850cd67b2a6c55e651da08ab28cb/reinforcement_learning/recipe/spec_o3/configs/spec_o3.yaml">RL YAML</a>。本章也未逐项复刻上游 loss 的全部细节，因此这些结果用于观察本地方法迁移，不能直接与论文榜单数值对齐。</p>
+<h3 id="85-4b-basesft-4b-9b-rl">8.5 评测 4B Base、SFT，以及 4B / 9B RL</h3>
+<p>下面保留开头结果表对应的生成预算。将占位符替换成各自的 <strong>sampler_path</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Base：不传 model-path，脚本自动追加格式提醒。</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/base-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">6132</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+
+<span class="c1"># SFT epoch 2。</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span><span class="s1">'&lt;SFT epoch 2 的 sampler_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/sft-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+
+<span class="c1"># SFT → RL epoch 1。</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span><span class="s1">'&lt;RL epoch 1 的 sampler_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/sft-rl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">6144</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+
+<span class="c1"># 4B RL epoch 3。</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span><span class="s1">'&lt;4B RL epoch 3 的 sampler_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/rl-4b-e3<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">6144</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+
+<span class="c1"># 9B RL epoch 3。</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-9B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span><span class="s1">'&lt;9B RL epoch 3 的 sampler_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/rl-9b-e3<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">6144</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+</code></pre></div>
+<p><code>--output</code> 是评测产物目录，会保存 <code>metrics.json</code>、逐样本的 <code>trajectories.jsonl</code> 和工具生成的图片。重新评测时换一个目录名，可以保留旧记录。评测默认使用 <code>bench_dev.jsonl</code>、并发 16、temperature 0.6、seed 42、最多 8 轮。</p>
+<p><code>--base-model</code> 必须与 sampler 权重的基模一致，tokenizer、图像处理器和采样客户端会统一使用这个模型。<code>--model-revision</code> 用于选择该模型的 Hugging Face 文件版本；未传时，4B 沿用固定 revision，9B 使用 <code>main</code>。</p>
+<p>本次 Base 与 SFT 的表格数值来自已有轨迹重算后的 <code>metrics-reparsed.json</code>，RL 来自新规则下的 <code>metrics.json</code>。当前 <code>eval.py</code> 已包含新提取规则，重新运行会直接写入 <code>metrics.json</code>。</p>
+<p>要补齐 SFT 与 RL 的生成预算对照，下一次执行：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>eval.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--base-model<span class="w"> </span>Qwen/Qwen3.5-4B<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-path<span class="w"> </span><span class="s1">'&lt;SFT epoch 2 的 sampler_path&gt;'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>outputs/sft-dev-6144<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-tokens<span class="w"> </span><span class="m">6144</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-seq-len<span class="w"> </span><span class="m">16384</span>
+</code></pre></div>
+<p>这是待完成的同预算复测，结果尚未包含在本文表格中。</p>
+<h3 id="86">8.6 绘图与代码阅读顺序</h3>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>analysis.py
+</code></pre></div>
+<p>脚本将本文的五组固定结果绘制为 <code>images/results_comparison.png</code>，并导出同名矢量 PDF。四个面板分别比较 Accuracy、Macro F1、严格格式合规率和答对题数；每组都标明模型规模与训练阶段。它不读取新的评测目录；后续得到新结果时，需要同步更新脚本中的数据和图注。</p>
+<p>代码阅读可以从数据准备开始，沿着输入、工具交互和训练向下走：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/prepare_data.py">prepare_data.py</a></td>
+<td>下载、清理和划分数据，保存图片与光谱数组</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/templates/qwen3_5_spec_o3.jinja">templates/qwen3_5_spec_o3.jinja</a></td>
+<td>渲染多轮图文消息，标出 assistant 监督区间</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/protocol.py">protocol.py</a></td>
+<td>构造图片 chunk、SFT/RL Datum，解析动作</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/tools.py">tools.py</a></td>
+<td>按波长区间重绘局部光谱</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/rollout.py">rollout.py</a></td>
+<td>执行一条完整工具轨迹，保存实际 token 与 logprob</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/train_sft.py">train_sft.py</a></td>
+<td>异步 SFT、验证和两份权重保存</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/train_rl.py">train_rl.py</a></td>
+<td>组采样、奖励、advantage、PPO 更新与 checkpoint</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/eval.py">eval.py</a></td>
+<td>独立评测，保存分类指标、轨迹和工具图片</td>
+</tr>
+<tr>
+<td><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/spec-o3/analysis.py">analysis.py</a></td>
+<td>绘制本文的固定结果</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

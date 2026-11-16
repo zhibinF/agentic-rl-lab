@@ -1,0 +1,1765 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="前沿 LLM 与 Agent 强化学习算法实验手册">
+      
+      
+      
+        <link rel="canonical" href="https://zhibinf.github.io/agentic-rl-lab/experiments/tournament-grpo/">
+      
+      
+        <link rel="prev" href="../spec-o3/">
+      
+      
+        <link rel="next" href="../../en/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>TOURNAMENT-GRPO - Agentic-RL Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tournament-grpo" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Agentic-RL Lab" class="md-header__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Agentic-RL Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TOURNAMENT-GRPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Agentic-RL Lab" class="md-nav__button md-logo" aria-label="Agentic-RL Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Agentic-RL Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zhibinF/agentic-rl-lab" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    入门
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    入门
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境配置与基础概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loss-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loss Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VISION-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pytrio-jev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PYTRIO-JEV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../general-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GENERAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../medical-opd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MEDICAL-OPD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dapo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gspo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GSPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agentopsd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENTOPSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search-r1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEARCH-R1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../retool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RETOOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alfworld/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ALFWORLD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tempo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TEMPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec-o3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPEC-O3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOURNAMENT-GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 复现结果概览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 训练流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 从逐份评分到两两比较
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 为什么使用两两比较
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心变量和公式
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与贡献
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 复现结果概览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 训练流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 从逐份评分到两两比较
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 为什么使用两两比较
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心变量和公式
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tournament-grpo">Tournament-GRPO 复现：用淘汰赛奖励训练研究报告生成</h1>
+<blockquote>
+<p>想跳过正文直接运行？请查看 <a href="start/">快速启动指南</a>：准备数据 → 配置工具与裁判 → 训练 → 评测。</p>
+</blockquote>
+<div align="center">
+  <img src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tournament-grpo/images/封面.png" alt="Tournament-GRPO 复现：用淘汰赛奖励训练研究报告生成" width="100%">
+</div>
+
+<div align="center">
+  <a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/tournament-grpo"><img alt="Code" src="https://img.shields.io/badge/Code-tournament--grpo-2563eb?style=flat"></a>
+  <a href="https://arxiv.org/abs/2605.26958v2"><img alt="Paper" src="https://img.shields.io/badge/Paper-Tournament--GRPO-d94a45?style=flat"></a>
+  <a href="https://github.com/PuffYang/Tournament_GRPO/tree/eea826cf66705cac9ec81823f746d0ccd6074228"><img alt="Author Code" src="https://img.shields.io/badge/Author%20Code-eea826cf-f59e0b?style=flat"></a>
+  <a href="https://docs.pytrio.com/docs"><img alt="PyTRIO" src="https://img.shields.io/badge/PyTRIO-0.2.9-7c3aed?style=flat"></a>
+  <a href="https://swanlab.cn/@MRLE/tournament-grpo"><img alt="SwanLab" src="https://img.shields.io/badge/SwanLab-tournament--grpo-16a34a?style=flat"></a>
+</div>
+
+<blockquote>
+<p><strong>代码与复现资源</strong></p>
+<ul>
+<li>本章实现：<a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/tournament-grpo/train.py">训练</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/tournament-grpo/reward.py">淘汰赛奖励</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/tournament-grpo/rollout.py">多轮 rollout</a> / <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/tournament-grpo/judge.py">裁判</a></li>
+<li>论文：<a href="https://arxiv.org/abs/2605.26958v2">Tournament-GRPO: Group-Wise Tournament Rewards for Reinforcement Learning in Open-Ended Long-Form Generation(EMNLP'26)</a></li>
+<li>作者代码：<a href="https://github.com/PuffYang/Tournament_GRPO/tree/eea826cf66705cac9ec81823f746d0ccd6074228">PuffYang/Tournament_GRPO</a></li>
+<li>SwanLab：<a href="https://swanlab.cn/@MRLE/tournament-grpo/v1/x1tb4s/runs/s474uc49/chart">20-step 训练记录</a></li>
+<li>搜索与裁判：<a href="https://api-docs.deepseek.com/zh-cn/guides/search/">DeepSeek Search API</a> / <a href="https://jina.ai/reader/">Jina Reader</a> / <a href="https://docs.typesafe.ai/api/system-one">Jev</a> <code>jev-1.14.0</code></li>
+<li>本章作者：<a href="https://mrlepro.com">MRLE</a></li>
+</ul>
+</blockquote>
+<p>前面的 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/search-r1/readme.md">Search-R1</a> 和 <a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/retool/readme.md">ReTool</a> 处理的任务通常有标准答案，可以直接根据答案是否匹配构造 reward。Deep research 任务则不同：模型需要搜索、阅读网页并生成研究报告。比如训练集里的一道题是：</p>
+<blockquote>
+<p>What progress has been made in the application of data mining in materials science research?</p>
+</blockquote>
+<p>这种题没有标准答案。两份报告可能都对，只是一份覆盖更全、证据更扎实，因此需要 LLM 裁判依据这道题的 rubric 评分。</p>
+<p>Tournament-GRPO 不再让裁判逐份给出绝对分数，而是比较同组报告，按累计胜场计算 reward。本文记录它在 PyTRIO 上的复现，使用 Qwen3.5-4B LoRA、DeepSeek Search、Jina Reader 和 Jev 裁判，重点检查训练链路、奖励计算和早期行为变化。</p>
+<h2 id="0">0. 复现结果概览</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>淘汰赛奖励、格式奖励、advantage、PPO loss</td>
+<td>已对照作者函数逐项核验数值和梯度</td>
+</tr>
+<tr>
+<td>20-step 训练（8 题 × 8 条轨迹）</td>
+<td>1,280 条轨迹、4,480 场裁判比较，答案完成率 64% → 97%</td>
+</tr>
+<tr>
+<td>Base vs checkpoint 评测</td>
+<td>Deep Research Bench 全部 100 题，RACE Overall 20.65 → 34.70</td>
+</tr>
+<tr>
+<td>费用与耗时</td>
+<td>训练 78.92 元（4 小时 3 分钟）+ 评测 13.12 元，共 92.04 元</td>
+</tr>
+</tbody>
+</table>
+<p>20 步之后，模型最明显的变化是学会了按时交卷。100 题评测里，答案完成率从 60% 升到 98%，格式合规率从 42% 升到 72%。RACE Overall 的 14 分涨幅主要来自白卷变少：空报告记 0 分，Base 有 40 题没交卷。只看两边都写出报告的 59 题，Overall 是 34.49 → 35.25。</p>
+<h2 id="1">1. 训练流程</h2>
+<p>Rubric-based RL 的训练闭环大致是这样：</p>
+<div class="arithmatex">\[
+\text{Prompt} \rightarrow \text{Rubric} \rightarrow \text{Judge} \rightarrow \text{Reward} \rightarrow \text{GRPO} \rightarrow \text{Policy}
+\]</div>
+<p>对一道题，先准备一组 rubric，也就是这道题的评分标准；policy 对同一道题采样多份回答；judge 结合问题、回答和 rubric 判分，汇总成每份回答的 reward；GRPO 用同题回答之间的相对 reward 计算 advantage，更新 policy，再进入下一轮采样。</p>
+<p>Tournament-GRPO 在这张图上只动了 <strong>Judge → Reward</strong> 这一段：</p>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>Tournament-GRPO 的做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rubric</td>
+<td>训练前用 GPT-4o 为每道题生成，训练中保持不变（静态 rubric）</td>
+</tr>
+<tr>
+<td>Judge</td>
+<td>一次看 2 份回答和完整 rubric，选出更好的一份</td>
+</tr>
+<tr>
+<td>Reward</td>
+<td>多轮淘汰赛累计胜场，组内 min-max 归一化，再加 0/1 格式奖励</td>
+</tr>
+<tr>
+<td>GRPO / Policy</td>
+<td>标准 GRPO 组内标准化 advantage 和 PPO clip，没有改动</td>
+</tr>
+</tbody>
+</table>
+<p>本文关注的问题是：同一个裁判改用两两比较后，GRPO 拿到的信号会有什么不同？</p>
+<h2 id="2">2. 从逐份评分到两两比较</h2>
+<blockquote>
+<p>Tournament-GRPO 是 Zixuan Yang 等人提出的工作，已被 <strong>EMNLP 2026 主会（Main Conference）录用</strong>。论文全名是 <em>Tournament-GRPO: Group-Wise Tournament Rewards for Reinforcement Learning in Open-Ended Long-Form Generation</em>。</p>
+</blockquote>
+<p>论文把现有做法统称为 pointwise 打分。它的共同点是：裁判每次只看一份回答，看不到同组的其他回答。常见的形式有两类：</p>
+<ul>
+<li><strong>逐条判断</strong>：把 rubric 拆成若干检查项，裁判逐条判断是否满足（0/1），再按权重求和、归一化成一个分数。RaR 这类方法属于这一类，论文里的 GRPO explicit、GDPO 基线也是逐条 rubric 打分。</li>
+<li><strong>整体打分</strong>：裁判参照 rubric，直接给整份回答一个分数，比如 1–10 分。论文里的 implicit 基线属于这一类。</li>
+</ul>
+<p>两类形式最后都给每份回答算出一个独立的分数，直接当 reward。作者认为这在长文本 RL 里有三个问题：</p>
+<ol>
+<li><strong>分数尺度难校准</strong>。整体打分要把一份很长的报告压成一个数；逐条判断虽然每项只问“满足没有”，但满足的门槛由裁判单独把握，权重和汇总方式又决定了最终尺度。不同题目、不同训练阶段的 0.7，不一定代表同样的质量。</li>
+<li><strong>组内区分度弱</strong>。同一道题的 8 份回答在很多检查项上结果相同：容易的项大家都满足，都记 1；难的项大家都没做到，都记 0。这些项没有组内差异，汇总后 reward 挤在一起，GRPO 的 advantage 主要剩下噪声。整体打分也类似，8 份回答常常集中在 7、8 分。</li>
+<li><strong>容易饱和</strong>。训练一段时间后，policy 学会满足容易拿分的检查项（结构、格式、覆盖面），这些项很快全是 1；更难的维度（证据使用、洞察）反而没拉开。</li>
+</ol>
+<p>关键的观察在于 GRPO 本身：它只关心同一道题里谁比谁好，用不上一个全局校准的绝对分数。既然如此，不如直接让裁判做比较。</p>
+<p>比较的思路来自 TourRank（用多轮组内比较做排序）。论文还设了一个 Pairwise 基线：8 份回答两两全部比一遍（28 场），用胜率当 reward，这个思路来自 ArenaRL。Tournament-GRPO 则是淘汰赛：两两分组，胜者晋级，再分组，直到剩下一个；整场重复几次，累计胜场。</p>
+<h2 id="3">3. 为什么使用两两比较</h2>
+<p>单独给长报告打分，容易出现分数挤在一起的问题，而 GRPO 依赖的恰恰是组内差异。两两比较把问题简化为“哪一份更好”。这有点像评测咖啡：与其分别为八杯咖啡给出孤立的分数，不如每次比较两杯，再根据累计胜场排名。</p>
+<p>实际实现中，8 份回答先两两分组，胜者晋级，直到决出冠军；整场重复 4 次，再按累计胜场计算奖励。胜场归一化、空答案和格式奖励的处理如下一节所示。</p>
+<h2 id="4">4. 核心变量和公式</h2>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+<th>本章取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K</td>
+<td>每道题采样的回答数（GRPO 的 group）</td>
+<td>8</td>
+</tr>
+<tr>
+<td>G</td>
+<td>每场比赛的人数</td>
+<td>2</td>
+</tr>
+<tr>
+<td>W</td>
+<td>每场晋级人数</td>
+<td>1</td>
+</tr>
+<tr>
+<td>F</td>
+<td>剩下几人时这次淘汰赛结束</td>
+<td>1</td>
+</tr>
+<tr>
+<td>M</td>
+<td>整场淘汰赛重复次数</td>
+<td>4</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(s_i\)</span></td>
+<td>第 <span class="arithmatex">\(i\)</span> 份回答 M 次淘汰赛的累计胜场</td>
+<td>0–12</td>
+</tr>
+</tbody>
+</table>
+<p>K=8 时，一次淘汰赛有 4 + 2 + 1 = 7 场，重复 4 次共 28 场。累计胜场归一化成淘汰赛奖励：</p>
+<div class="arithmatex">\[
+r_i^{\text{tour}} = \frac{s_i - \min_j s_j}{\max_j s_j - \min_j s_j}
+\]</div>
+<p>所有 <span class="arithmatex">\(s_i\)</span> 相同时，<span class="arithmatex">\(r_i^{\text{tour}} = 0.5\)</span>；没有最终答案的回答，归一化之后再置为 0。总奖励加上 0/1 的格式奖励，范围是 0–2：</p>
+<div class="arithmatex">\[
+r_i = r_i^{\text{tour}} + r_i^{\text{fmt}}
+\]</div>
+<p>advantage 按作者实现使用组内样本标准差（<code>ddof=1</code>）：</p>
+<div class="arithmatex">\[
+A_i = \frac{r_i - \bar{r}}{s_r + 10^{-6}}
+\]</div>
+<p>其中 <span class="arithmatex">\(\bar{r}\)</span> 是组内 reward 的均值，<span class="arithmatex">\(s_r\)</span> 是以 <span class="arithmatex">\(K-1\)</span> 为分母计算的样本标准差。</p>
+<p>下面是训练中真实的一组打分，题目就是开头那道材料科学题：</p>
+<p><img alt="一组真实的 Tournament-GRPO 打分" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tournament-grpo/images/tournament-real-group.png" /></p>
+<p>图里有几个值得看的细节：</p>
+<ul>
+<li>第 1 次淘汰赛的决赛是 #4 对 #5，#5 赢了。4 次累计下来 #5 胜 9 场，#4 胜 7 场，所以 #5 的淘汰赛奖励是 1.0，#4 是 7/9 ≈ 0.78。</li>
+<li>
+<h1 id="4-7-1-5">4 和 #7 格式合规，各加 1 分，总奖励反而超过了 #5。在这一组里，格式奖励对排序的影响比淘汰赛奖励还大。</h1>
+</li>
+<li>
+<h1 id="1-2-0-2">1 没有答案，却赢了 2 场。它是在两份空答案之间被判胜的。归一化后它的奖励仍被置 0，但这 2 场比赛同样花了裁判调用。</h1>
+</li>
+</ul>
+<h2 id="5">5. 我们是怎么复现的？</h2>
+<h3 id="51">5.1 训练闭环</h3>
+<p><code>train.py</code> 每一步做这些事：</p>
+<div class="highlight"><pre><span></span><code>1. 把最新权重交给 sampler。
+2. 取 8 道题，每题采样 8 条多轮轨迹（rollout.py）。
+3. 对每道题：格式检查 + 28 场淘汰赛，得到 8 个 reward（reward.py + judge.py）。
+4. 组内标准化得到 advantage。
+5. 用自定义 PPO loss 做一次 forward_backward，再做一次 AdamW。
+</code></pre></div>
+<p>一步共 64 条轨迹、224 场裁判比较，每批只更新一次。</p>
+<h3 id="52">5.2 数据</h3>
+<p>训练数据直接用作者仓库发布的 Parquet 文件：DR-Tulu 4,627 条、RaR-Science 2,793 条、RaR-Medicine 960 条，共 8,380 条训练题和 441 条验证题。每道题自带一组 rubric，每条 rubric 有 title、description、dimension 和 importance（critical / important 等）。</p>
+<p><code>prepare_data.py</code> 只做格式转换和筛长：按作者 verl 配置筛掉超过 4096 token 的 prompt，用 Qwen3.5-4B tokenizer 筛完剩 8,378 / 440 条。评测集是作者附带的 Deep Research Bench，100 道研究题，带评分 criteria 和参考报告。</p>
+<h3 id="53-rollout-xml">5.3 Rollout：两个工具，一套 XML 协议</h3>
+<p>模型能用两个工具，名字和作者一致：<code>google_search</code> 返回搜索摘要，<code>browse_webpage</code> 读取网页正文。一条轨迹长这样（摘自上面那组的 #4，有删节）：</p>
+<div class="highlight"><pre><span></span><code>&lt;think&gt;I need to research the progress made in data mining applications in materials science ...&lt;/think&gt;
+&lt;call_tool name="google_search"&gt;data mining applications materials science research progress 2023 2024&lt;/call_tool&gt;
+&lt;tool_output&gt;
+&lt;snippet&gt;Title: Recent progress on machine learning with limited materials data ... &lt;/snippet&gt;
+...
+Environment notice: tool budget exhausted; no tool calls remain. ...
+&lt;/tool_output&gt;
+&lt;think&gt;Based on all the evidence collected, ...&lt;/think&gt;
+&lt;answer&gt;Data mining has made significant progress in materials science research ...&lt;/answer&gt;
+</code></pre></div>
+<p><code>&lt;tool_output&gt;</code> 里的内容来自外部环境，它们留在上下文里，但 mask 为 0，不参与 loss。模型只为自己生成的 think、工具调用和 answer 负责。这部分做法和 Search-R1 一章相同。</p>
+<p>为了降低复现成本，我把搜索从 Top 10 改成 Top 3，交互上限从 8 轮 / 7 次工具改成 6 轮 / 4 次工具。预算砍短之后，模型常常还按原来的节奏继续研究，在请求第 5 次工具时被截断，一个字的答案都没写。一组 8 条轨迹如果全是空答案，reward 和 advantage 全是 0，这一步就没有梯度。</p>
+<p>所以我在第 4 次工具结果的末尾加了一段环境提示：工具预算已用尽，请根据已有证据直接写最终答案，证据不足就说明局限。模型知道该收尾了，组内才会出现有答案和没答案、写得好和写得差的差异。</p>
+<p>这段提示属于环境内容，同样 mask 为 0。它是我相对作者新增的改动，会在差异表里披露。</p>
+<h3 id="54-reward">5.4 Reward：淘汰赛本体</h3>
+<p>淘汰赛的核心代码在 <code>reward.py</code> 的 <code>run_tournament</code>，去掉日志后只有这么几行：</p>
+<div class="highlight"><pre><span></span><code><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">answers</span><span class="p">)</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">judge</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">repeat</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">TOURNAMENT_REPEATS</span><span class="p">):</span>           <span class="c1"># M = 4</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">answers</span><span class="p">)))</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>                       <span class="c1"># F = 1</span>
+        <span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+        <span class="n">num_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">//</span> <span class="n">PLAYERS_PER_MATCH</span>   <span class="c1"># G = 2</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">candidates</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">num_groups</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_groups</span><span class="p">)]</span>
+        <span class="n">winners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">local_index</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">judge</span><span class="o">.</span><span class="n">judge</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">rubrics</span><span class="p">,</span> <span class="p">[</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">group</span><span class="p">])</span>
+            <span class="n">winner</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">local_index</span><span class="p">]</span>              <span class="c1"># W = 1</span>
+            <span class="n">scores</span><span class="p">[</span><span class="n">winner</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
+            <span class="n">winners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">winner</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">winners</span>
+</code></pre></div>
+<p>裁判只看到问题、完整 rubric 和每份回答的最终 <code>&lt;answer&gt;</code>，看不到推理和搜索过程。作者的裁判提示词要求“恰好选一个胜者，优先准确、完整、有依据、直接回答问题的回答”。</p>
+<p>格式奖励是 0 或 1，检查完整轨迹：开头要有非空 think，至少搜索一次，每次工具调用都要接 <code>tool_output</code> 和 think，最后恰好一个非空 answer，不能有标签外的杂文或损坏的 XML。规则照搬作者的 <code>tournament_grpo_reward.py</code>。</p>
+<p>作者在裁判请求失败时会随机选一个胜者继续训练。我去掉了这个回退，失败三次就停止训练。原因来自一次真实事故：旧配置的 20-step 训练跑到第 15 步，裁判接口连续网络失败，224 场比赛里有 150 场退回了随机胜者，这一步的 reward 基本是随机数。用随机 reward 更新权重，比停下来修好接口再续训更糟。</p>
+<h3 id="55-advantage-ppo-loss">5.5 Advantage 与 PPO loss</h3>
+<p>advantage 是第 4 节的组内标准化。loss 按作者的 vanilla PPO 写成 PyTRIO 自定义 loss（<code>train.py</code> 的 <code>ppo_objective</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="n">log_ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">old</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">)</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">log_ratio</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
+<span class="n">losses1</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">ratio</span>
+<span class="n">losses2</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">ratio</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>          <span class="c1"># clip 0.2</span>
+<span class="n">clipped</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">losses1</span><span class="p">,</span> <span class="n">losses2</span><span class="p">)</span>
+<span class="n">dual_bound</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="mf">3.0</span>                         <span class="c1"># dual clip 3，只作用于负 advantage</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">advantages</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">dual_bound</span><span class="p">,</span> <span class="n">clipped</span><span class="p">),</span> <span class="n">clipped</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">losses</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>                                   <span class="c1"># 整个 batch 的 assistant token 取均值</span>
+</code></pre></div>
+<p>没有 KL 项，也没有熵项。每批只更新一次，所以 old logprob 直接取训练端前向的 <code>current.detach()</code>。此时 ratio 恒为 1、clip 不会触发，但梯度仍然是 <span class="arithmatex">\(-A \cdot \nabla \log \pi\)</span>，等价于作者的设置。如果以后改成同一批数据更新多次，就必须在第一次更新前把 old 固定下来。</p>
+<h3 id="56">5.6 与作者实现的差异</h3>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>作者</th>
+<th>本章</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Policy</td>
+<td>Qwen2.5-7B-Instruct，全参数，lr 1e-6</td>
+<td>Qwen3.5-4B，LoRA rank 32，lr 4e-5</td>
+<td>绝对分数不能和论文对比</td>
+</tr>
+<tr>
+<td>裁判</td>
+<td>自部署 Qwen2.5-72B-Instruct，chat 提示词</td>
+<td>Jev <code>jev-1.14.0</code>，提示词适配为 state + 单选 choice</td>
+<td>裁判偏好不同，见第 8 节</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>未写明供应商的搜索服务，Top 10</td>
+<td>DeepSeek Search API，Top 3；query 超过 128 字符截断</td>
+<td>证据覆盖变少，结果随时间变化</td>
+</tr>
+<tr>
+<td>浏览</td>
+<td>Jina Reader</td>
+<td>Jina Reader；服务器上用官方国内域名 <code>r.jinaai.cn</code></td>
+<td>访问地址不同，协议相同</td>
+</tr>
+<tr>
+<td>交互预算</td>
+<td>8 轮 / 7 次工具，用完直接停</td>
+<td>6 轮 / 4 次工具，最后一次工具结果附收尾提示</td>
+<td>研究深度变浅；新增环境提示</td>
+</tr>
+<tr>
+<td>裁判失败</td>
+<td>随机选胜者</td>
+<td>停止训练，从 checkpoint 续训</td>
+<td>不会用随机 reward 更新</td>
+</tr>
+<tr>
+<td>训练规模</td>
+<td>batch 16，多 epoch，约 1,100–1,600 step</td>
+<td>batch 8 题 × 8 条，20 step</td>
+<td>只能观察早期行为变化</td>
+</tr>
+<tr>
+<td>实验追踪</td>
+<td>WandB</td>
+<td>SwanLab</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>淘汰赛结构（G=2、W=1、F=1、M=4）、归一化、无答案置 0、格式规则、18000 token 的 response 预算、3000 字符的工具截断和作者 prompt 都保持原样。</p>
+<h2 id="6">6. 实验结果</h2>
+<h3 id="61-20-step">6.1 20-step 训练</h3>
+<p>配置：Qwen3.5-4B，LoRA rank 32，lr 4e-5，每步 8 题 × 8 条轨迹，共 20 步。完整记录见 <a href="https://swanlab.cn/@MRLE/tournament-grpo/v1/x1tb4s/runs/s474uc49/chart">SwanLab</a>。</p>
+<p><img alt="20 步训练的 reward 曲线" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tournament-grpo/images/swanlab_reward.png" /></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th style="text-align: right;">Step 1</th>
+<th style="text-align: right;">Step 10</th>
+<th style="text-align: right;">Step 20</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>答案完成率</td>
+<td style="text-align: right;">64.1%</td>
+<td style="text-align: right;">93.8%</td>
+<td style="text-align: right;">96.9%</td>
+</tr>
+<tr>
+<td>格式合规率</td>
+<td style="text-align: right;">20.3%</td>
+<td style="text-align: right;">65.6%</td>
+<td style="text-align: right;">45.3%</td>
+</tr>
+<tr>
+<td>总 reward</td>
+<td style="text-align: right;">0.489</td>
+<td style="text-align: right;">1.022</td>
+<td style="text-align: right;">0.794</td>
+</tr>
+<tr>
+<td>淘汰赛 reward</td>
+<td style="text-align: right;">0.286</td>
+<td style="text-align: right;">0.365</td>
+<td style="text-align: right;">0.340</td>
+</tr>
+<tr>
+<td>每条轨迹搜索次数</td>
+<td style="text-align: right;">2.58</td>
+<td style="text-align: right;">3.17</td>
+<td style="text-align: right;">2.47</td>
+</tr>
+<tr>
+<td>每条轨迹浏览次数</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.47</td>
+</tr>
+<tr>
+<td>每条轨迹 response tokens（含工具返回）</td>
+<td style="text-align: right;">2,778</td>
+<td style="text-align: right;">3,556</td>
+<td style="text-align: right;">2,725</td>
+</tr>
+</tbody>
+</table>
+<p>答案完成率升得最稳：前 3 步均值 61.5%，后 3 步均值 95.3%。格式合规率升得慢，也更抖，前后 3 步均值从 19.3% 到 52.6%，第 10 步到过 65.6%，第 20 步又回到 45.3%。淘汰赛奖励只从 0.29 升到 0.32。<code>reward/degenerate_group_rate</code> 全程为 0，每一组都拿到了非零 advantage。</p>
+<p><img alt="20 步训练的 rollout 曲线" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tournament-grpo/images/swanlab_rollout.png" /></p>
+<p><code>rollout/finish_no_tool_call</code> 从 0.78 升到接近 1。前几步约 22% 的轨迹在请求第 5 次工具时被截断，第 8 步以后基本消失，模型学会了在收到预算提示后收尾。搜索次数、浏览次数和 response 长度在 20 步里上下波动，没有明显趋势。</p>
+<h3 id="62-eval">6.2 Eval</h3>
+<p>评测用作者附带的 Deep Research Bench 全部 100 题。Base 和 Step 20 工具配置相同，每题贪心生成 1 条轨迹（seed 42，Top 3 搜索，最多 4 次工具调用）。</p>
+<p>打分用 RACE：裁判按每道题的 criteria，把待评报告和作者的参考报告逐条比较、各打 0–10 分后加权，最终分数是待评报告占两者之和的比例，50 分相当于和参考报告打平。裁判是 <code>deepseek-flash</code>（关闭思考），论文用的是 Qwen2.5-72B-Instruct。</p>
+<table>
+<thead>
+<tr>
+<th>RACE（0–100）</th>
+<th style="text-align: right;">Base</th>
+<th style="text-align: right;">Step 20</th>
+<th style="text-align: right;">差值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全面性 Comprehensiveness</td>
+<td style="text-align: right;">19.21</td>
+<td style="text-align: right;">32.33</td>
+<td style="text-align: right;">+13.12</td>
+</tr>
+<tr>
+<td>洞察力 Insight</td>
+<td style="text-align: right;">17.11</td>
+<td style="text-align: right;">29.67</td>
+<td style="text-align: right;">+12.56</td>
+</tr>
+<tr>
+<td>指令遵循 Instruction Following</td>
+<td style="text-align: right;">24.95</td>
+<td style="text-align: right;">40.77</td>
+<td style="text-align: right;">+15.82</td>
+</tr>
+<tr>
+<td>可读性 Readability</td>
+<td style="text-align: right;">23.91</td>
+<td style="text-align: right;">40.01</td>
+<td style="text-align: right;">+16.10</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td style="text-align: right;"><strong>20.65</strong></td>
+<td style="text-align: right;"><strong>34.70</strong></td>
+<td style="text-align: right;"><strong>+14.05</strong></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>生成指标</th>
+<th style="text-align: right;">Base</th>
+<th style="text-align: right;">Step 20</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>答案完成</td>
+<td style="text-align: right;">60/100</td>
+<td style="text-align: right;">98/100</td>
+</tr>
+<tr>
+<td>格式合规</td>
+<td style="text-align: right;">42/100</td>
+<td style="text-align: right;">72/100</td>
+</tr>
+<tr>
+<td>每题工具调用</td>
+<td style="text-align: right;">3.98</td>
+<td style="text-align: right;">3.94</td>
+</tr>
+<tr>
+<td>每题模型生成 tokens</td>
+<td style="text-align: right;">826</td>
+<td style="text-align: right;">1,641</td>
+</tr>
+</tbody>
+</table>
+<p>涨幅主要来自白卷变少。Base 有 40 题用完工具次数也没写出报告，这些题记 0 分；Step 20 只有 2 题。两边都写出报告的 59 题上，Overall 只从 34.49 到 35.25，单份报告的水平接近。生成 token 翻倍也是同一个原因：Base 的白卷平均只有 220 个 token。</p>
+<p>SwanLab：<a href="https://swanlab.cn/@MRLE/tournament-grpo/runs/5cqbugvp">Base 生成</a>、<a href="https://swanlab.cn/@MRLE/tournament-grpo/runs/0fw66y62">Step 20 生成</a>、<a href="https://swanlab.cn/@MRLE/tournament-grpo/runs/5lz7d3t0">Base RACE</a>、<a href="https://swanlab.cn/@MRLE/tournament-grpo/runs/7gyzdjge">Step 20 RACE</a>。</p>
+<h3 id="63">6.3 成本</h3>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>项目</th>
+<th style="text-align: right;">花费（元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>训练</td>
+<td>PyTRIO（训练与采样）</td>
+<td style="text-align: right;">60.96</td>
+</tr>
+<tr>
+<td>训练</td>
+<td>DeepSeek Search</td>
+<td style="text-align: right;">16.96</td>
+</tr>
+<tr>
+<td>训练</td>
+<td>Jev 裁判</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr>
+<td>评测</td>
+<td>PyTRIO（采样）</td>
+<td style="text-align: right;">3.20</td>
+</tr>
+<tr>
+<td>评测</td>
+<td>DeepSeek</td>
+<td style="text-align: right;">9.92</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>92.04</strong></td>
+</tr>
+</tbody>
+</table>
+<p>PyTRIO 账单：</p>
+<p><img alt="PyTRIO 账单" src="https://github.com/zhibinF/agentic-rl-lab/blob/main/experiments/tournament-grpo/images/pytrioBill.png" /></p>
+<p>训练总时长 4 小时 3 分钟，平均每步 12.2 分钟，每步约 3.95 元。时间大头在裁判：4,480 场比较累计约 2 小时 22 分钟，占 58%，费用却只有 1 元。20 步里裁判共读入约 758 万 token、输出约 13.9 万 token，模型共搜索 3,218 次、浏览网页 722 次。评测时生成 100 份报告，Base 用了 4.5 分钟，Step 20 用了 13.2 分钟。</p>
+<h2 id="7">7. 训练时最应该看哪些指标？</h2>
+<p>淘汰赛奖励是组内的相对位置，不是绝对质量，所以 reward 曲线不能当收敛指标，模型好坏要看独立评测。训练中主要看这几组指标：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>看什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reward/has_answer</code>、<code>reward/format</code></td>
+<td>答案完成率和格式合规率</td>
+</tr>
+<tr>
+<td><code>reward/tournament</code></td>
+<td>淘汰赛奖励均值；无答案记 0，所以会随答案率上升</td>
+</tr>
+<tr>
+<td><code>reward/degenerate_group_rate</code></td>
+<td>8 个 reward 完全相同、没有梯度的题占比</td>
+</tr>
+<tr>
+<td><code>rollout/finish_*</code></td>
+<td>轨迹是正常结束，还是被轮数、工具次数或长度截断</td>
+</tr>
+<tr>
+<td><code>rollout/search_calls</code>、<code>rollout/browse_calls</code>、<code>rollout/response_tokens</code></td>
+<td>工具用量和轨迹长度</td>
+</tr>
+<tr>
+<td><code>tools/error_rate</code></td>
+<td>搜索和浏览是否稳定，环境出错会直接污染 reward</td>
+</tr>
+<tr>
+<td><code>judge/input_tokens</code></td>
+<td>裁判 token 用量，直接对应费用</td>
+</tr>
+</tbody>
+</table>
+<p>想检查裁判，就从 <code>judge.jsonl</code> 抽样，里面有每场比赛的候选、胜者和裁判原始输出。</p>
+<h2 id="8">8. 这次复现有哪些边界？</h2>
+<ul>
+<li>policy、裁判、搜索后端和训练规模都和论文不同，分数不能和论文直接对比。本章验证的是淘汰赛奖励接到 PyTRIO 上后，训练链路是否正确、早期行为往哪变。</li>
+</ul>
+<h2 id="9">9. 待验证的问题</h2>
+<p>以下两点来自复现观察，尚未进一步实验验证。</p>
+<ul>
+<li>
+<p><strong>二人组重复 4 次并不省裁判调用。</strong> K=8 时 4 × 7 = 28 场，和两两全比的 C(8,2) 一样多，区别只在 reward 怎么分配。论文里省调用的是重复 2–3 次的配置。下一步可以用同一批轨迹离线跑 M=2 和 M=4，比较 advantage 排序。</p>
+</li>
+<li>
+<p><strong>早期 reward 上涨主要来自格式奖励。</strong> 前 3 步到后 3 步，总 reward 0.485 → 0.849，约 92% 的增量来自格式奖励（0.193 → 0.526），淘汰赛奖励只从 0.293 到 0.323。后续可以分开看 has_answer、format、tournament，答案率稳定后再看淘汰赛奖励的组内方差。</p>
+</li>
+</ul>
+<h2 id="10">10. 小结</h2>
+<p>Tournament-GRPO 只改变了奖励的计算方式：裁判比较同组回答，累计胜场并归一化，再叠加格式奖励，后续仍使用标准 GRPO 和 PPO。代价是裁判调用随 M 线性增长，奖励质量也完全取决于裁判。</p>
+<p>这次 20 步复现中，最明显的改善是答案完成率和格式合规；对于双方均生成报告的 59 道题，RACE Overall 只从 34.49 提高到 35.25。因此，目前的证据更支持“模型学会了完成输出”，还不足以说明报告质量得到同等幅度的改善。</p>
+<p>实际复现中最费时的并非算法，而是工具预算、裁判失败和搜索接口限制。这些问题会直接改变轨迹和奖励，其影响不比模型配置小。</p>
+<h2 id="_1">参考资料</h2>
+<ol>
+<li>Zixuan Yang et al. <a href="https://arxiv.org/abs/2605.26958v2">Tournament-GRPO: Group-Wise Tournament Rewards for Reinforcement Learning in Open-Ended Long-Form Generation</a>, EMNLP 2026.</li>
+<li><a href="https://github.com/PuffYang/Tournament_GRPO/tree/eea826cf66705cac9ec81823f746d0ccd6074228">PuffYang/Tournament_GRPO@eea826cf</a>：作者代码、训练数据与 Deep Research Bench</li>
+<li><a href="https://huggingface.co/Qwen/Qwen3.5-4B">Qwen/Qwen3.5-4B</a></li>
+<li><a href="https://api-docs.deepseek.com/zh-cn/guides/search/">DeepSeek Search API</a></li>
+<li><a href="https://jina.ai/reader/">Jina Reader</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/blob/main/experiments/pytrio-jev/readme.md">PyTrio-Jev 章节</a></li>
+<li><a href="https://github.com/datawhalechina/agentic-rl-lab/tree/main/experiments/tournament-grpo">Tournament-GRPO PyTRIO 完整代码</a></li>
+<li><a href="https://docs.pytrio.com/docs">PyTRIO 文档</a> / <a href="https://docs.pytrio.com/docs/guide/custom_loss">自定义 loss</a></li>
+<li><a href="https://docs.swanlab.cn/">SwanLab 文档</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
