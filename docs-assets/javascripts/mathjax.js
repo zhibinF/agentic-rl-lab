@@ -18,8 +18,12 @@ window.MathJax = {
       // navigation updates so MathJax never typesets two documents at once.
       MathJax.startup.promise.then(() => {
         let pending = Promise.resolve();
+        let previousArticle;
         document$.subscribe(() => {
           pending = pending.then(() => {
+            const article = document.querySelector("article");
+            if (article === previousArticle) return;
+            previousArticle = article;
             MathJax.typesetClear();
             MathJax.texReset();
             return MathJax.typesetPromise();
