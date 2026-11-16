@@ -49,6 +49,7 @@ def rewrite(url, source, target):
 if DEST.exists():
     shutil.rmtree(DEST)
 DEST.mkdir()
+shutil.copytree(ROOT / "docs-assets", DEST, dirs_exist_ok=True)
 for source in SOURCES:
     relative = source.relative_to(ROOT).as_posix()
     target = PAGES[relative]

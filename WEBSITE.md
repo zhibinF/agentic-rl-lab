@@ -23,3 +23,15 @@ python scripts/prepare_docs.py
 ```
 
 当前发布凭证不含 GitHub OAuth 的 workflow scope，因此采用分支发布，不添加无法推送的 Actions 工作流。上述命令仅更新生成网站的 gh-pages 分支，教程源码仍位于 main。
+
+数学公式使用 `pymdownx.arithmatex` 和 SuperFences 的 `math` 自定义围栏。
+保留教程中的原始 `math` 围栏、行内公式和块级公式；不要在构建前用正则替换 TeX。
+`docs-assets/javascripts/mathjax.js` 在 MathJax CDN 脚本之前加载，并等待引擎就绪后
+通过 Material 的 `document$` 处理首次显示和导航后的公式渲染。
+修改文档构建配置后运行回归检查：
+
+```bash
+python scripts/prepare_docs.py
+.venv-docs/bin/python -m unittest discover -s tests -v
+.venv-docs/bin/mkdocs build --strict
+```
