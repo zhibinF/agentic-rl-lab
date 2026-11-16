@@ -1,0 +1,62 @@
+site_name: Agentic-RL Lab
+site_url: https://zhibinf.github.io/agentic-rl-lab/
+site_description: 前沿 LLM 与 Agent 强化学习算法实验手册
+repo_url: https://github.com/zhibinF/agentic-rl-lab
+docs_dir: .docs
+site_dir: site
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换深色模式
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换浅色模式
+plugins:
+  - search:
+      lang: [zh, en]
+markdown_extensions:
+  - tables
+  - fenced_code
+  - admonition
+  - attr_list
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - 首页: index.md
+  - 入门:
+      - 环境配置与基础概念: experiments/getting-started/index.md
+      - Loss Functions: experiments/loss-functions/index.md
+  - 算法实验:
+      - GRPO: experiments/grpo/index.md
+      - VISION-GRPO: experiments/vision-grpo/index.md
+      - PYTRIO-JEV: experiments/pytrio-jev/index.md
+      - GENERAL-OPD: experiments/general-opd/index.md
+      - MEDICAL-OPD: experiments/medical-opd/index.md
+      - DAPO: experiments/dapo/index.md
+      - GSPO: experiments/gspo/index.md
+      - OPSD: experiments/opsd/index.md
+      - AGENTOPSD: experiments/agentopsd/index.md
+      - SEARCH-R1: experiments/search-r1/index.md
+      - RETOOL: experiments/retool/index.md
+      - ALFWORLD: experiments/alfworld/index.md
+      - TEMPO: experiments/tempo/index.md
+      - SPEC-O3: experiments/spec-o3/index.md
+      - TOURNAMENT-GRPO: experiments/tournament-grpo/index.md
+  - English: en/index.md
+  - 参与贡献: CONTRIBUTING.md
